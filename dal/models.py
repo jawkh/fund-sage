@@ -1,0 +1,128 @@
+# Copyright (c) 2024 by Jonathan AW
+
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, JSON, CheckConstraint
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+from database import Base
+
+class Administrator(Base):
+    __tablename__ = 'Administrators'
+
+    id: int = Column(Integer, primary_key=True, index=True)
+    username: str = Column(String(255), unique=True, nullable=False)
+    password_hash: str = Column(String(255), nullable=False)
+    role: str = Column(String(50), default='admin')
+    consecutive_failed_logins: int = Column(Integer, default=0)
+    failed_login_starttime: DateTime = Column(DateTime, nullable=True)
+    account_locked: bool = Column(Boolean, default=False)
+    created_at: DateTime = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at: DateTime = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationship with Applicants
+    applicants = relationship("Applicant", back_populates="creator")
+
+
+
+class Applicant(Base):
+    __tablename__ = 'Applicants'
+
+    id: int = Column(Integer, primary_key=True, index=True)
+    name: str = Column(String(255), nullable=False)
+    employment_status: str = Column(String(50), nullable=False)
+    sex: str = Column(String(1), nullable=False)
+    date_of_birth: DateTime = Column(DateTime, nullable=False)
+    marital_status: str = Column(String(50), nullable=True)
+    employment_status_change_date: DateTime = Column(DateTime, nullable=True)
+    created_by_admin_id: int = Column(Integer, ForeignKey('Administrators.id'))
+    created_at: DateTime = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at: DateTime = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationships
+    creator = relationship("Administrator", back_populates="applicants")
+    household_members = relationship("HouseholdMember", back_populates="applicant", cascade="all, delete-orphan")
+
+    # Add CheckConstraints at the table level
+    __table_args__ = (
+        CheckConstraint("employment_status IN ('employed', 'unemployed')", name="check_employment_status"),
+        CheckConstraint("sex IN ('M', 'F')", name="check_sex"),
+        CheckConstraint("marital_status IN ('single', 'married', 'divorced', 'widowed')", name="check_marital_status"),
+    )
+
+
+class HouseholdMember(Base):
+    __tablename__ = 'HouseholdMembers'
+
+    id: int = Column(Integer, primary_key=True, index=True)
+    applicant_id: int = Column(Integer, ForeignKey('Applicants.id', ondelete='CASCADE'))
+    name: str = Column(String(255), nullable=False)
+    relation: str = Column(String(50), nullable=False)
+    date_of_birth: DateTime = Column(DateTime, nullable=False)
+    employment_status: str = Column(String(50), nullable=True)
+    sex: str = Column(String(1), nullable=True)
+    created_at: DateTime = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at: DateTime = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationship with Applicant
+    applicant = relationship("Applicant", back_populates="household_members")
+
+    # Add CheckConstraints at the table level
+    __table_args__ = (
+        CheckConstraint("relation IN ('parent', 'child', 'spouse', 'sibling', 'other')", name="check_relation"),
+        CheckConstraint("employment_status IN ('employed', 'unemployed')", name="check_employment_status"),
+        CheckConstraint("sex IN ('M', 'F')", name="check_sex"),
+    )
+
+
+
+
+class Scheme(Base):
+    __tablename__ = 'Schemes'
+
+    id: int = Column(Integer, primary_key=True, index=True)
+    name: str = Column(String(255), nullable=False)
+    description: str = Column(String, nullable=False)
+    eligibility_criteria: dict = Column(JSON, nullable=False)
+    benefits: dict = Column(JSON, nullable=True)
+    validity_start_date: DateTime = Column(DateTime, nullable=False)
+    validity_end_date: DateTime = Column(DateTime, nullable=True)
+    created_at: DateTime = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at: DateTime = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationship with Applications
+    applications = relationship("Application", back_populates="scheme", cascade="all, delete-orphan")
+
+
+
+
+class Application(Base):
+    __tablename__ = 'Applications'
+
+    id: int = Column(Integer, primary_key=True, index=True)
+    applicant_id: int = Column(Integer, ForeignKey('Applicants.id', ondelete='CASCADE'))
+    scheme_id: int = Column(Integer, ForeignKey('Schemes.id', ondelete='CASCADE'))
+    status: str = Column(String(50), nullable=False)
+    submission_date: DateTime = Column(DateTime(timezone=True), default=func.now())
+    created_at: DateTime = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at: DateTime = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationships
+    applicant = relationship("Applicant", back_populates="applications")
+    scheme = relationship("Scheme", back_populates="applications")
+
+    # Add CheckConstraints at the table level
+    __table_args__ = (
+        CheckConstraint("status IN ('pending', 'approved', 'rejected')", name="check_status"),
+    )
+
+
+
+class SystemConfiguration(Base):
+    __tablename__ = 'SystemConfigurations'
+
+    id: int = Column(Integer, primary_key=True, index=True)
+    key: str = Column(String(255), unique=True, nullable=False)
+    value: str = Column(String(255), nullable=False)
+    description: str = Column(String, nullable=True)
+    last_updated: DateTime = Column(DateTime(timezone=True), server_default=func.now())
+
+
