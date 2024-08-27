@@ -271,7 +271,7 @@ class CRUDOperations:
         """
         return self.db_session.query(Scheme).filter(Scheme.id == scheme_id).first()
 
-    def get_schemes_by_filters(self, filters: Dict, fetch_valid_schemes: bool = False) -> List[Scheme]:
+    def get_schemes_by_filters(self, filters: Dict, fetch_valid_schemes: bool = True) -> List[Scheme]:
         """
         Retrieve multiple schemes based on common filters.
 
