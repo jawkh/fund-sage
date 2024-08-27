@@ -7,8 +7,8 @@
 # Implicit Linkage via Inheritance: The linkage between the models and their schema is implicit via inheritance from Base.
 # The Base class is defined in the database.py file and is imported into the models.py file.
 # The Base class is used to create the metadata for the database schema and is shared across all models.
-from database import Base, engine
-from models import Administrator, Applicant, HouseholdMember, Scheme, Application, SystemConfiguration
+from dal.database import Base, engine
+from dal.models import Administrator, Applicant, HouseholdMember, Scheme, Application, SystemConfiguration
 
 # Create all tables in the production database
 Base.metadata.create_all(bind=engine)

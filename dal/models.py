@@ -1,9 +1,9 @@
 # Copyright (c) 2024 by Jonathan AW
 
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, JSON, CheckConstraint
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, configure_mappers
 from sqlalchemy.sql import func
-from database import Base
+from dal.database import Base
 
 class Administrator(Base):
     __tablename__ = 'Administrators'
@@ -19,7 +19,9 @@ class Administrator(Base):
     updated_at: DateTime = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relationship with Applicants
-    applicants = relationship("Applicant", back_populates="creator")
+    applicants_created = relationship("Applicant", back_populates="creator")
+    applications_created = relationship("Application", back_populates="creator")  # New relationship to Application
+
 
 
 
@@ -38,8 +40,9 @@ class Applicant(Base):
     updated_at: DateTime = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relationships
-    creator = relationship("Administrator", back_populates="applicants")
+    creator = relationship("Administrator", back_populates="applicants_created")
     household_members = relationship("HouseholdMember", back_populates="applicant", cascade="all, delete-orphan")
+    applications = relationship("Application", back_populates="applicant", cascade="all, delete-orphan")
 
     # Add CheckConstraints at the table level
     __table_args__ = (
@@ -102,12 +105,14 @@ class Application(Base):
     scheme_id: int = Column(Integer, ForeignKey('Schemes.id', ondelete='CASCADE'))
     status: str = Column(String(50), nullable=False)
     submission_date: DateTime = Column(DateTime(timezone=True), default=func.now())
+    created_by_admin_id: int = Column(Integer, ForeignKey('Administrators.id')) 
     created_at: DateTime = Column(DateTime(timezone=True), server_default=func.now())
     updated_at: DateTime = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relationships
     applicant = relationship("Applicant", back_populates="applications")
     scheme = relationship("Scheme", back_populates="applications")
+    creator = relationship("Administrator", back_populates="applications_created")  
 
     # Add CheckConstraints at the table level
     __table_args__ = (
@@ -126,3 +131,4 @@ class SystemConfiguration(Base):
     last_updated: DateTime = Column(DateTime(timezone=True), server_default=func.now())
 
 
+configure_mappers()

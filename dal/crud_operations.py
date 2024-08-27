@@ -3,7 +3,7 @@
 from typing import List, Dict, Optional
 from sqlalchemy.orm import Session
 from datetime import date
-from models import Administrator, Applicant, HouseholdMember, Scheme, Application, SystemConfiguration
+from dal.models import Administrator, Applicant, HouseholdMember, Scheme, Application, SystemConfiguration
 
 class CRUDOperations:
     def __init__(self, db_session: Session):
