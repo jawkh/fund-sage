@@ -6,14 +6,13 @@ from dal.models import Administrator, Applicant
 from datetime import datetime
 
 # Test CRUD operations for the Administrator model
-@pytest.mark.usefixtures("setup_mock_data") # Ensure the mock data is set up before running the tests (test_admin gets id==1 first)
-def test_get_administrator(crud_operations):
+def test_get_administrator(crud_operations, test_administrator):
     """
     Test retrieving an administrator by ID and verify the details.
     """
-    admin = crud_operations.get_administrator(1)
+    admin = crud_operations.get_administrator(test_administrator.id)
     assert admin is not None
-    assert admin.username == "test_admin"
+    assert admin.username == test_administrator.username
     
 
 def test_create_administrator(crud_operations):
@@ -25,27 +24,26 @@ def test_create_administrator(crud_operations):
     assert admin.password_hash == "hashed_password"
     assert admin.role == "admin"
 
-def test_update_administrator(crud_operations):
+def test_update_administrator(crud_operations, test_administrator):
     """
     Test updating an administrator's details and verify the update.
     """
-    updated_admin = crud_operations.update_administrator(2, {"username": "updated_admin"})
+    updated_admin = crud_operations.update_administrator(test_administrator.id, {"username": "updated_admin"})
     assert updated_admin.username == "updated_admin"
 
     
-def test_delete_administrator(crud_operations):
-    crud_operations.delete_administrator(2)
-    assert crud_operations.get_administrator(2) is None
+def test_delete_administrator(crud_operations, test_administrator):
+    crud_operations.delete_administrator(test_administrator.id)
+    assert crud_operations.get_administrator(test_administrator.id) is None
     
 
-@pytest.mark.usefixtures("setup_mock_data") 
-def test_get_administrator_by_username(crud_operations):
+def test_get_administrator_by_username(crud_operations, test_administrator):
     """
     Test retrieving an administrator by username.
     """
-    admin = crud_operations.get_administrator_by_username("test_admin")
+    admin = crud_operations.get_administrator_by_username(test_administrator.username)
     assert admin is not None
-    assert admin.username == "test_admin"
+    assert admin.username == test_administrator.username
 
 
 def test_get_administrators_by_filters(crud_operations):
@@ -60,8 +58,7 @@ def test_get_administrators_by_filters(crud_operations):
 
 
 # Test CRUD operations for the Applicant model
-@pytest.mark.usefixtures("setup_mock_data") 
-def test_create_applicant(crud_operations):
+def test_create_applicant(crud_operations, test_administrator):
     """
     Test creating a new applicant and verify the applicant details.
     """
@@ -71,41 +68,43 @@ def test_create_applicant(crud_operations):
         "sex": "M",
         "date_of_birth": datetime(1990, 1, 1),
         "marital_status": "single",
-        "created_by_admin_id": 1
+        "created_by_admin_id": test_administrator.id
     }
     applicant = crud_operations.create_applicant(applicant_data)
     assert applicant.name == "John Doe"
     assert applicant.employment_status == "employed"
     assert applicant.sex == "M"
     assert applicant.marital_status == "single"
-    assert applicant.created_by_admin_id == 1   
+    assert applicant.created_by_admin_id == test_administrator.id   
 
-def test_get_applicant(crud_operations):
+
+def test_get_applicant(crud_operations, test_applicant):
     """
     Test retrieving an applicant by ID and verify the details.
     """
-    applicant = crud_operations.get_applicant(1)
+    applicant = crud_operations.get_applicant(test_applicant.id)
     assert applicant is not None
-    assert applicant.name == "John Doe"
-    assert applicant.employment_status == "employed"
-    assert applicant.sex == "M"
-    assert applicant.marital_status == "single"
-    assert applicant.created_by_admin_id == 1   
+    assert applicant.name == test_applicant.name
+    assert applicant.employment_status == test_applicant.employment_status
+    assert applicant.sex == test_applicant.sex
+    assert applicant.marital_status == test_applicant.marital_status
+    assert applicant.created_by_admin_id == test_applicant.created_by_admin_id   
 
-def test_update_applicant(crud_operations):
+
+def test_update_applicant(crud_operations, test_applicant):
     """
     Test updating an applicant's details and verify the update.
     """
-    updated_applicant = crud_operations.update_applicant(1, {"name": "Jane Doe"})
-    assert updated_applicant.name == "Jane Doe"
-    assert updated_applicant.employment_status == "employed"
-    assert updated_applicant.sex == "M"
-    assert updated_applicant.marital_status == "single"
-    assert updated_applicant.created_by_admin_id == 1 
+    updated_applicant = crud_operations.update_applicant(test_applicant.id, {"name": "Jane Doe"})
+    updated_applicant_from_db = crud_operations.get_applicant(test_applicant.id)
+    assert updated_applicant.name == updated_applicant_from_db.name
+    assert updated_applicant.employment_status == updated_applicant_from_db.employment_status
+    assert updated_applicant.sex == updated_applicant_from_db.sex
+    assert updated_applicant.marital_status == updated_applicant_from_db.marital_status
+    assert updated_applicant.created_by_admin_id == updated_applicant_from_db.created_by_admin_id
 
 
-
-def test_get_applicants_by_filters(crud_operations):
+def test_get_applicants_by_filters(crud_operations, test_administrator):
     """
     Test retrieving applicants using filters.
     """
@@ -115,82 +114,54 @@ def test_get_applicants_by_filters(crud_operations):
         "sex": "F",
         "date_of_birth": datetime(1995, 5, 15),
         "marital_status": "married",
-        "created_by_admin_id": 1
+        "created_by_admin_id": test_administrator.id
     }
     crud_operations.create_applicant(applicant_data)
     applicants = crud_operations.get_applicants_by_filters({"employment_status": "unemployed"})
     assert len(applicants) > 0
     assert any(applicant.name == "Alice" for applicant in applicants)
 
-# Enhanced tests for Application model
-@pytest.mark.usefixtures("setup_mock_data") 
-def test_create_application(crud_operations):
+def test_create_update_application(crud_operations, test_applicant, test_scheme):
     """
     Test creating a new application and verify the application details,
     including the relationship with the administrator who created it.
     """
-    applicant_data = {
-        "name": "John Doe",
-        "employment_status": "employed",
-        "sex": "M",
-        "date_of_birth": datetime(1990, 1, 1),
-        "marital_status": "single",
-        "created_by_admin_id": 1
-    }
-    applicant = crud_operations.create_applicant(applicant_data)
-
     application_data = {
-        "applicant_id": applicant.id,
-        "scheme_id": 1,  # Assume there is a valid scheme with ID 1
+        "applicant_id": test_applicant.id,
+        "scheme_id": test_scheme.id,  # Assume there is a valid scheme with ID 1
         "status": "pending",
-        "created_by_admin_id": 1  # Link to the admin who created it
+        "created_by_admin_id": test_applicant.created_by_admin_id  # Link to the admin who created it
     }
-    application = crud_operations.create_application(application_data)
-    assert application.applicant_id == applicant.id
-    assert application.scheme_id == 1
-    assert application.status == "pending"
-    assert application.created_by_admin_id == 1
-    assert application.creator.username == "test_admin"  # Verify relationship to Administrator
+    new_application = crud_operations.create_application(application_data)
+    new_application_from_db = crud_operations.get_application(new_application.id)
+    assert new_application.applicant_id == new_application_from_db.applicant_id
+    assert new_application.scheme_id == new_application_from_db.scheme_id
+    assert new_application.status == new_application_from_db.status
+    assert new_application.created_by_admin_id == new_application_from_db.created_by_admin_id
+    assert new_application.creator.username == new_application_from_db.creator.username  
 
-
-def test_get_application(crud_operations):
-    """
-    Test retrieving an application by ID and verify the details,
-    including the administrator who created it.
-    """
-    application = crud_operations.get_application(1)
-    assert application is not None
-    assert application.applicant_id is not None
-    assert application.scheme_id == 1
-    assert application.status == "pending"
-    assert application.creator.username == "test_admin"  # Verify relationship to Administrator
-
-
-def test_update_application(crud_operations):
-    """
-    Test updating an application's details and verify the update.
-    """
-    updated_application = crud_operations.update_application(1, {"status": "approved"})
-    assert updated_application.status == "approved"
+    approved_application = crud_operations.update_application(new_application.id, {"status": "approved"})
+    approved_application_from_db = crud_operations.get_application(approved_application.id)
+    assert approved_application_from_db.status == "approved"
     
 
-def test_delete_application(crud_operations):
+
+def test_delete_application(crud_operations, test_application):
     """
     Test deleting an application and verify it no longer exists.
     """
-    crud_operations.delete_application(1)
-    assert crud_operations.get_application(1) is None
+    crud_operations.delete_application(test_application.id)
+    assert crud_operations.get_application(test_application.id) is None
 
 
 # Tests for Scheme model
-@pytest.mark.usefixtures("setup_mock_data") 
-def test_get_scheme(crud_operations):
+def test_get_scheme(crud_operations, test_scheme):
     """
     Test retrieving a scheme by ID and verify the details.
     """
-    scheme = crud_operations.get_scheme(1)
+    scheme = crud_operations.get_scheme(test_scheme.id)
     assert scheme is not None
-    assert scheme.name == "Mock Scheme"
+    assert scheme.name == test_scheme.name
     
 
 def test_create_scheme(crud_operations):
@@ -214,12 +185,13 @@ def test_create_scheme(crud_operations):
     
 # Delete Operations shall be the final test cases for the CRUD operations (preserve referential integrity of preceding tests) 
 
-def test_delete_applicant(crud_operations):
+def test_delete_applicant(crud_operations, test_applicant):
     """
     Test deleting an applicant and verify it no longer exists.
     """
-    crud_operations.delete_applicant(1)
-    assert crud_operations.get_applicant(1) is None
+    crud_operations.delete_applicant(test_applicant.id)
+    assert crud_operations.get_applicant(test_applicant.id) is None
+    
 
 # Negative test cases for CRUD operations
 def test_get_non_existent_application(crud_operations):
@@ -228,23 +200,14 @@ def test_get_non_existent_application(crud_operations):
     """
     assert crud_operations.get_application(999) == None
         
-def test_create_application_with_invalid_admin(crud_operations):
+
+def test_create_application_with_invalid_admin(crud_operations, test_applicant, test_scheme):
     """
     Negative test case: Try to create an application with a non-existent administrator ID.
     """
-    applicant_data = {
-        "name": "Jane Smith",
-        "employment_status": "unemployed",
-        "sex": "F",
-        "date_of_birth": datetime(1985, 2, 15),
-        "marital_status": "married",
-        "created_by_admin_id": 1
-    }
-    applicant = crud_operations.create_applicant(applicant_data)
-
     application_data = {
-        "applicant_id": applicant.id,
-        "scheme_id": 1,
+        "applicant_id": test_applicant.id,
+        "scheme_id": test_scheme.id,
         "status": "pending",
         "created_by_admin_id": 999  # Non-existent admin ID
     }

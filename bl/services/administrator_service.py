@@ -8,8 +8,8 @@ from dal.models import Administrator
 from exceptions import AdministratorNotFoundException
 from environs import Env
 from datetime import datetime
-# from dotenv import load_dotenv
-# load_dotenv()
+from dotenv import load_dotenv
+load_dotenv()
 
 class AdministratorService:
     # Load environment variables

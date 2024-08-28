@@ -4,6 +4,8 @@
 
 source ~/.bashrc
 
+pwd
+
 # Get the current directory
 currentDirectory=$(pwd)
 timestamp=$(date +"%Y%m%d_%H%M%S")
@@ -18,5 +20,4 @@ mkdir -p logs
 
 # Run DAL tests
 "$(which poetry)" run pytest --cov=dal tests/ 2> "$rpt_errorLogFilePath" | tee -a "$rpt_logFilePath"
-
 

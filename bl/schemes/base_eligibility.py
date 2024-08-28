@@ -9,15 +9,15 @@ class BaseEligibility(ABC):
     Provides default logic for non-configured eligibility criteria.
     """
 
-    def check_eligibility(self, applicant: Applicant) -> bool:
+    def check_eligibility(self, applicant: Applicant) -> tuple[bool, str]:
         """
         Default method indicating that the scheme's eligibility criteria are not configured.
         """
-        return False
+        return False, "Scheme Eligibility Checker Not Configured!"
 
 
     def calculate_benefits(self, applicant: Applicant) -> dict:
         """
         Default method indicating no benefits are available due to lack of criteria.
         """
-        return {"NIL": "Scheme Eligibility Checker Not Configured!"}
+        return {}

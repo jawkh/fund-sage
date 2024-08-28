@@ -6,6 +6,7 @@ from dal.models import Applicant
 from exceptions import ApplicantNotFoundException
 from typing import List, Optional, Dict
 from bl.services.scheme_service import SchemeService
+from utils.data_validation import validate_applicant_data
 
 class ApplicantService:
     """
@@ -33,12 +34,16 @@ class ApplicantService:
         """
         Create a new applicant record.
         """
+        if not validate_applicant_data(applicant_data):
+            raise ValueError("Invalid applicant data provided.")
         return self.crud_operations.create_applicant(applicant_data)
 
     def update_applicant(self, applicant_id: int, update_data: dict) -> Applicant:
         """
         Update an applicant's details.
         """
+        if not validate_applicant_data(update_data):
+            raise ValueError("Invalid applicant data provided.")
         return self.crud_operations.update_applicant(applicant_id, update_data)
 
     def delete_applicant(self, applicant_id: int) -> None:
