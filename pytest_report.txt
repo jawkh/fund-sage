@@ -1,0 +1,22 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-8.3.2, pluggy-1.5.0
+rootdir: /home/joncules/projects/gt_cdt_swe_test
+configfile: pyproject.toml
+plugins: cov-5.0.0
+collected 19 items
+
+tests/test_crud.py ...................                                   [100%]
+
+---------- coverage: platform linux, python 3.10.12-final-0 ----------
+Name                     Stmts   Miss  Cover
+--------------------------------------------
+dal/__init__.py              0      0   100%
+dal/crud_operations.py     132     46    65%
+dal/database.py             11      1    91%
+dal/models.py               81      0   100%
+dal/provisiondb.py           3      3     0%
+--------------------------------------------
+TOTAL                      227     50    78%
+
+
+============================== 19 passed in 0.38s ==============================

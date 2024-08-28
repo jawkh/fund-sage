@@ -4,7 +4,9 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from dal.crud_operations import CRUDOperations
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
+# load_dotenv()
+
 from environs import Env
 
 
@@ -15,7 +17,6 @@ from dal.database import Base
 from dal.models import Administrator, Applicant, HouseholdMember, Scheme, Application, SystemConfiguration
 
 
-load_dotenv()
 # Load environment variables
 TEST_DATABASE_URL = Env().str("TEST_DATABASE_URL", "TEST_DATABASE_URL is not set. ") 
 
@@ -62,7 +63,7 @@ def setup_mock_data(crud_operations):
     """
     Test creating a new administrator and verify the administrator details.
     """
-    admin = crud_operations.create_administrator(username="test_admin", password_hash="hashed_password")   
+    admin = crud_operations.create_administrator(username="test_admin", password_hash="hashed_password", salt="salt")   
      
     # Create mock schemes
     scheme_data = {

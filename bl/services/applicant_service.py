@@ -4,14 +4,21 @@ from typing import List
 from dal.crud_operations import CRUDOperations
 from dal.models import Applicant
 from exceptions import ApplicantNotFoundException
+from typing import List, Optional, Dict
+from bl.services.scheme_service import SchemeService
 
 class ApplicantService:
     """
     Service class to handle all business logic related to applicants.
     """
 
-    def __init__(self, crud_operations: CRUDOperations):
+    def __init__(self, crud_operations: CRUDOperations, scheme_service: Optional[SchemeService] = None):
+        '''
+        Initialize the ApplicantService with CRUDOperations and an optional SchemeService.
+        scheme_service is required in order to compute schemes' eligibility for applicants.
+        '''
         self.crud_operations = crud_operations
+        self.scheme_service = scheme_service or SchemeService(crud_operations)
 
     def get_applicant_by_id(self, applicant_id: int) -> Applicant:
         """
@@ -40,16 +47,4 @@ class ApplicantService:
         """
         self.crud_operations.delete_applicant(applicant_id)
 
-    def check_eligibility(self, applicant_id: int) -> List[str]:
-        """
-        Check which schemes an applicant is eligible for.
-        """
-        applicant = self.get_applicant_by_id(applicant_id)
-        eligible_schemes = []
 
-        # Example logic for eligibility check
-        # This will later call the strategy classes to determine eligibility
-        if applicant.employment_status == "unemployed":
-            eligible_schemes.append("Retrenchment Assistance Scheme")
-
-        return eligible_schemes

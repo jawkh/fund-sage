@@ -13,7 +13,7 @@ class CRUDOperations:
     # CRUD Operations for Administrator
     # ===============================
 
-    def create_administrator(self, username: str, password_hash: str, role: str = 'admin') -> Administrator:
+    def create_administrator(self, username: str, password_hash: str, salt: str, role: str = 'admin') -> Administrator:
         """
         Create a new administrator.
 
@@ -25,7 +25,7 @@ class CRUDOperations:
         Returns:
             Administrator: The created Administrator object.
         """
-        db_admin = Administrator(username=username, password_hash=password_hash, role=role)
+        db_admin = Administrator(username=username, password_hash=password_hash, salt=salt, role=role)
         self.db_session.add(db_admin)
         self.db_session.commit()
         self.db_session.refresh(db_admin)

@@ -20,7 +20,7 @@ def test_create_administrator(crud_operations):
     """
     Test creating a new administrator and verify the administrator details.
     """
-    admin = crud_operations.create_administrator(username="test_admin_2", password_hash="hashed_password")
+    admin = crud_operations.create_administrator(username="test_admin_2", password_hash="hashed_password", salt="salt")
     assert admin.username == "test_admin_2"
     assert admin.password_hash == "hashed_password"
     assert admin.role == "admin"
@@ -52,7 +52,7 @@ def test_get_administrators_by_filters(crud_operations):
     """
     Test retrieving administrators using filters.
     """
-    crud_operations.create_administrator(username="admin_filter_test", password_hash="pass")
+    crud_operations.create_administrator(username="admin_filter_test", password_hash="pass", salt="salt")
     admins = crud_operations.get_administrators_by_filters({"role": "admin"})
     assert len(admins) > 0
     assert any(admin.username == "admin_filter_test" for admin in admins)

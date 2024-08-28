@@ -11,6 +11,7 @@ class Administrator(Base):
     id: int = Column(Integer, primary_key=True, index=True)
     username: str = Column(String(255), unique=True, nullable=False)
     password_hash: str = Column(String(255), nullable=False)
+    salt: str = Column(String(255), nullable=False) 
     role: str = Column(String(50), default='admin')
     consecutive_failed_logins: int = Column(Integer, default=0)
     failed_login_starttime: DateTime = Column(DateTime, nullable=True)

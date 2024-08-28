@@ -3,7 +3,7 @@
 from typing import List
 from dal.crud_operations import CRUDOperations
 from dal.models import Application, Scheme
-from exceptions import ApplicantNotFoundException
+from exceptions import ApplicationNotFoundException, ApplicantNotFoundException, SchemeNotFoundException
 
 class ApplicationService:
     """
@@ -55,8 +55,3 @@ class ApplicationService:
         """
         self.crud_operations.delete_application(application_id)
 
-    def check_applicant_eligibility(self, applicant_id: int) -> List[Scheme]:
-        """
-        Delegate to ApplicantService to check the schemes for which the applicant is eligible.
-        """
-        return self.applicant_service.check_eligibility(applicant_id)
