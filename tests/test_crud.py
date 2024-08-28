@@ -1,5 +1,7 @@
 # Copyright (c) 2024 by Jonathan AW
-
+""" 
+Test Data Access Layer CRUD operations for the Administrator, Applicant, Scheme and Application models.
+"""
 import pytest
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from dal.models import Administrator, Applicant

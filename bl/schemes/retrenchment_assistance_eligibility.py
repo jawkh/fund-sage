@@ -1,5 +1,16 @@
 # Copyright (c) 2024 by Jonathan AW
+# retrenchment_assistance_eligibility.py
 
+""" 
+Summary: The RetrenchmentAssistanceEligibility class is responsible for determining eligibility for the Retrenchment Assistance Scheme and calculating the benefits the applicant is eligible for.
+
+# Key Features
+1. Comprehensive Eligibility Check:
+- The check_eligibility method effectively checks multiple criteria for determining eligibility for retrenchment assistance, using configurable values for employment status and the retrenchment period. This makes the function robust and adaptable.
+
+2. Benefit Calculation Logic:
+- The calculate_benefits method calculates benefits based on the applicant's household members, checking for children in a specific age range and elderly parents. This dynamic calculation is good practice as it adheres to the specific criteria for benefit eligibility.
+"""
 from datetime import datetime, timedelta
 from dal.models import Applicant
 from bl.schemes.base_eligibility import BaseEligibility
@@ -7,7 +18,6 @@ from utils.config_utils import get_configuration_value
 from typing import Optional
 from utils.date_utils import is_within_last_months, calculate_age
 from sqlalchemy.orm import Session
-
 class RetrenchmentAssistanceEligibility(BaseEligibility):
     """
     Concrete class for determining eligibility for the Retrenchment Assistance Scheme.
@@ -33,6 +43,7 @@ class RetrenchmentAssistanceEligibility(BaseEligibility):
             if applicant.employment_status_change_date:
                 if applicant.employment_status_change_date and is_within_last_months(applicant.employment_status_change_date, retrenchment_period_months):
                     return True, "Eligible for Retrenchment Assistance."
+
         return False, "Not eligible for Retrenchment Assistance."
     
     def calculate_benefits(self, applicant: Applicant) -> dict:

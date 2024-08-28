@@ -1,11 +1,28 @@
 # Copyright (c) 2024 by Jonathan AW
 
+""" 
+ORM classes for the database tables.
+These are used to define the schema of the database tables.
+The relationships between the tables are also defined here.
+We also define CheckConstraints at the table level.
+
+Provisioning Databases: Use SQLAlchemy ORM models to create both production and test databases to ensure schema consistency.
+
+We will use these ORM classes to interact with the database using SQLAlchemy.
+We will be able to perform CRUD operations on the tables using these classes.
+"""
+
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, JSON, CheckConstraint
 from sqlalchemy.orm import relationship, configure_mappers
 from sqlalchemy.sql import func
 from dal.database import Base
 
 class Administrator(Base):
+    """ 
+    Summary: ORM class for the Administrators table in the database.
+    Encapsulates the schema of the Administrators table.
+    Encapsulates the relationships with the Applicants and Applications tables.
+    """
     __tablename__ = 'Administrators'
 
     id: int = Column(Integer, primary_key=True, index=True)
@@ -24,9 +41,10 @@ class Administrator(Base):
     applications_created = relationship("Application", back_populates="creator")  # New relationship to Application
 
 
-
-
 class Applicant(Base):
+    """ 
+    Summary: ORM class for the Applicants table in the database.
+    """
     __tablename__ = 'Applicants'
 
     id: int = Column(Integer, primary_key=True, index=True)
@@ -54,6 +72,9 @@ class Applicant(Base):
 
 
 class HouseholdMember(Base):
+    """ 
+    Summary: ORM class for the HouseholdMembers table in the database.
+    """
     __tablename__ = 'HouseholdMembers'
 
     id: int = Column(Integer, primary_key=True, index=True)
@@ -80,6 +101,9 @@ class HouseholdMember(Base):
 
 
 class Scheme(Base):
+    """ 
+    summary: ORM class for the Schemes table in the database.
+    """
     __tablename__ = 'Schemes'
 
     id: int = Column(Integer, primary_key=True, index=True)
@@ -99,6 +123,9 @@ class Scheme(Base):
 
 
 class Application(Base):
+    """ 
+    summary: ORM class for the Applications table in the database.
+    """
     __tablename__ = 'Applications'
 
     id: int = Column(Integer, primary_key=True, index=True)
@@ -123,6 +150,9 @@ class Application(Base):
 
 
 class SystemConfiguration(Base):
+    """ 
+    summary: ORM class for the SystemConfigurations table in the database.
+    """
     __tablename__ = 'SystemConfigurations'
 
     id: int = Column(Integer, primary_key=True, index=True)
@@ -132,4 +162,4 @@ class SystemConfiguration(Base):
     last_updated: DateTime = Column(DateTime(timezone=True), server_default=func.now())
 
 
-configure_mappers()
+configure_mappers() # Configure mappers to ensure all relationships are properly set up

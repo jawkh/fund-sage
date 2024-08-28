@@ -1,5 +1,7 @@
 # Copyright (c) 2024 by Jonathan AW
-
+""" 
+Connect to the database and create a session factory.
+"""
 from environs import Env
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base

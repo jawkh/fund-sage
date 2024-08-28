@@ -15,3 +15,11 @@ class ApplicationNotFoundException(Exception):
 class SchemeNotFoundException(Exception):
     """Raised when a scheme is not found in the database."""
     pass
+
+class InvalidApplicantDataException(Exception):
+    """Raised when invalid data is provided for an applicant."""
+    pass
+
+class EligibilityStrategyNotFoundException(Exception):
+    """Exception raised when no eligibility strategy is found for a scheme."""
+    pass

@@ -1,5 +1,9 @@
+# Copyright (c) 2024 by Jonathan AW
 # conftest.py
 
+""" 
+Shared fixtures for testing.
+"""
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -8,8 +12,10 @@ from environs import Env
 from datetime import datetime
 
 from dal.crud_operations import CRUDOperations
+from dal.system_config import SystemConfig
 from dal.database import Base
-# from dal.models import Administrator, Applicant, HouseholdMember, Scheme, Application, SystemConfiguration
+from bl.services.applicant_service import ApplicantService
+from bl.services.scheme_service import SchemeService
 
 # Load environment variables
 load_dotenv()
@@ -65,6 +71,28 @@ def crud_operations(test_db):
     Fixture to provide a CRUDOperations instance with a testing session. (using a transaction that rolls back after each test)
     """
     return CRUDOperations(test_db)
+
+@pytest.fixture(scope="function")
+def system_config(test_db):
+    """
+    Fixture to provide a system_config instance with a testing session. (using a transaction that rolls back after each test)
+    """
+    return SystemConfig(test_db)
+
+@pytest.fixture(scope="function")
+def scheme_service(crud_operations):
+    """
+    Fixture to provide a SchemeService instance for testing.
+    """
+    return SchemeService(crud_operations)
+
+@pytest.fixture(scope="function")
+def applicant_service(crud_operations, scheme_service):
+    """
+    Fixture to provide an ApplicantService instance with dependencies for testing.
+    """
+    return ApplicantService(crud_operations, scheme_service)
+
 
 @pytest.fixture(scope="function")
 def test_administrator(crud_operations):
