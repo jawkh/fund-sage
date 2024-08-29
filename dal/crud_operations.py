@@ -1,6 +1,27 @@
 # Copyright (c) 2024 by Jonathan AW
 """ 
 Service class for CRUD operations.
+
+Design Patterns:
+1. Separation of Concerns:
+- The class is focused on handling CRUD operations for different models, adhering to the Single Responsibility Principle (SRP).
+
+2. Reusability:
+- The class encapsulates common database operations that can be reused across different services, promoting code reuse and maintainability.
+
+3. Dependency Injection:
+- The class takes a SQLAlchemy Session object as a dependency, allowing for better testability and separation of concerns.
+
+4. Type Annotations:
+- The use of type annotations for method arguments and return types enhances code readability and maintainability.
+
+5. Encapsulation:
+- The class encapsulates the logic for CRUD operations, providing a clean interface for interacting with the database.
+
+6. Readability and Maintainability:
+- The class structure and method names are well-organized, making the code easy to understand and maintain.
+
+
 """
 
 from typing import List, Dict, Optional

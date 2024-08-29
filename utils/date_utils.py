@@ -1,5 +1,8 @@
 # Copyright (c) 2024 by Jonathan AW
+""" 
+Purpose: Utility functions for date calculations.
 
+"""
 from datetime import datetime, timedelta
 
 def calculate_age(birth_date: datetime) -> int:

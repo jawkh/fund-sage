@@ -6,21 +6,29 @@
 The AdministratorService class provides a comprehensive implementation of the business logic related to administrators. 
 
 # Design Patterns:
-1. Comprehensive Functionality:
-- The class covers all necessary CRUD operations and additional functionalities like password management and account locking/unlocking.
+1. Clear Separation of Concerns:
+- The class is focused on handling administrator-related operations, adhering to the Single Responsibility Principle (SRP).
 
-2. Clear Separation of Concerns:
-- Each method is responsible for a specific piece of logic related to administrators, adhering to the Single Responsibility Principle (SRP).
+2. Data Validation:
+- The class uses the validate_administrator_data function to validate administrator data before creating or updating an administrator, ensuring data integrity and consistency.
 
-3. Use of Security Best Practices:
-- The use of salt and hashing for password management is a good security practice to protect stored passwords.
-- The implementation of account locking after too many failed login attempts enhances security against brute-force attacks.
+3. Error Handling:
+- Custom exceptions (InvalidAdministratorDataException, AdministratorNotFoundException) are used to handle specific error scenarios related to administrators, providing clear and meaningful feedback.
 
-4. Use of Custom Exceptions:
-- The use of AdministratorNotFoundException for handling cases where administrators are not found is good for clarity and debugging.
+4. Dependency Injection:
+- The class takes a CRUDOperations object as a dependency, allowing for better testability and separation of concerns.
 
-5. Environment Configuration:
-- Loading environment variables for configurations like MAX_PASSWORD_RETRIES and PASSWORD_RETRIES_TIME_WINDOW_MINUTES is a good practice to avoid hardcoding values.
+5. Use of Type Annotations:
+- The use of type annotations for method arguments and return types enhances code readability and maintainability.
+
+6. Security Measures:
+- The class implements security measures such as password hashing, password verification, and account locking to enhance the security of administrator accounts.
+
+7. Encapsulation:
+- The class encapsulates the logic for managing administrators, providing a clean interface for interacting with administrator data.
+
+8. Readability and Maintainability:
+- The class structure and method names are well-organized, making the code easy to understand and maintain.
 
 """
 

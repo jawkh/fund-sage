@@ -2,6 +2,30 @@
 # system_config.py
 """ 
 SystemConfig class for CRUD operations on SystemConfiguration objects.
+
+Design Patterns:
+1. Encapsulation:
+- The SystemConfig class encapsulates the logic for interacting with SystemConfiguration objects, providing a clean interface for data access.
+
+2. Data Validation:
+- The class uses the validate_system_configuration_data function to validate system configuration data before creating or updating a configuration, ensuring data integrity and consistency.
+
+3. Error Handling:
+- Custom exceptions (InvalidSystemConfigDataException) are used to handle specific error scenarios related to system configurations, providing clear and meaningful feedback.
+
+4. Dependency Injection:
+- The class takes a SQLAlchemy Session object as a dependency, allowing for better testability and separation of concerns.
+
+5. Use of Type Annotations:
+- The use of type annotations for method arguments and return types enhances code readability and maintainability.
+
+6. Single Responsibility Principle (SRP):
+- The class is focused on handling CRUD operations for SystemConfiguration objects, adhering to the SRP.
+
+7. Readability and Maintainability:
+- The class structure and method names are well-organized, making the code easy to understand and maintain.
+
+
 """
 
 from dal.models import SystemConfiguration

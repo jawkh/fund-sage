@@ -1,11 +1,30 @@
 # Copyright (c) 2024 by Jonathan AW
 # scheme_eligibility_checker_factory.py
 """ 
-Design Pattern: Factory Method
+Design Pattern: 
 
-1. Factory Method Implementation:
-- The SchemeEligibilityCheckerFactory class implements the Factory Method pattern by providing a method to create SchemeEligibilityChecker objects based on the scheme type.
-- The get_eligibility_definition method retrieves the appropriate eligibility definition based on the scheme type, allowing for extensibility and flexibility in adding new eligibility strategies.
+1. Factory Method:
+- The SchemeEligibilityCheckerFactory class implements the Factory Method pattern to create SchemeEligibilityChecker objects based on the type of scheme. This approach allows for flexible instantiation of eligibility checkers for different schemes.
+
+2. Dependency Injection:
+- The class takes a database session as a dependency, enabling it to interact with the database to retrieve scheme information.
+
+3. Error Handling:
+- The get_eligibility_definition method raises an EligibilityStrategyNotFoundException if no eligibility strategy is found for a given scheme. This exception provides clear feedback when an issue occurs.
+
+4. Use of Lambdas for Instantiation:
+- The use of lambdas in the eligibility_definitions_mapping dictionary allows for flexible instantiation of eligibility strategies based on the scheme type. This approach ensures that the correct eligibility strategy is used for each scheme.
+
+5. Type Annotations:
+- The use of type annotations for method arguments and return types enhances code readability and type safety.
+
+6. Encapsulation:
+- The class encapsulates the logic for creating SchemeEligibilityChecker objects, providing a clean interface for loading eligibility checkers for different schemes.
+
+7. Readability and Maintainability:
+- The class structure and method names are well-organized, making the code easy to understand and maintain.
+
+
 """
 
 from typing import Dict, Optional, Callable
@@ -13,7 +32,8 @@ from sqlalchemy.orm import Session
 from dal.models import Scheme
 from bl.schemes.base_eligibility import BaseEligibility
 from bl.schemes.retrenchment_assistance_eligibility import RetrenchmentAssistanceEligibility
-from bl.schemes.senior_citizen_eligibility import SeniorCitizenEligibility
+from bl.schemes.senior_citizen_assistance_eligibility import SeniorCitizenAssistanceEligibility
+from bl.schemes.middleaged_reskilling_assistance_eligibility import MiddleagedReskillingAssistanceEligibility
 from bl.factories.base_scheme_eligibility_checker_factory import BaseSchemeEligibilityCheckerFactory
 from bl.schemes.scheme_eligibilty_checker import SchemeEligibilityChecker
 from exceptions import EligibilityStrategyNotFoundException
@@ -57,8 +77,9 @@ class SchemeEligibilityCheckerFactory(BaseSchemeEligibilityCheckerFactory):
         # Use lambdas to handle instantiation logic for each strategy
         # Use of Lambdas for Consistency: Lambdas ensure all values in eligibility_definitions_mapping are callable, maintaining type consistency and allowing for more flexible initialization logic.
         eligibility_definitions_mapping: Dict[str, Callable[[], BaseEligibility]] = {
-            "Retrenchment Assistance Scheme": lambda: RetrenchmentAssistanceEligibility(self.db_session),
-            "Senior Citizen Scheme": lambda: SeniorCitizenEligibility(self.db_session),
+            "Retrenchment Assistance Scheme": lambda: RetrenchmentAssistanceEligibility(scheme),
+            "Senior Citizen Assistance Scheme": lambda: SeniorCitizenAssistanceEligibility(scheme),
+            "Middle-aged Reskilling Assistance Scheme": lambda: MiddleagedReskillingAssistanceEligibility(scheme),
             # More schemes and their strategies can be added here
         }
 

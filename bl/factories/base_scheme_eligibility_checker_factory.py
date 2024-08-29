@@ -9,6 +9,7 @@ Design Pattern: Abstract Factory
 
 2. Single Responsibility Principle (SRP):
 - The class adheres to the SRP by focusing solely on defining a contract for creating SchemeEligibilityChecker objects. It does not contain any additional logic, making it easy to understand and maintain.
+
 """
 
 from abc import ABC, abstractmethod

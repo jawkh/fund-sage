@@ -14,7 +14,18 @@ Design Patterns:
 
 3. Logical Sequence:
 - The create_application method checks for the existence of an applicant and scheme before proceeding with the creation, ensuring that all necessary conditions are met before an application is created. It auto-determines the application status based on eligiblity checks on the applicant.
- 
+
+4. data_validation:
+- The use of validate_application_data for validating application data before creating or updating an application ensures data integrity and consistency.
+
+5. Dependency Injection:
+- The class takes a CRUDOperations object as a dependency, allowing for better testability and separation of concerns.
+
+6. Use of Factories:
+- The class uses the BaseSchemeEligibilityCheckerFactory to instantiate the SchemesManager, which allows for flexibility in determining the eligibility of applicants for different schemes.
+
+7. Use of type annotations:
+- The use of type annotations for method arguments and return types enhances code readability and maintainability.
 """
 
 from typing import List

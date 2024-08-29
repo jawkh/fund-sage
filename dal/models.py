@@ -10,6 +10,33 @@ Provisioning Databases: Use SQLAlchemy ORM models to create both production and 
 
 We will use these ORM classes to interact with the database using SQLAlchemy.
 We will be able to perform CRUD operations on the tables using these classes.
+
+Design Patterns:
+1. Object-Relational Mapping (ORM):
+- The ORM classes define the schema of the database tables and encapsulate the relationships between them.
+
+2. Data Validation:
+- CheckConstraints are used to enforce data validation rules at the table level.
+
+3. Encapsulation:
+- The ORM classes encapsulate the logic for interacting with the database tables, providing a clean interface for data access.
+
+4. Readability and Maintainability:
+- The class structure and method names are well-organized, making the code easy to understand and maintain.
+
+5. Relationships:
+- The relationships between the tables are defined using the relationship function, allowing for easy navigation between related objects.
+
+6. Use of Type Annotations:
+- Type annotations are used to define the types of the class attributes, enhancing code readability and type safety.
+
+7. Configuration:
+- The configure_mappers function is used to ensure that all relationships are properly set up in the ORM classes.
+
+8. CheckConstraints:
+- CheckConstraints are used to enforce data validation rules at the table level, ensuring data integrity.
+
+
 """
 
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, JSON, CheckConstraint
@@ -44,6 +71,7 @@ class Administrator(Base):
 class Applicant(Base):
     """ 
     Summary: ORM class for the Applicants table in the database.
+    
     """
     __tablename__ = 'Applicants'
 

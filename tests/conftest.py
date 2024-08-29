@@ -3,6 +3,30 @@
 
 """ 
 Shared fixtures for testing.
+
+Design Patterns:
+
+1. Fixture:
+- Fixtures are used to provide a fixed baseline upon which tests can reliably and repeatedly execute. They are used to set up necessary resources, such as database connections, before running tests and to clean up after the tests are complete.
+
+2. Dependency Injection:
+- The fixtures provide instances of classes and services with their dependencies injected, promoting separation of concerns and testability.
+- The fixtures inject dependencies such as CRUDOperations, SystemConfig, SchemeService, and ApplicantService into the test functions, allowing for better testability and separation of concerns.
+
+3. Encapsulation:
+- The fixtures encapsulate the setup and teardown logic for database connections and testing sessions, providing a clean interface for test functions.
+
+4. Clear Separation of Concerns:
+- Each fixture is focused on providing a specific resource or service required for testing, following the Single Responsibility Principle (SRP).
+
+5. Readability and Maintainability:
+- The fixtures are well-organized and named descriptively, making the code easy to understand and maintain.
+
+6. Use of Pytest:
+- Pytest fixtures are used to set up the testing environment and provide the necessary resources for testing, enhancing the testability of the application.
+
+
+
 """
 import pytest
 from sqlalchemy import create_engine
@@ -87,11 +111,11 @@ def scheme_service(crud_operations):
     return SchemeService(crud_operations)
 
 @pytest.fixture(scope="function")
-def applicant_service(crud_operations, scheme_service):
+def applicant_service(crud_operations):
     """
     Fixture to provide an ApplicantService instance with dependencies for testing.
     """
-    return ApplicantService(crud_operations, scheme_service)
+    return ApplicantService(crud_operations)
 
 
 @pytest.fixture(scope="function")
@@ -109,15 +133,49 @@ def test_scheme(crud_operations):
     Fixture to create essential mock data required for testing.
     Ensures referential integrity for 'Applications' by creating necessary 'Schemes' records first.
     """
-    # Create mock schemes
+    # Retrenchment Assistance Scheme
     scheme_data = {
-        "name": "Mock Scheme",
-        "description": "A mock scheme for testing purposes",
-        "eligibility_criteria": {"employment_status": "unemployed"},
-        "benefits": {"amount": 500.0},
-        "validity_start_date": "2023-01-01",
+        "name": "Retrenchment Assistance Scheme",
+        "description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs.",
+        "eligibility_criteria": {
+            "employment_status": "unemployed",
+            "retrechment_period_months": 6,
+        },
+        "benefits": {
+            "cash_assistance": {
+            "disbursment_amount": 1000,
+            "disbursment_frequency": "One-Off",
+            "disbursment_duration_months": None,
+            "description": "Cash assistance provided to all eligible applicants."
+            },
+            "school_meal_vouchers": {
+            "amount_per_child": 100,
+            "disbursment_frequency": "Monthly",
+            "disbursment_duration_months": 12,
+            "description": "Meal vouchers provided for each child in the household within the primary school age range (6-11 years old).",
+            "eligibility": {
+                "relation": "child",
+                "age_range": {
+                "min": 6,
+                "max": 11
+                }
+            }
+            },
+            "extra_cdc_vouchers": {
+            "amount_per_parent": 200,
+            "disbursment_frequency": "One-Off",
+            "disbursment_duration_months": None,
+            "description": "Extra CDC vouchers provided for each elderly parent above the age of 65.",
+            "eligibility": {
+                "relation": "parent",
+                "age_threshold": 65
+            }
+            }
+        },
+        "validity_start_date": datetime(2024, 1, 1),
         "validity_end_date": None
-    }
+        }
+
     yield crud_operations.create_scheme(scheme_data)
 
 @pytest.fixture(scope="function")
@@ -136,7 +194,31 @@ def test_applicant(crud_operations):
         "marital_status": "single",
         "created_by_admin_id": ad.id
     }
-    yield crud_operations.create_applicant(applicant_data)
+    new_applicant = crud_operations.create_applicant(applicant_data)
+    
+    # Add a new household member
+    member_data = {
+        "name": "Eve Doe",
+        "relation": "sibling",
+        "date_of_birth": datetime(1992, 8, 25),
+        "employment_status": "employed",
+        "sex": "F",
+        "applicant_id": new_applicant.id
+    }
+    new_member = crud_operations.create_household_member(member_data)
+    
+    # Add a new household member
+    member_data = {
+        "name": "Adam Doe",
+        "relation": "parent",
+        "date_of_birth": datetime(1992, 8, 25),
+        "employment_status": "employed",
+        "sex": "M",
+        "applicant_id": new_applicant.id
+    }
+    new_member = crud_operations.create_household_member(member_data)
+
+    yield new_applicant
     
 @pytest.fixture(scope="function")
 def test_application(crud_operations):

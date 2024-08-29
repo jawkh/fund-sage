@@ -1,5 +1,9 @@
 # Copyright (c) 2024 by Jonathan AW
 
+""" 
+Purpose: Utility functions for retrieving configuration values from the SystemConfigurations table.
+
+"""
 
 from dal.system_config import SystemConfig
 from sqlalchemy.orm import Session

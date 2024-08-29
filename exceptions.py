@@ -1,5 +1,9 @@
 # Copyright (c) 2024 by Jonathan AW
 
+""" 
+1. Custom Exceptions:
+- The exceptions module contains custom exceptions that are raised in different parts of the application to handle specific error scenarios.
+"""
 class ApplicantNotFoundException(Exception):
     """Raised when an applicant is not found in the database."""
     pass
@@ -10,6 +14,10 @@ class AdministratorNotFoundException(Exception):
 
 class ApplicationNotFoundException(Exception):
     """Raised when an application is not found in the database."""
+    pass
+
+class HouseholdMemberNotFoundException(Exception):
+    """Raised when a household member is not found in the database."""
     pass
 
 class SchemeNotFoundException(Exception):
@@ -30,6 +38,10 @@ class InvalidAdministratorDataException(Exception):
 
 class InvalidApplicationDataException(Exception):
     """Raised when invalid data is provided for an application."""
+    pass
+
+class InvalidHouseholdMemberDataException(Exception):
+    """Raised when invalid data is provided for a household member."""
     pass
 
 class InvalidSystemConfigDataException(Exception):

@@ -1,6 +1,14 @@
 
 # Copyright (c) 2024 by Jonathan AW
 
+""" 
+Purpose: Utility functions for validating data before processing in the Business Logic Layer (BL) services.
+
+Design Pattern: Data Validation
+- Each function validates a specific type of data (e.g., administrator, applicant, application, etc.)
+
+"""
+
 from datetime import datetime
 from typing import Tuple
 

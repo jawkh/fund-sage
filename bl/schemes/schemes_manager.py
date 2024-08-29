@@ -18,7 +18,32 @@ from bl.factories.scheme_eligibility_checker_factory import SchemeEligibilityChe
 from bl.factories.base_scheme_eligibility_checker_factory import BaseSchemeEligibilityCheckerFactory
 
 """
-EligibilityResult NamedTuple is introduced to clearly define the structure of the eligibility check results, improving readability and type safety.
+Design Pattern: 
+1. Facade:
+- The SchemesManager class acts as a facade to manage different eligibility strategies for various schemes. It abstracts the complexity of eligibility checking and provides a simplified interface for checking scheme eligibility for applicants.
+
+2. Dependency Injection:
+- The class takes CRUDOperations and SchemeEligibilityCheckerFactory objects as dependencies, allowing for better testability and separation of concerns.
+
+3. Clear Separation of Concerns:
+- The class is focused on managing the eligibility checking process for schemes, following the Single Responsibility Principle (SRP).
+
+4. Use of NamedTuple:
+- EligibilityResult NamedTuple is introduced to clearly define the structure of the eligibility check results, improving readability and type safety.
+
+5. Type Annotations:
+- The use of type annotations for method arguments and return types enhances code readability and maintainability.
+
+6. Encapsulation:
+- The class encapsulates the logic for checking scheme eligibility, providing a clean interface for interacting with different schemes.
+
+7. Factory Pattern:
+- The class uses the SchemeEligibilityCheckerFactory to instantiate the appropriate SchemeEligibilityChecker for each scheme, promoting flexibility and extensibility.
+
+8. Readability and Maintainability:
+- The class structure and method names are well-organized, making the code easy to understand and maintain.
+
+
 """
 class EligibilityResult(NamedTuple):
     scheme_name: str

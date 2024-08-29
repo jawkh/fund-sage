@@ -11,6 +11,18 @@ Summary: The SchemeService class is responsible for handling all business logic 
 Design Patterns:
 1. Clear Separation of Concerns:
 - Each method in the class has a clear and specific responsibility, following the Single Responsibility Principle (SRP).
+
+2. Data Validation:
+- The use of validate_scheme_data for validating scheme data before creating or updating a scheme ensures data integrity and consistency.
+
+3. Error Handling:
+- Custom exceptions (SchemeNotFoundException, InvalidSchemeDataException) are used to handle specific error scenarios related to schemes, providing clear and meaningful feedback.
+
+4. Dependency Injection:
+- The class takes a CRUDOperations object as a dependency, allowing for better testability and separation of concerns.
+
+5. Use of Type Annotations:
+- The use of type annotations for method arguments and return types enhances code readability and maintainability.
 """
 class SchemeService:
     """
