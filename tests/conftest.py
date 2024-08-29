@@ -40,6 +40,7 @@ from dal.system_config import SystemConfig
 from dal.database import Base
 from bl.services.applicant_service import ApplicantService
 from bl.services.scheme_service import SchemeService
+from bl.services.application_service import ApplicationService
 
 # Load environment variables
 load_dotenv()
@@ -94,29 +95,35 @@ def crud_operations(test_db):
     """
     Fixture to provide a CRUDOperations instance with a testing session. (using a transaction that rolls back after each test)
     """
-    return CRUDOperations(test_db)
+    yield CRUDOperations(test_db)
 
 @pytest.fixture(scope="function")
 def system_config(test_db):
     """
     Fixture to provide a system_config instance with a testing session. (using a transaction that rolls back after each test)
     """
-    return SystemConfig(test_db)
+    yield SystemConfig(test_db)
 
 @pytest.fixture(scope="function")
 def scheme_service(crud_operations):
     """
     Fixture to provide a SchemeService instance for testing.
     """
-    return SchemeService(crud_operations)
+    yield SchemeService(crud_operations)
 
 @pytest.fixture(scope="function")
 def applicant_service(crud_operations):
     """
     Fixture to provide an ApplicantService instance with dependencies for testing.
     """
-    return ApplicantService(crud_operations)
+    yield ApplicantService(crud_operations)
 
+@pytest.fixture(scope="function")
+def application_service(crud_operations):
+    """
+    Fixture to provide an ApplicationService instance with dependencies for testing.
+    """
+    yield ApplicationService(crud_operations)
 
 @pytest.fixture(scope="function")
 def test_administrator(crud_operations):
@@ -128,7 +135,7 @@ def test_administrator(crud_operations):
     yield crud_operations.create_administrator(username="test_admin", password_hash="correct_password", salt="salt")
 
 @pytest.fixture(scope="function")
-def test_scheme(crud_operations):
+def retrenchment_assistance_scheme(scheme_service):
     """
     Fixture to create essential mock data required for testing.
     Ensures referential integrity for 'Applications' by creating necessary 'Schemes' records first.
@@ -174,9 +181,74 @@ def test_scheme(crud_operations):
         },
         "validity_start_date": datetime(2024, 1, 1),
         "validity_end_date": None
-        }
-
-    yield crud_operations.create_scheme(scheme_data)
+    }
+    # yield crud_operations.create_scheme(scheme_data)
+    yield scheme_service.create_scheme(scheme_data)
+    
+@pytest.fixture(scope="function")
+def middleaged_reskilling_assistance_scheme(crud_operations):
+    """
+    Fixture to create essential mock data required for testing.
+    Ensures referential integrity for 'Applications' by creating necessary 'Schemes' records first.
+    """
+    # Retrenchment Assistance Scheme
+    middleaged_reskilling_assistance_scheme_data = {
+        "name": "Middle-aged Reskilling Assistance Scheme",
+        "description": "A scheme to provide financial support and benefits to individuals aged 40 and above who are unemployed, encouraging reskilling and upskilling.",
+        "eligibility_criteria": {
+            "age_threshold": 40,
+            "employment_status": "unemployed"
+        },
+        "benefits": {
+            "skillsfuture_credit_top_up": {
+                "disbursment_amount": 1000,
+                "disbursment_frequency": "One-Off",
+                "disbursment_duration_months": None,
+                "description": "One-time Skillsfuture Credit top-up of $1000."
+            },
+            "study_allowance": {
+                "disbursment_amount": 2000,
+                "disbursment_frequency": "Monthly",
+                "disbursment_duration_months": 6,
+                "description": "Monthly study allowance of $5000 for up to 6 months."
+            }
+        },
+        "validity_start_date": datetime(2024, 1, 1),
+        "validity_end_date": None
+    }
+    yield crud_operations.create_scheme(middleaged_reskilling_assistance_scheme_data)
+    
+@pytest.fixture(scope="function")
+def senior_citizen_assistance_scheme(crud_operations):
+    """
+    Fixture to create essential mock data required for testing.
+    Ensures referential integrity for 'Applications' by creating necessary 'Schemes' records first.
+    """
+    # Retrenchment Assistance Scheme
+    senior_citizen_assistance_scheme_data = {
+        "name": "Senior Citizen Assistance Scheme",
+        "description": "A scheme to provide financial support and benefits to individuals aged 65 and above.",
+        "eligibility_criteria": {
+            "age_threshold": 65
+        },
+        "benefits": {
+            "cpf_top_up": {
+                "disbursment_amount": 200,
+                "disbursment_frequency": "One-Off",
+                "disbursment_duration_months": None,
+                "description": "One-time CPF top-up of $200."
+            },
+            "cdc_voucher": {
+                "disbursment_amount": 200,
+                "disbursment_frequency": "One-Off",
+                "disbursment_duration_months": None,
+                "description": "One-time CDC voucher of $200."
+            }
+        },
+        "validity_start_date": datetime(2024, 1, 1),
+        "validity_end_date": None
+    }
+    yield crud_operations.create_scheme(senior_citizen_assistance_scheme_data)
 
 @pytest.fixture(scope="function")
 def test_applicant(crud_operations):

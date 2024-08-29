@@ -124,14 +124,14 @@ def test_get_applicants_by_filters(crud_operations, test_administrator):
     assert len(applicants) > 0
     assert any(applicant.name == "Alice" for applicant in applicants)
 
-def test_create_update_application(crud_operations, test_applicant, test_scheme):
+def test_create_update_application(crud_operations, test_applicant, retrenchment_assistance_scheme):
     """
     Test creating a new application and verify the application details,
     including the relationship with the administrator who created it.
     """
     application_data = {
         "applicant_id": test_applicant.id,
-        "scheme_id": test_scheme.id,  # Assume there is a valid scheme with ID 1
+        "scheme_id": retrenchment_assistance_scheme.id,  # Assume there is a valid scheme with ID 1
         "status": "pending",
         "created_by_admin_id": test_applicant.created_by_admin_id  # Link to the admin who created it
     }
@@ -158,13 +158,13 @@ def test_delete_application(crud_operations, test_application):
 
 
 # Tests for Scheme model
-def test_get_scheme(crud_operations, test_scheme):
+def test_get_scheme(crud_operations, retrenchment_assistance_scheme):
     """
     Test retrieving a scheme by ID and verify the details.
     """
-    scheme = crud_operations.get_scheme(test_scheme.id)
+    scheme = crud_operations.get_scheme(retrenchment_assistance_scheme.id)
     assert scheme is not None
-    assert scheme.name == test_scheme.name
+    assert scheme.name == retrenchment_assistance_scheme.name
     
 
 def test_create_scheme(crud_operations):
@@ -204,13 +204,13 @@ def test__neg_get_non_existent_application(crud_operations):
     assert crud_operations.get_application(999) == None
         
 
-def test__neg_create_application_with_invalid_admin(crud_operations, test_applicant, test_scheme):
+def test__neg_create_application_with_invalid_admin(crud_operations, test_applicant, retrenchment_assistance_scheme):
     """
     Negative test case: Try to create an application with a non-existent administrator ID.
     """
     application_data = {
         "applicant_id": test_applicant.id,
-        "scheme_id": test_scheme.id,
+        "scheme_id": retrenchment_assistance_scheme.id,
         "status": "pending",
         "created_by_admin_id": 999  # Non-existent admin ID
     }

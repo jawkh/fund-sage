@@ -1,5 +1,4 @@
 # Copyright (c) 2024 by Jonathan AW
-# application_service.py
 
 """ 
 Summary: The ApplicationService class is responsible for managing the business logic related to applications, specifically handling CRUD operations for applications.
@@ -27,11 +26,12 @@ Design Patterns:
 7. Use of type annotations:
 - The use of type annotations for method arguments and return types enhances code readability and maintainability.
 """
+# application_service.py
 
 from typing import List
 from dal.crud_operations import CRUDOperations
 from dal.models import Application, Scheme
-from exceptions import ApplicationNotFoundException, ApplicantNotFoundException, SchemeNotFoundException, InvalidApplicationDataException
+from exceptions import ApplicationNotFoundException, ApplicantNotFoundException, SchemeNotFoundException, InvalidApplicationDataException, AdministratorNotFoundException
 from bl.factories.base_scheme_eligibility_checker_factory import BaseSchemeEligibilityCheckerFactory
 from bl.schemes.schemes_manager import SchemesManager
 from utils.data_validation import validate_application_data
@@ -68,9 +68,6 @@ class ApplicationService:
         - An application_data dictionary is constructed with the appropriate values, including the determined status.
         - The application is created using the crud_operations.create_application method, which is a standard way to interact with the database.
         """
-        isvalid , msg = validate_application_data(application_data, True)
-        if not isvalid:
-            raise InvalidApplicationDataException(msg)
         
         applicant = self.crud_operations.get_applicant(applicant_id)
         if not applicant:
@@ -79,17 +76,17 @@ class ApplicationService:
         scheme = self.crud_operations.get_scheme(scheme_id)
         if not scheme:
             raise SchemeNotFoundException(f"Scheme with ID {scheme_id} not found.")
+        
+        admin = self.crud_operations.get_administrator(created_by_admin_id)
+        if not admin:
+            raise AdministratorNotFoundException(f"Administrator with ID {created_by_admin_id} not found.")
 
         # Checks that the Applicant is eligible for the Scheme to determine the status of the application
         scheme_manager = SchemesManager(self.crud_operations, schemeEligibilityCheckerFactory)
         eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(scheme, applicant)
         status = "pending"
         
-        if "is_eligible" not in eligibility_results:
-            raise ValueError("Eligibility check failed; missing 'is_eligible' in results.")
-        
-        status = "approved" if eligibility_results.get("is_eligible", True) else "rejected"
-
+        status = "approved" if eligibility_results.is_eligible else "rejected"
         
         application_data = {
             "applicant_id": applicant_id,
@@ -97,6 +94,10 @@ class ApplicationService:
             "status": status,
             "created_by_admin_id": created_by_admin_id
         }
+        isvalid , msg = validate_application_data(application_data, True)
+        if not isvalid:
+            raise InvalidApplicationDataException(msg)
+        
         return self.crud_operations.create_application(application_data)
 
     
@@ -119,6 +120,8 @@ class ApplicationService:
         - Perform the update with the new status if eligibility has changed; otherwise, proceed with a standard update.
         """
         application = self.get_application_by_id(application_id)
+        if not application:
+            raise ApplicationNotFoundException(f"Application with ID {application_id} not found.")
         
         isvalid , msg = validate_application_data(update_data, False)
         if not isvalid:
@@ -145,11 +148,8 @@ class ApplicationService:
             scheme_manager = SchemesManager(self.crud_operations, schemeEligibilityCheckerFactory)
             eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(scheme, applicant)
             
-            if "is_eligible" not in eligibility_results:
-                raise ValueError("Eligibility check failed; missing 'is_eligible' in results.")
-            
             # Update the status based on new eligibility results
-            update_data["status"] = "approved" if eligibility_results.get("is_eligible", True) else "rejected"
+            update_data["status"] = "approved" if eligibility_results.is_eligible else "rejected"
 
         updated_application = self.crud_operations.update_application(application_id, update_data)
         return updated_application
@@ -159,5 +159,8 @@ class ApplicationService:
         """
         Delete an application record.
         """
+        application = self.get_application_by_id(application_id)
+        if not application:
+            raise ApplicationNotFoundException(f"Application with ID {application_id} not found.")
         self.crud_operations.delete_application(application_id)
 

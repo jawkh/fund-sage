@@ -1,5 +1,4 @@
 # Copyright (c) 2024 by Jonathan AW
-# senior_citizen_eligibility.py
 
 """ 
 summary: This module contains the SeniorCitizenEligibility class, which is a concrete strategy class for determining eligibility for the Senior Citizen Scheme.
@@ -59,6 +58,8 @@ senior_citizen_assistance_scheme_data = {
 }
 
 """
+# senior_citizen_eligibility.py
+
 from datetime import datetime
 from dal.models import Applicant, Scheme
 from bl.schemes.base_eligibility import BaseEligibility
@@ -82,7 +83,7 @@ class SeniorCitizenAssistanceEligibility(BaseEligibility):
         - The applicant must be 65 years or older.
         """
         eligibility_criteria = self.scheme.eligibility_criteria
-        age_threshold = eligibility_criteria.get("age_threshold", 65)
+        age_threshold = eligibility_criteria.get("age_threshold")
 
         applicant_age = calculate_age(applicant.date_of_birth)
         if applicant_age >= age_threshold:

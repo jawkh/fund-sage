@@ -124,7 +124,7 @@ class RetrenchmentAssistanceEligibility(BaseEligibility):
         benefits_config = self.scheme.benefits
         primary_school_age_min = benefits_config.get("school_meal_vouchers", {}).get("eligibility", {}).get("age_range", {}).get("min")
         primary_school_age_max = benefits_config.get("school_meal_vouchers", {}).get("eligibility", {}).get("age_range", {}).get("max")
-        elderly_age_threshold = benefits_config.get("extra_cdc_vouchers", {}).get("eligibility", {}).get("age_threshold", 65)
+        elderly_age_threshold = benefits_config.get("extra_cdc_vouchers", {}).get("eligibility", {}).get("age_threshold")
         school_meal_voucher_eligiblity_relation = benefits_config.get("school_meal_vouchers", {}).get("eligibility", {}).get("relation")
         extra_cdc_voucher_eligiblity_relation = benefits_config.get("extra_cdc_vouchers", {}).get("eligibility", {}).get("relation")
         benefits = []

@@ -1,6 +1,5 @@
 
 # Copyright (c) 2024 by Jonathan AW
-# schemes_manager.py
 
 """ 
 Summary: The SchemesManager class acts as a facade to manage different eligibility strategies for various schemes. It manages the eligibility checking process across different schemes for a given applicant. It uses a factory to load the appropriate SchemeEligibilityChecker for each scheme.
@@ -45,6 +44,9 @@ Design Pattern:
 
 
 """
+
+# schemes_manager.py
+
 class EligibilityResult(NamedTuple):
     scheme_name: str
     scheme_description: str

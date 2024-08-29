@@ -1,6 +1,5 @@
 
 # Copyright (c) 2024 by Jonathan AW
-# middleaged_reskilling_assistance_eligibility.py
 
 """ 
 Summary of MiddleagedReskillingAssistanceEligibility: 
@@ -59,6 +58,7 @@ middleaged_reskilling_assistance_scheme_data = {
 }
     
 """
+# middleaged_reskilling_assistance_eligibility.py
 
 from datetime import datetime
 from dal.models import Applicant, Scheme
@@ -84,8 +84,8 @@ class MiddleagedReskillingAssistanceEligibility(BaseEligibility):
         - The applicant must be unemployed.
         """
         eligibility_criteria = self.scheme.eligibility_criteria
-        age_threshold = eligibility_criteria.get("age_threshold", 40)
-        required_employment_status = eligibility_criteria.get("employment_status", "unemployed")
+        age_threshold = eligibility_criteria.get("age_threshold")
+        required_employment_status = eligibility_criteria.get("employment_status")
 
         applicant_age = calculate_age(applicant.date_of_birth)
         if applicant_age >= age_threshold and applicant.employment_status == required_employment_status:

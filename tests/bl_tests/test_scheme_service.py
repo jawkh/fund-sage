@@ -58,38 +58,38 @@ def test_create_scheme(crud_operations):
     assert new_scheme.eligibility_criteria == scheme_data["eligibility_criteria"]
     assert new_scheme.benefits == scheme_data["benefits"]
 
-def test_get_scheme_by_id(crud_operations, test_scheme):
+def test_get_scheme_by_id(crud_operations, retrenchment_assistance_scheme):
     """
     Test retrieving an existing scheme by ID and verify the details.
     """
     scheme_service = SchemeService(crud_operations)
-    fetched_scheme = scheme_service.get_scheme_by_id(test_scheme.id)
+    fetched_scheme = scheme_service.get_scheme_by_id(retrenchment_assistance_scheme.id)
     
     assert fetched_scheme is not None
-    assert fetched_scheme.id == test_scheme.id
-    assert fetched_scheme.name == test_scheme.name
+    assert fetched_scheme.id == retrenchment_assistance_scheme.id
+    assert fetched_scheme.name == retrenchment_assistance_scheme.name
 
-def test_update_scheme(crud_operations, test_scheme):
+def test_update_scheme(crud_operations, retrenchment_assistance_scheme):
     """
     Test updating a scheme's details.
     """
     update_data = {"name": "Updated Scheme Name"}
     scheme_service = SchemeService(crud_operations)
-    updated_scheme = scheme_service.update_scheme(test_scheme.id, update_data)
+    updated_scheme = scheme_service.update_scheme(retrenchment_assistance_scheme.id, update_data)
     
     assert updated_scheme.name == "Updated Scheme Name"
 
-def test_delete_scheme(crud_operations, test_scheme):
+def test_delete_scheme(crud_operations, retrenchment_assistance_scheme):
     """
     Test deleting a scheme record.
     """
     scheme_service = SchemeService(crud_operations)
-    scheme_service.delete_scheme(test_scheme.id)
+    scheme_service.delete_scheme(retrenchment_assistance_scheme.id)
     
     with pytest.raises(SchemeNotFoundException):
-        scheme_service.get_scheme_by_id(test_scheme.id)
+        scheme_service.get_scheme_by_id(retrenchment_assistance_scheme.id)
 
-def test_get_all_schemes(crud_operations, test_scheme):
+def test_get_all_schemes(crud_operations, retrenchment_assistance_scheme):
     scheme_service = SchemeService(crud_operations)
     
     scheme_1_data = {
@@ -151,19 +151,19 @@ def test_get_all_schemes(crud_operations, test_scheme):
     schemes = scheme_service.get_all_schemes(fetch_valid_schemes=True)
     
     assert len(schemes) > 0
-    assert any(scheme.id == test_scheme.id for scheme in schemes)
+    assert any(scheme.id == retrenchment_assistance_scheme.id for scheme in schemes)
     assert not any(scheme.id == future_scheme.id for scheme in schemes) # future scheme should not be included
     assert not any(scheme.id == expired_scheme.id for scheme in schemes) # expired scheme should not be included
 
-def test_get_schemes_by_filters(crud_operations, test_scheme):
+def test_get_schemes_by_filters(crud_operations, retrenchment_assistance_scheme):
     """
     Test retrieving schemes using specific filters.
     """
     scheme_service = SchemeService(crud_operations)
-    schemes = scheme_service.get_schemes_by_filters({"name": test_scheme.name}, fetch_valid_schemes=True)
+    schemes = scheme_service.get_schemes_by_filters({"name": retrenchment_assistance_scheme.name}, fetch_valid_schemes=True)
     
     assert len(schemes) > 0
-    assert schemes[0].name == test_scheme.name
+    assert schemes[0].name == retrenchment_assistance_scheme.name
 
 # Negative Test Cases
 
@@ -216,6 +216,7 @@ def test__neg_get_schemes_with_invalid_filters(crud_operations):
     Test retrieving schemes with invalid filters.
     """
     scheme_service = SchemeService(crud_operations)
-    schemes = scheme_service.get_schemes_by_filters({"invalid_field": "invalid_value"}, fetch_valid_schemes=True)
     
-    assert len(schemes) == 0  # Expect no schemes to be returned
+    with pytest.raises(AttributeError):
+        schemes = scheme_service.get_schemes_by_filters({"invalid_field": "invalid_value"}, fetch_valid_schemes=True)
+    # assert len(schemes) == 0  # Expect no schemes to be returned

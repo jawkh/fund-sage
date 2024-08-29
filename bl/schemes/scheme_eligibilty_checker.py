@@ -1,5 +1,5 @@
 # Copyright (c) 2024 by Jonathan AW
-# scheme_eligibilty_checker.py
+
 """ 
 Summary: The SchemeEligibilityChecker class acts as a context that holds a specific scheme and its corresponding eligibility strategy. 
 
@@ -30,6 +30,7 @@ Design Pattern:
 - The class structure and method names are well-organized, making the code easy to understand and maintain.
     
 """
+# scheme_eligibilty_checker.py
 from dal.models import Scheme, Applicant
 from bl.schemes.base_eligibility import BaseEligibility
 
