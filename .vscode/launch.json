@@ -1,0 +1,19 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: BL Pytest with Poetry",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/.venv/bin/pytest", // Path to pytest within the Poetry virtual environment
+            "args": ["--cov=bl", "tests/bl_tests", "--capture=no"], // Pytest arguments
+            "console": "integratedTerminal",
+            "justMyCode": false, // Set to false to debug external libraries if needed
+            "cwd": "${workspaceFolder}",
+            "env": { "PYTHONPATH": "${workspaceFolder}" } // Ensure PYTHONPATH is set correctly
+        }
+    ]
+}

@@ -29,23 +29,24 @@ import os
 from typing import Optional, List
 from dal.crud_operations import CRUDOperations
 from dal.models import Administrator
-from exceptions import AdministratorNotFoundException
+from exceptions import InvalidAdministratorDataException, AdministratorNotFoundException 
 from environs import Env
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 load_dotenv()
-
+from utils.data_validation import validate_administrator_data
 class AdministratorService:
     # Load environment variables
 
     """
     Service class to handle all business logic related to administrators.
     """
-
+    MAX_PASSWORD_RETRIES = int(Env().str("MAX_PASSWORD_RETRIES", "5")) # Maximum number of consecutive failed login attempts 
+    
     def __init__(self, crud_operations: CRUDOperations):
         self.crud_operations = crud_operations
-        self.MAX_PASSWORD_RETRIES = int(Env().str("MAX_PASSWORD_RETRIES", 5)) # Maximum number of consecutive failed login attempts 
-        self.PASSWORD_RETRIES_TIME_WINDOW_MINUTES = int(Env().str("PASSWORD_RETRIES_TIME_WINDOW_MINUTES", 10))
+        # self.MAX_PASSWORD_RETRIES = int(Env().str("MAX_PASSWORD_RETRIES", "5")) # Maximum number of consecutive failed login attempts 
+        self.PASSWORD_RETRIES_TIME_WINDOW_MINUTES = int(Env().str("PASSWORD_RETRIES_TIME_WINDOW_MINUTES", "10"))
         
     def get_administrator_by_id(self, admin_id: int) -> Administrator:
         """
@@ -61,11 +62,7 @@ class AdministratorService:
 
 
     def create_administrator(self, admin_data: dict) -> Administrator:
-        required_keys = ["username", "password_hash"]
-        for key in required_keys:
-            if key not in admin_data:
-                raise ValueError(f"Missing required key: {key}")
-            
+                    
         # Generate a salt
         salt = os.urandom(16).hex()
         raw_password = admin_data["password_hash"] # Extract the raw password from the data
@@ -73,12 +70,20 @@ class AdministratorService:
         password_hash = self.hash_password(raw_password, salt)
         admin_data["password_hash"] = password_hash # Replace the raw password with the hashed password
         admin_data["salt"] = salt
+
+        isValid, msg = validate_administrator_data(admin_data, True)
+        if not isValid:
+            raise InvalidAdministratorDataException(msg)
+
         return self.crud_operations.create_administrator(admin_data["username"], password_hash, salt)
 
     def update_administrator(self, admin_id: int, update_data: dict) -> Administrator:
         """
         Update an administrator's details.
         """
+        isValid, msg = validate_administrator_data(update_data, False)
+        if not isValid:
+            raise InvalidAdministratorDataException(msg)
         return self.crud_operations.update_administrator(admin_id, update_data)
 
     def delete_administrator(self, admin_id: int) -> None:
@@ -121,6 +126,7 @@ class AdministratorService:
 
         # Check if the current attempt is outside the retry time window
         if admin.failed_login_starttime:
+            admin.failed_login_starttime = admin.failed_login_starttime.replace(tzinfo=timezone.utc) # Ensure timezone-aware datetime
             time_since_first_failure = current_time - admin.failed_login_starttime
 
             if time_since_first_failure > time_window:

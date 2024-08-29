@@ -1,4 +1,5 @@
 # Copyright (c) 2024 by Jonathan AW
+# test_crud.py
 """ 
 Test Data Access Layer CRUD operations for the Administrator, Applicant, Scheme and Application models.
 """
@@ -196,14 +197,14 @@ def test_delete_applicant(crud_operations, test_applicant):
     
 
 # Negative test cases for CRUD operations
-def test_get_non_existent_application(crud_operations):
+def test__neg_get_non_existent_application(crud_operations):
     """
     Negative test case: Try to retrieve a non-existent application by ID.
     """
     assert crud_operations.get_application(999) == None
         
 
-def test_create_application_with_invalid_admin(crud_operations, test_applicant, test_scheme):
+def test__neg_create_application_with_invalid_admin(crud_operations, test_applicant, test_scheme):
     """
     Negative test case: Try to create an application with a non-existent administrator ID.
     """

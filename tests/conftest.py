@@ -101,7 +101,7 @@ def test_administrator(crud_operations):
     Ensures referential integrity for 'Applications' by creating necessary 'Schemes' records first.
     """
     # Create mock administrators
-    yield crud_operations.create_administrator(username="test_admin", password_hash="hashed_password", salt="salt")
+    yield crud_operations.create_administrator(username="test_admin", password_hash="correct_password", salt="salt")
 
 @pytest.fixture(scope="function")
 def test_scheme(crud_operations):

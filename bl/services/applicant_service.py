@@ -42,8 +42,10 @@ class ApplicantService:
         return applicant
 
     def create_applicant(self, applicant_data: dict) -> Applicant:
-        if not validate_applicant_data(applicant_data):
-            raise InvalidApplicantDataException("Invalid applicant data provided.")
+        isvalid , msg = validate_applicant_data(applicant_data, True)
+        
+        if not isvalid:
+            raise InvalidApplicantDataException(msg)
         applicant = self.crud_operations.create_applicant(applicant_data)
         return applicant
 
@@ -51,8 +53,14 @@ class ApplicantService:
         """
         Update an applicant's details.
         """
-        if not validate_applicant_data(update_data):
-            raise InvalidApplicantDataException("Invalid applicant data provided.")
+        isvalid , msg = validate_applicant_data(update_data, False)
+        
+        if not isvalid:
+            raise InvalidApplicantDataException(msg)
+        
+        if not self.get_applicant_by_id(applicant_id):
+            raise ApplicantNotFoundException(f"Applicant with ID {applicant_id} not found.")
+        
         applicant = self.crud_operations.update_applicant(applicant_id, update_data)
         return applicant
 
@@ -60,6 +68,10 @@ class ApplicantService:
         """
         Delete an applicant record.
         """
+        # checks if the applicant exists before deleting
+        if not self.get_applicant_by_id(applicant_id):
+            raise ApplicantNotFoundException(f"Applicant with ID {applicant_id} not found.")
         self.crud_operations.delete_applicant(applicant_id)
+        
 
 

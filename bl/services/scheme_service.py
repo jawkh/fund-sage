@@ -3,8 +3,8 @@
 from typing import List, Optional, Type
 from dal.crud_operations import CRUDOperations
 from dal.models import Scheme
-from exceptions import SchemeNotFoundException  
-
+from exceptions import SchemeNotFoundException, InvalidSchemeDataException  
+from utils.data_validation import validate_scheme_data
 """ 
 Summary: The SchemeService class is responsible for handling all business logic related to financial assistance schemes, including CRUD operations and potentially complex logic involving scheme eligibility
 
@@ -33,6 +33,9 @@ class SchemeService:
         """
         Create a new scheme.
         """
+        isvalid , msg = validate_scheme_data(scheme_data, True)
+        if not isvalid:
+            raise InvalidSchemeDataException(msg)
         scheme = self.crud_operations.create_scheme(scheme_data)
         return scheme
 
@@ -40,7 +43,11 @@ class SchemeService:
         """
         Update a scheme's details.
         """
-        self.get_scheme_by_id(scheme_id)  # Ensure the scheme exists before updating
+        if not self.get_scheme_by_id(scheme_id):
+            raise SchemeNotFoundException(f"Scheme with ID {scheme_id} not found.")
+        isvalid , msg = validate_scheme_data(update_data, False)
+        if not isvalid:
+            raise InvalidSchemeDataException(msg)
         scheme = self.crud_operations.update_scheme(scheme_id, update_data)
         return scheme
 
@@ -48,7 +55,8 @@ class SchemeService:
         """
         Delete a scheme record.
         """
-        self.get_scheme_by_id(scheme_id)  # Ensure the scheme exists before deleting
+        if not self.get_scheme_by_id(scheme_id):
+            raise SchemeNotFoundException(f"Scheme with ID {scheme_id} not found.")
         self.crud_operations.delete_scheme(scheme_id)
 
     def get_all_schemes(self, fetch_valid_schemes: bool=True) -> List[Scheme]:

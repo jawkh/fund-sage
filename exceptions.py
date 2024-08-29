@@ -16,8 +16,24 @@ class SchemeNotFoundException(Exception):
     """Raised when a scheme is not found in the database."""
     pass
 
+class InvalidSchemeDataException(Exception):
+    """Raised when invalid data is provided for a scheme."""
+    pass
+
 class InvalidApplicantDataException(Exception):
     """Raised when invalid data is provided for an applicant."""
+    pass
+
+class InvalidAdministratorDataException(Exception):
+    """Raised when invalid data is provided for an Administrator."""
+    pass
+
+class InvalidApplicationDataException(Exception):
+    """Raised when invalid data is provided for an application."""
+    pass
+
+class InvalidSystemConfigDataException(Exception):
+    """Raised when invalid System Configuration is provided."""
     pass
 
 class EligibilityStrategyNotFoundException(Exception):

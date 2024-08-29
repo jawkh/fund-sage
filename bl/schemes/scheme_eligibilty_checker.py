@@ -1,6 +1,12 @@
 # Copyright (c) 2024 by Jonathan AW
 # scheme_eligibilty_checker.py
+""" 
+Summary: The SchemeEligibilityChecker class acts as a context that holds a specific scheme and its corresponding eligibility strategy. 
 
+Design Pattern: Strategy
+- This allows for a decoupled design where different schemes can use different eligibility strategies without altering the core logic.
+- The class is initialized with a Scheme and an eligibility_definition, which is a concrete implementation of the BaseEligibility class. This setup is flexible and adheres to the Open/Closed Principle.
+"""
 from dal.models import Scheme, Applicant
 from bl.schemes.base_eligibility import BaseEligibility
 

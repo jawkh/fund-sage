@@ -1,5 +1,5 @@
 # Copyright (c) 2024 by Jonathan AW
-
+# system_config.py
 """ 
 SystemConfig class for CRUD operations on SystemConfiguration objects.
 """
@@ -7,6 +7,8 @@ SystemConfig class for CRUD operations on SystemConfiguration objects.
 from dal.models import SystemConfiguration
 from sqlalchemy.orm import Session
 from typing import Dict, List, Optional
+from utils.data_validation import validate_system_configuration_data
+from exceptions import InvalidSystemConfigDataException
 
 class SystemConfig():
     def __init__(self, db_session: Session):
@@ -26,6 +28,9 @@ class SystemConfig():
         Returns:
             SystemConfiguration: The created SystemConfiguration object.
         """
+        isvalid , msg = validate_system_configuration_data(config_data, True)
+        if not isvalid:
+            raise InvalidSystemConfigDataException(msg)
         db_config = SystemConfiguration(**config_data)
         self.db_session.add(db_config)
         self.db_session.commit()
@@ -70,6 +75,10 @@ class SystemConfig():
         Returns:
             Optional[SystemConfiguration]: The updated SystemConfiguration object if successful, otherwise None.
         """
+        isvalid , msg = validate_system_configuration_data(update_data, False)
+        if not isvalid:
+            raise InvalidSystemConfigDataException(msg)
+        
         self.db_session.query(SystemConfiguration).filter(SystemConfiguration.id == config_id).update(update_data)
         self.db_session.commit()
         return self.get_system_configuration(config_id)

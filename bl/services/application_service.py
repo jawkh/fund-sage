@@ -20,9 +20,10 @@ Design Patterns:
 from typing import List
 from dal.crud_operations import CRUDOperations
 from dal.models import Application, Scheme
-from exceptions import ApplicationNotFoundException, ApplicantNotFoundException, SchemeNotFoundException
+from exceptions import ApplicationNotFoundException, ApplicantNotFoundException, SchemeNotFoundException, InvalidApplicationDataException
 from bl.factories.base_scheme_eligibility_checker_factory import BaseSchemeEligibilityCheckerFactory
 from bl.schemes.schemes_manager import SchemesManager
+from utils.data_validation import validate_application_data
 class ApplicationService:
     """
     Service class to handle all business logic related to applications.
@@ -56,6 +57,10 @@ class ApplicationService:
         - An application_data dictionary is constructed with the appropriate values, including the determined status.
         - The application is created using the crud_operations.create_application method, which is a standard way to interact with the database.
         """
+        isvalid , msg = validate_application_data(application_data, True)
+        if not isvalid:
+            raise InvalidApplicationDataException(msg)
+        
         applicant = self.crud_operations.get_applicant(applicant_id)
         if not applicant:
             raise ApplicantNotFoundException(f"Applicant with ID {applicant_id} not found.")
@@ -103,6 +108,10 @@ class ApplicationService:
         - Perform the update with the new status if eligibility has changed; otherwise, proceed with a standard update.
         """
         application = self.get_application_by_id(application_id)
+        
+        isvalid , msg = validate_application_data(update_data, False)
+        if not isvalid:
+            raise InvalidApplicationDataException(msg)
         
         # Determine if eligibility needs to be re-evaluated
         needs_eligibility_check = False
