@@ -1,5 +1,6 @@
 # Copyright (c) 2024 by Jonathan AW
 # retrenchment_assistance_eligibility.py
+# Summary: The RetrenchmentAssistanceEligibility class is responsible for determining eligibility for the Retrenchment Assistance Scheme and calculating the benefits the applicant is eligible for.
 
 """ 
 Summary: The RetrenchmentAssistanceEligibility class is responsible for determining eligibility for the Retrenchment Assistance Scheme and calculating the benefits the applicant is eligible for.

@@ -1,4 +1,5 @@
 # Copyright (c) 2024 by Jonathan AW
+# Summary: The SeniorCitizenAssistanceEligibility class is responsible for determining eligibility for the Senior Citizen Assistance Scheme and calculating the benefits the applicant is eligible for.
 
 """ 
 summary: This module contains the SeniorCitizenEligibility class, which is a concrete strategy class for determining eligibility for the Senior Citizen Scheme.
@@ -87,9 +88,9 @@ class SeniorCitizenAssistanceEligibility(BaseEligibility):
 
         applicant_age = calculate_age(applicant.date_of_birth)
         if applicant_age >= age_threshold:
-            return True, "Eligible for Senior Citizen Benefits."
+            return True, "Eligible for Senior Citizen Assistance Scheme."
 
-        return False, "Not eligible for Senior Citizen Benefits."
+        return False, "Not eligible for Senior Citizen Assistance Scheme."
 
     def calculate_benefits(self, applicant: Applicant) -> List[Dict[str, Any]]:
         """

@@ -1,4 +1,5 @@
 # Copyright (c) 2024 by Jonathan AW
+# This class is a concrete implementation of the BaseEligibility strategy. It provides behavior for checking eligibility and calculating benefits that are specific to an associated scheme.
 
 """ 
 Summary: The SchemeEligibilityChecker class acts as a context that holds a specific scheme and its corresponding eligibility strategy. 
@@ -33,7 +34,7 @@ Design Pattern:
 # scheme_eligibilty_checker.py
 from dal.models import Scheme, Applicant
 from bl.schemes.base_eligibility import BaseEligibility
-
+from typing import List, Dict, Any
 class SchemeEligibilityChecker:
     """
     Context class for checking eligibility for various schemes using a provided eligibility strategy.
@@ -46,17 +47,17 @@ class SchemeEligibilityChecker:
         self.scheme = scheme
         self.eligibility_definition = eligibility_definition
 
-    def check_eligibility(self, applicant: Applicant) -> bool:
+    def check_eligibility(self, applicant: Applicant) -> tuple[bool, str]:
         """
         Check if the applicant is eligible for the scheme using the eligibility definition.
         """
-        is_eligible, _ = self.eligibility_definition.check_eligibility(applicant)
-        return is_eligible
+        is_eligible, message = self.eligibility_definition.check_eligibility(applicant)
+        return is_eligible, message
 
-    def calculate_benefits(self, applicant: Applicant) -> dict:
+    def calculate_benefits(self, applicant: Applicant) -> List[Dict[str, Any]]:
         """
         Calculate the benefits the applicant is eligible for under the scheme.
         """
-        if self.check_eligibility(applicant):
+        if self.check_eligibility(applicant)[0]:
             return self.eligibility_definition.calculate_benefits(applicant)
-        return {}
+        return []

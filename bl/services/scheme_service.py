@@ -1,5 +1,7 @@
 # Copyright (c) 2024 by Jonathan AW
 # scheme_service.py
+# This file contains the SchemeService class that handles the business logic related to financial assistance schemes.
+
 from typing import List, Optional, Type
 from dal.crud_operations import CRUDOperations
 from dal.models import Scheme
@@ -23,6 +25,7 @@ Design Patterns:
 
 5. Use of Type Annotations:
 - The use of type annotations for method arguments and return types enhances code readability and maintainability.
+
 """
 class SchemeService:
     """

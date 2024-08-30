@@ -1,6 +1,6 @@
 # Copyright (c) 2024 by Jonathan AW
 # administrator_service.py
-
+# This file contains the implementation of the AdministratorService class, which provides business logic related to administrators.
 """
 # Summary:
 The AdministratorService class provides a comprehensive implementation of the business logic related to administrators. 

@@ -1,5 +1,5 @@
 # Copyright (c) 2024 by Jonathan AW
-
+# This file contains the ApplicationService class that handles the business logic related to applications, specifically handling CRUD operations for applications.
 """ 
 Summary: The ApplicationService class is responsible for managing the business logic related to applications, specifically handling CRUD operations for applications.
 
@@ -25,6 +25,9 @@ Design Patterns:
 
 7. Use of type annotations:
 - The use of type annotations for method arguments and return types enhances code readability and maintainability.
+
+8. Encapsulation:
+- The class encapsulates the logic for managing applications, providing a clean interface for interacting with application data.
 """
 # application_service.py
 

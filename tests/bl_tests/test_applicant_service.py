@@ -13,6 +13,7 @@ from datetime import datetime
 # from exceptions import InvalidDataException
 from bl.services.applicant_service import ApplicantService
 from exceptions import ApplicantNotFoundException, InvalidApplicantDataException, HouseholdMemberNotFoundException, InvalidHouseholdMemberDataException
+from dateutil.relativedelta import relativedelta
 
 # Test ApplicantService methods
 def test_create_applicant(crud_operations, test_administrator):
@@ -179,6 +180,23 @@ def test__neg_create_applicant_invalid_maritalstatus(crud_operations, test_admin
     with pytest.raises(InvalidApplicantDataException):
         applicant_service.create_applicant(invalid_applicant_data)
 
+def test__neg_invalid_data_future_employment_status_change_date(applicant_service, test_administrator):
+    """
+    Test eligibility for the Retrenchment Assistance Scheme with a future employment status change date.
+    """
+    # Create an ineligible applicant with a future employment status change date
+    applicant_data = {
+        "name": "Eve Brown",
+        "employment_status": "unemployed",
+        "sex": "F",
+        "date_of_birth": datetime(1990, 12, 30),
+        "marital_status": "single",
+        "employment_status_change_date": datetime.today() + relativedelta(months=1),  # Future date
+        "created_by_admin_id": test_administrator.id
+    }
+    with pytest.raises(InvalidApplicantDataException):
+        applicant_service.create_applicant(applicant_data)
+    
 def test__neg_update_non_existent_applicant(crud_operations):
     """
     Test updating a non-existent applicant.
@@ -196,6 +214,7 @@ def test__neg_delete_non_existent_applicant(crud_operations):
 
     with pytest.raises(ApplicantNotFoundException):
         applicant_service.delete_applicant(999)
+        
         
         
 # Test Cases that involves Applicant's HouseholdMembers

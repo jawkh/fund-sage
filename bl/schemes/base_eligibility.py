@@ -1,5 +1,6 @@
 # Copyright (c) 2024 by Jonathan AW
 # base_eligibility.py
+# Summary: The BaseEligibility class defines an abstract base class for all eligibility classes. It provides default implementations for non-configured eligibility criteria and benefits.
 """ 
 Design Pattern: Strategy
 
@@ -52,7 +53,7 @@ Design Pattern: Strategy
 
 from abc import ABC, abstractmethod
 from dal.models import Applicant
-
+from typing import Dict, List, Any
 class BaseEligibility(ABC):
     """
     Abstract base class for all eligibility classes.
@@ -67,20 +68,9 @@ class BaseEligibility(ABC):
         pass
 
     @abstractmethod
-    def calculate_benefits(self, applicant: Applicant) -> dict:
+    def calculate_benefits(self, applicant: Applicant) -> List[Dict[str, Any]]:
         """
         Abstract method for calculating benefits. Must be implemented by subclasses.
         """
         pass
 
-    def default_eligibility_response(self) -> tuple[bool, str]:
-        """
-        Default method indicating that the scheme's eligibility criteria are not configured.
-        """
-        return False, "Scheme Eligibility Checker Not Configured!"
-
-    def default_benefits_response(self) -> dict:
-        """
-        Default method indicating no benefits are available due to lack of criteria.
-        """
-        return {}

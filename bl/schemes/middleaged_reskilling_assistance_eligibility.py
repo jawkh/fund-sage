@@ -1,5 +1,6 @@
 
 # Copyright (c) 2024 by Jonathan AW
+# This file contains MiddleagedReskillingAssistanceEligibility class, which is responsible for determining eligibility for the Middle-aged Reskilling Assistance Scheme and calculating the benefits the applicant is eligible for.
 
 """ 
 Summary of MiddleagedReskillingAssistanceEligibility: 

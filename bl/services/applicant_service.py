@@ -1,6 +1,6 @@
 # Copyright (c) 2024 by Jonathan AW
 # applicant_service.py
-
+# This file contains the ApplicantService class that handles the business logic related to applicants and household members. 
 """
 Summary: The ApplicantService class is focused on handling the business logic related to applicants and householdmembers.
 
@@ -27,7 +27,8 @@ Design Patterns:
 7. Readability and Maintainability:
 - The class structure and method names are well-organized, making the code easy to understand and maintain.
 
-
+8. Flexibility and Extensibility:
+- The ApplicantService class can easily accommodate new features or changes related to applicants and household members, allowing for future scalability and maintenance.
 """
 
 from typing import List

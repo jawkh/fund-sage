@@ -11,6 +11,7 @@ Design Pattern: Data Validation
 
 from datetime import datetime
 from typing import Tuple
+from utils.date_utils import is_future_date
 
 def validate_administrator_data(administrator_data: dict, for_create_mode: bool) -> Tuple[bool, str]:
     """
@@ -56,6 +57,8 @@ def validate_administrator_data(administrator_data: dict, for_create_mode: bool)
     if 'failed_login_starttime' in administrator_data and administrator_data['failed_login_starttime'] is not None:
         if not isinstance(administrator_data['failed_login_starttime'], datetime):
             return False, "Invalid value for failed_login_starttime: must be a datetime object"
+        elif is_future_date(administrator_data['failed_login_starttime']):
+            return False, "Invalid value for failed_login_starttime: must be a past date"
 
     # If all checks pass
     return True, "All fields are valid"
@@ -93,6 +96,8 @@ def validate_applicant_data(applicant_data: dict, for_create_mode: bool) -> Tupl
     
     if "date_of_birth" in applicant_data and not isinstance(applicant_data['date_of_birth'], datetime):
         return False, "Invalid value for date_of_birth: must be a datetime object"
+    elif "date_of_birth" in applicant_data and is_future_date(applicant_data['date_of_birth']):
+        return False, "Invalid value for date_of_birth: must be a past date"
 
     if "marital_status" in applicant_data:
         if not isinstance(applicant_data['marital_status'], str) or applicant_data['marital_status'] not in ['single', 'married', 'divorced', 'widowed']:
@@ -101,6 +106,8 @@ def validate_applicant_data(applicant_data: dict, for_create_mode: bool) -> Tupl
     if 'employment_status_change_date' in applicant_data and applicant_data['employment_status_change_date'] is not None:
         if not isinstance(applicant_data['employment_status_change_date'], datetime):
             return False, "Invalid value for employment_status_change_date: must be a datetime object"
+        elif 'employment_status_change_date' in applicant_data and is_future_date(applicant_data['employment_status_change_date']):
+            return False, "Invalid value for employment_status_change_date: must be a past date"
 
     if 'created_by_admin_id' in applicant_data and applicant_data['created_by_admin_id'] is not None:
         if not isinstance(applicant_data['created_by_admin_id'], int):
@@ -140,6 +147,8 @@ def validate_household_member_data(household_member_data: dict, for_create_mode:
 
     if "date_of_birth" in household_member_data and not isinstance(household_member_data['date_of_birth'], datetime):
         return False, "Invalid value for date_of_birth: must be a datetime object"
+    elif "date_of_birth" in household_member_data and is_future_date(household_member_data['date_of_birth']):
+        return False, "Invalid value for date_of_birth: must be a past date"
 
     if "employment_status" in household_member_data:
         if household_member_data['employment_status'] is not None and not isinstance(household_member_data['employment_status'], str):
@@ -202,6 +211,8 @@ def validate_scheme_data(scheme_data: dict, for_create_mode: bool = True) -> Tup
     if "validity_end_date" in scheme_data:
         if scheme_data['validity_end_date'] is not None and not isinstance(scheme_data['validity_end_date'], datetime):
             return False, "Invalid value for validity_end_date: must be a datetime object or None"
+        elif scheme_data['validity_end_date'] is not None and scheme_data['validity_end_date'] < scheme_data['validity_start_date']:
+            return False, "Invalid value for validity_end_date: must be after validity_start_date"
 
     # If all checks pass
     return True, "All fields are valid"
@@ -242,6 +253,8 @@ def validate_application_data(application_data: dict, for_create_mode: bool = Tr
 
     if "submission_date" in application_data and not isinstance(application_data['submission_date'], datetime):
         return False, "Invalid value for submission_date: must be a datetime object"
+    elif "submission_date" in application_data and is_future_date(application_data['submission_date']):
+        return False, "Invalid value for submission_date: must be a past date"
 
     if "created_by_admin_id" in application_data and application_data['created_by_admin_id'] is not None:
         if not isinstance(application_data['created_by_admin_id'], int):

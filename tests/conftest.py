@@ -41,6 +41,8 @@ from dal.database import Base
 from bl.services.applicant_service import ApplicantService
 from bl.services.scheme_service import SchemeService
 from bl.services.application_service import ApplicationService
+from bl.factories.scheme_eligibility_checker_factory import SchemeEligibilityCheckerFactory
+from   bl.schemes.schemes_manager import SchemesManager
 
 # Load environment variables
 load_dotenv()
@@ -96,6 +98,23 @@ def crud_operations(test_db):
     Fixture to provide a CRUDOperations instance with a testing session. (using a transaction that rolls back after each test)
     """
     yield CRUDOperations(test_db)
+    
+    
+@pytest.fixture(scope="function")
+def scheme_eligibility_checker_factory(test_db):
+    """
+    Fixture to provide a SchemeEligibilityCheckerFactory instance with a testing session. (using a transaction that rolls back after each test)
+    """
+    yield SchemeEligibilityCheckerFactory(test_db)
+
+@pytest.fixture(scope="function")
+def scheme_manager(crud_operations, scheme_eligibility_checker_factory):
+    """
+    Fixture to provide a SchemesManager instance with dependencies for testing.
+    """
+    yield SchemesManager(crud_operations, scheme_eligibility_checker_factory)
+    
+    
 
 @pytest.fixture(scope="function")
 def system_config(test_db):

@@ -1,5 +1,6 @@
 # Copyright (c) 2024 by Jonathan AW
 # scheme_eligibility_checker_factory.py
+# This file contains the SchemeEligibilityCheckerFactory class, which is responsible for creating SchemeEligibilityChecker objects based on the type of scheme.
 """ 
 Design Pattern: 
 
@@ -24,7 +25,11 @@ Design Pattern:
 7. Readability and Maintainability:
 - The class structure and method names are well-organized, making the code easy to understand and maintain.
 
+8. Consistency and Fallback Strategy:
+- The get_eligibility_definition method defaults to returning an instance of DefaultEligibility if no strategy is found in the eligibility_definitions_mapping. This ensures that all schemes have a fallback eligibility strategy, preventing errors and maintaining consistency.
 
+9. Flexibility and Extensibility (Open/Closed Principle):
+- The class can be easily extended to support additional schemes and eligibility strategies by adding entries to the eligibility_definitions_mapping dictionary.
 """
 # scheme_eligibility_checker_factory.py
 
@@ -36,9 +41,11 @@ from bl.schemes.retrenchment_assistance_eligibility import RetrenchmentAssistanc
 from bl.schemes.senior_citizen_assistance_eligibility import SeniorCitizenAssistanceEligibility
 from bl.schemes.middleaged_reskilling_assistance_eligibility import MiddleagedReskillingAssistanceEligibility
 from bl.factories.base_scheme_eligibility_checker_factory import BaseSchemeEligibilityCheckerFactory
+from bl.schemes.default_eligibility import DefaultEligibility
+from bl.schemes.single_working_mothers_support_eligibility import SingleWorkingMothersSupportEligibility
 from bl.schemes.scheme_eligibilty_checker import SchemeEligibilityChecker
 from exceptions import EligibilityStrategyNotFoundException
-
+from bl.schemes.default_eligibility import DefaultEligibility
 class SchemeEligibilityCheckerFactory(BaseSchemeEligibilityCheckerFactory):
     """
     Factory class to create SchemeEligibilityChecker objects,
@@ -62,7 +69,7 @@ class SchemeEligibilityCheckerFactory(BaseSchemeEligibilityCheckerFactory):
         
 
     
-    def get_eligibility_definition(self, scheme: Scheme) -> Optional[BaseEligibility]:
+    def get_eligibility_definition(self, scheme: Scheme) -> BaseEligibility:
         """
         Retrieve the appropriate eligibility definition based on the scheme type.
 
@@ -72,8 +79,11 @@ class SchemeEligibilityCheckerFactory(BaseSchemeEligibilityCheckerFactory):
         Returns:
             Optional[BaseEligibility]: An instance of the eligibility strategy if found.
 
-        Raises:
-            EligibilityStrategyNotFoundException: If no strategy is found for the given scheme.
+            The method get_eligibility_definition defaults to returning an instance of DefaultEligibility if no strategy is found in the eligibility_definitions_mapping.
+            This ensures that all schemes have a fallback eligibility strategy, thus preventing errors and maintaining consistency.
+            
+            Default Handling: The use of a DefaultEligibility class is a clean and effective way to handle schemes without specific eligibility configurations. This avoids the need for null checks or special handling in other parts of the code and simplifies the overall logic.
+
         """
         # Use lambdas to handle instantiation logic for each strategy
         # Use of Lambdas for Consistency: Lambdas ensure all values in eligibility_definitions_mapping are callable, maintaining type consistency and allowing for more flexible initialization logic.
@@ -81,6 +91,7 @@ class SchemeEligibilityCheckerFactory(BaseSchemeEligibilityCheckerFactory):
             "Retrenchment Assistance Scheme": lambda: RetrenchmentAssistanceEligibility(scheme),
             "Senior Citizen Assistance Scheme": lambda: SeniorCitizenAssistanceEligibility(scheme),
             "Middle-aged Reskilling Assistance Scheme": lambda: MiddleagedReskillingAssistanceEligibility(scheme),
+            "Single Working Mothers Support Scheme": lambda: SingleWorkingMothersSupportEligibility(scheme),
             # More schemes and their strategies can be added here
         }
 
@@ -88,7 +99,7 @@ class SchemeEligibilityCheckerFactory(BaseSchemeEligibilityCheckerFactory):
         eligibility_definition_factory = eligibility_definitions_mapping.get(scheme.name)
 
         if not eligibility_definition_factory:
-            raise EligibilityStrategyNotFoundException(f"No eligibility strategy found for scheme: {scheme.name}")
+            return DefaultEligibility()
 
         # Call the factory function to instantiate the eligibility strategy
         return eligibility_definition_factory()
