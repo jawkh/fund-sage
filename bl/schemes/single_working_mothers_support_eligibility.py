@@ -76,7 +76,7 @@ class SingleWorkingMothersSupportEligibility(BaseEligibility):
     """
 
     def __init__(self, scheme: Scheme):
-        self.scheme = scheme
+        self.__scheme = scheme
 
     def check_eligibility(self, applicant: Applicant) -> tuple[bool, str]:
         """
@@ -88,7 +88,7 @@ class SingleWorkingMothersSupportEligibility(BaseEligibility):
         - The applicant must be {required_employment_status}.
         - The applicant must have at least one child {child_age_threshold} years old and below in their household.
         """
-        eligibility_criteria = self.scheme.eligibility_criteria
+        eligibility_criteria = self.__scheme.eligibility_criteria
         required_sex = eligibility_criteria.get("sex")
         required_marital_statuses = eligibility_criteria.get("marital_status")
         required_employment_status = eligibility_criteria.get("employment_status")
@@ -121,10 +121,10 @@ class SingleWorkingMothersSupportEligibility(BaseEligibility):
         if not self.check_eligibility(applicant)[0]:
             return []
 
-        benefits_config = self.scheme.benefits
+        benefits_config = self.__scheme.benefits
         benefits = []
         
-        eligibility_criteria = self.scheme.eligibility_criteria
+        eligibility_criteria = self.__scheme.eligibility_criteria
         child_age_threshold = eligibility_criteria.get("household_composition", {}).get("age_range", {}).get("age_threshold")
         # Add cash assistance benefit
         benefits.append({

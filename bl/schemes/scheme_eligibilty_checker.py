@@ -47,17 +47,17 @@ class SchemeEligibilityChecker:
         self.scheme = scheme
         self.eligibility_definition = eligibility_definition
 
-    def check_eligibility(self, applicant: Applicant) -> tuple[bool, str]:
+    def _check_eligibility(self, applicant: Applicant) -> tuple[bool, str]:
         """
         Check if the applicant is eligible for the scheme using the eligibility definition.
         """
         is_eligible, message = self.eligibility_definition.check_eligibility(applicant)
         return is_eligible, message
 
-    def calculate_benefits(self, applicant: Applicant) -> List[Dict[str, Any]]:
+    def _calculate_benefits(self, applicant: Applicant) -> List[Dict[str, Any]]:
         """
         Calculate the benefits the applicant is eligible for under the scheme.
         """
-        if self.check_eligibility(applicant)[0]:
+        if self._check_eligibility(applicant)[0]:
             return self.eligibility_definition.calculate_benefits(applicant)
         return []

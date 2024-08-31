@@ -74,7 +74,7 @@ class SeniorCitizenAssistanceEligibility(BaseEligibility):
     """
 
     def __init__(self, scheme: Scheme):
-        self.scheme = scheme
+        self.__scheme = scheme
 
     def check_eligibility(self, applicant: Applicant) -> tuple[bool, str]:
         """
@@ -83,7 +83,7 @@ class SeniorCitizenAssistanceEligibility(BaseEligibility):
         Criteria:
         - The applicant must be 65 years or older.
         """
-        eligibility_criteria = self.scheme.eligibility_criteria
+        eligibility_criteria = self.__scheme.eligibility_criteria
         age_threshold = eligibility_criteria.get("age_threshold")
 
         applicant_age = calculate_age(applicant.date_of_birth)
@@ -100,7 +100,7 @@ class SeniorCitizenAssistanceEligibility(BaseEligibility):
         benefits = []
 
         if is_eligible:
-            benefits_config = self.scheme.benefits
+            benefits_config = self.__scheme.benefits
             
             # One-time CPF top-up
             benefits.append({

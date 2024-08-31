@@ -36,7 +36,7 @@ from exceptions import InvalidSystemConfigDataException
 
 class SystemConfig():
     def __init__(self, db_session: Session):
-        self.db_session = db_session
+        self.__db_session = db_session
 
     # ===============================
     # CRUD Operations for SystemConfiguration
@@ -56,9 +56,9 @@ class SystemConfig():
         if not isvalid:
             raise InvalidSystemConfigDataException(msg)
         db_config = SystemConfiguration(**config_data)
-        self.db_session.add(db_config)
-        self.db_session.commit()
-        self.db_session.refresh(db_config)
+        self.__db_session.add(db_config)
+        self.__db_session.commit()
+        self.__db_session.refresh(db_config)
         return db_config
 
     def get_system_configuration(self, config_id: int) -> Optional[SystemConfiguration]:
@@ -71,7 +71,7 @@ class SystemConfig():
         Returns:
             Optional[SystemConfiguration]: The SystemConfiguration object if found, otherwise None.
         """
-        return self.db_session.query(SystemConfiguration).filter(SystemConfiguration.id == config_id).first()
+        return self.__db_session.query(SystemConfiguration).filter(SystemConfiguration.id == config_id).first()
 
     def get_system_configurations_by_filters(self, filters: Dict) -> List[SystemConfiguration]:
         """
@@ -83,7 +83,7 @@ class SystemConfig():
         Returns:
             List[SystemConfiguration]: A list of SystemConfiguration objects that match the filters.
         """
-        query = self.db_session.query(SystemConfiguration)
+        query = self.__db_session.query(SystemConfiguration)
         for attribute, value in filters.items():
             query = query.filter(getattr(SystemConfiguration, attribute) == value)
         return query.all()
@@ -103,8 +103,8 @@ class SystemConfig():
         if not isvalid:
             raise InvalidSystemConfigDataException(msg)
         
-        self.db_session.query(SystemConfiguration).filter(SystemConfiguration.id == config_id).update(update_data)
-        self.db_session.commit()
+        self.__db_session.query(SystemConfiguration).filter(SystemConfiguration.id == config_id).update(update_data)
+        self.__db_session.commit()
         return self.get_system_configuration(config_id)
 
     def delete_system_configuration(self, config_id: int) -> None:
@@ -114,6 +114,6 @@ class SystemConfig():
         Args:
             config_id (int): The ID of the configuration to delete.
         """
-        self.db_session.query(SystemConfiguration).filter(SystemConfiguration.id == config_id).delete()
-        self.db_session.commit()
+        self.__db_session.query(SystemConfiguration).filter(SystemConfiguration.id == config_id).delete()
+        self.__db_session.commit()
 

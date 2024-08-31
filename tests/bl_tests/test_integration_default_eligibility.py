@@ -79,6 +79,6 @@ def test_factory_returns_default_eligibility_for_unconfigured_scheme(crud_operat
 
     # Verify that the DefaultEligibility class is used
     assert isinstance(eligibility_checker.eligibility_definition, DefaultEligibility)
-    assert eligibility_checker.check_eligibility(None)[0] == False
-    assert eligibility_checker.check_eligibility(None)[1] == "Scheme Eligibility Checker Not Configured for!"
-    assert eligibility_checker.calculate_benefits(None) == []
+    assert eligibility_checker._check_eligibility(None)[0] == False
+    assert eligibility_checker._check_eligibility(None)[1] == "Scheme Eligibility Checker Not Configured for!"
+    assert eligibility_checker._calculate_benefits(None) == []

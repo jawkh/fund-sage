@@ -92,14 +92,14 @@ class SchemesManager:
     """
 
     def __init__(self, crud_operations: CRUDOperations, schemeFactory: BaseSchemeEligibilityCheckerFactory):
-        self.crud_operations = crud_operations
-        self.schemeFactory = schemeFactory
+        self.__crud_operations = crud_operations
+        self.__schemeFactory = schemeFactory
 
     def check_schemes_eligibility_for_applicant(self, schemes_filters: dict, fetch_valid_schemes: bool, applicant: Applicant) -> List[EligibilityResult]:
         """
         Check which schemes an applicant is eligible for using various eligibility strategies.
         """
-        schemes = self.crud_operations.get_schemes_by_filters(schemes_filters, fetch_valid_schemes)
+        schemes = self.__crud_operations.get_schemes_by_filters(schemes_filters, fetch_valid_schemes)
         eligibility_results = []
 
         for scheme in schemes:
@@ -111,9 +111,9 @@ class SchemesManager:
         """
         Check if an applicant is eligible for a specific scheme.
         """
-        scheme_eligibility_checker = self.schemeFactory.load_scheme_eligibility_checker(scheme)
-        is_eligible, message = scheme_eligibility_checker.check_eligibility(applicant)
-        eligible_benefits = scheme_eligibility_checker.calculate_benefits(applicant) if is_eligible else []
+        scheme_eligibility_checker = self.__schemeFactory.load_scheme_eligibility_checker(scheme)
+        is_eligible, message = scheme_eligibility_checker._check_eligibility(applicant)
+        eligible_benefits = scheme_eligibility_checker._calculate_benefits(applicant) if is_eligible else []
         return EligibilityResult(
             scheme_name=scheme.name,
             scheme_description=scheme.description,
