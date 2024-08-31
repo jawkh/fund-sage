@@ -24,10 +24,14 @@ Design Patterns:
 
 """
 
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
 from sqlalchemy.orm import Session
 from datetime import date
 from dal.models import Administrator, Applicant, HouseholdMember, Scheme, Application, SystemConfiguration
+from sqlalchemy.exc import SQLAlchemyError
+from exceptions import InvalidPaginationParameterException, InvalidSortingParameterException
+from sqlalchemy import asc, desc
+
 
 class CRUDOperations:
     def __init__(self, db_session: Session):
@@ -138,7 +142,122 @@ class CRUDOperations:
         self.db_session.commit()
         self.db_session.refresh(db_applicant)
         return db_applicant
+    
+    
+    # def get_all_applicants(self, 
+    #                     page: int = 1, 
+    #                     page_size: int = 10, 
+    #                     sort_by: Optional[str] = 'name', 
+    #                     sort_order: Optional[str] = 'asc') -> Tuple[List[Applicant], int]:
+    #     """
+    #     Retrieve all applicants with pagination and sorting options.
 
+    #     Args:
+    #         page (int): The page number to retrieve.
+    #         page_size (int): The number of applicants to retrieve per page.
+    #         sort_by (Optional[str]): The field to sort by ('name' or 'created_at').
+    #         sort_order (Optional[str]): The sort order ('asc' or 'desc').
+
+    #     Returns:
+    #         Tuple[List[Applicant], int]: A tuple containing a list of applicants for the specified page and the total count of applicants.
+    #     """
+    #     # Validate pagination parameters
+    #     if page < 1:
+    #         raise InvalidPaginationParameterException("Page number must be greater than 0.")
+    #     if page_size < 1:
+    #         raise InvalidPaginationParameterException("Page size must be greater than 0.")
+
+    #     # Validate sorting parameters
+    #     if sort_by not in ['name', 'created_at']:
+    #         raise InvalidSortingParameterException(f"Invalid sort_by field '{sort_by}'. Allowed values are 'name' or 'created_at'.")
+    #     if sort_order not in ['asc', 'desc']:
+    #         raise InvalidSortingParameterException(f"Invalid sort_order '{sort_order}'. Allowed values are 'asc' or 'desc'.")
+
+    #     # Calculate offset for pagination
+    #     offset = (page - 1) * page_size
+        
+    #     # Define sorting criteria
+    #     sort_column = Applicant.name if sort_by == 'name' else Applicant.created_at
+    #     sort_direction = asc if sort_order == 'asc' else desc
+
+    #     # Retrieve applicants from the database with pagination and sorting
+    #     applicants = (self.db_session
+    #                 .query(Applicant)
+    #                 .order_by(sort_direction(sort_column))
+    #                 .offset(offset)
+    #                 .limit(page_size)
+    #                 .all())
+        
+    #     # Retrieve total count of applicants for pagination purposes
+    #     total_count = self.db_session.query(Applicant).count()
+
+    #     return applicants, total_count
+
+
+    def get_all_applicants(self, 
+                        page: int = 1, 
+                        page_size: int = 10, 
+                        sort_by: Optional[str] = 'name', 
+                        sort_order: Optional[str] = 'asc', 
+                        filters: Optional[Dict[str, any]] = None) -> Tuple[List[Applicant], int]:
+        """
+        Retrieve all applicants with pagination, sorting, and filtering options.
+
+        Args:
+            page (int): The page number to retrieve.
+            page_size (int): The number of applicants to retrieve per page.
+            sort_by (Optional[str]): The field to sort by ('name' or 'created_at').
+            sort_order (Optional[str]): The sort order ('asc' or 'desc').
+            filters (Optional[Dict[str, any]]): A dictionary of filters to apply to the query.
+
+        Returns:
+            Tuple[List[Applicant], int]: A tuple containing a list of applicants for the specified page and the total count of applicants.
+        """
+        # Validate pagination parameters
+        if page < 1:
+            raise InvalidPaginationParameterException("Page number must be greater than 0.")
+        if page_size < 1:
+            raise InvalidPaginationParameterException("Page size must be greater than 0.")
+
+        # Validate sorting parameters
+        if sort_by not in ['name', 'created_at']:
+            raise InvalidSortingParameterException(f"Invalid sort_by field '{sort_by}'. Allowed values are 'name' or 'created_at'.")
+        if sort_order not in ['asc', 'desc']:
+            raise InvalidSortingParameterException(f"Invalid sort_order '{sort_order}'. Allowed values are 'asc' or 'desc'.")
+
+        # Calculate offset for pagination
+        offset = (page - 1) * page_size
+        
+        # Define sorting criteria
+        sort_column = Applicant.name if sort_by == 'name' else Applicant.created_at
+        sort_direction = asc if sort_order == 'asc' else desc
+
+        try:
+            # Build base query
+            query = self.db_session.query(Applicant)
+
+            # Apply filters if provided
+            if filters:
+                for attribute, value in filters.items():
+                    query = query.filter(getattr(Applicant, attribute) == value)
+
+            # Apply sorting, pagination, and execute query
+            applicants = (query
+                        .order_by(sort_direction(sort_column))
+                        .offset(offset)
+                        .limit(page_size)
+                        .all())
+            
+            # Retrieve total count of applicants for pagination purposes
+            total_count = query.count()
+
+            return applicants, total_count
+
+        except SQLAlchemyError as e:
+            # Handle any SQLAlchemy errors
+            self.db_session.rollback()
+            raise e
+        
     def get_applicant(self, applicant_id: int) -> Optional[Applicant]:
         """
         Retrieve an applicant by ID.
@@ -150,6 +269,42 @@ class CRUDOperations:
             Optional[Applicant]: The Applicant object if found, otherwise None.
         """
         return self.db_session.query(Applicant).filter(Applicant.id == applicant_id).first()
+    
+    def create_applicant(self, applicant_data: Dict, household_members_data: Optional[List[Dict]] = []) -> Applicant:
+        """
+        Create an applicant and their household members.
+
+        Args:
+            applicant_data (Dict): A dictionary containing the applicant's data.
+            household_members_data (List[Dict]]): List of dictionaries containing household members' data.
+
+        Returns:
+            Applicant: The created Applicant object with associated household members.
+        """
+        # Begin a transaction
+        try:
+            # Create the applicant instance
+            db_applicant = Applicant(**applicant_data)
+            self.db_session.add(db_applicant)
+            self.db_session.flush()  # Flush to generate applicant.id
+
+            # Create household member instances
+            for member_data in household_members_data:
+                member_data['applicant_id'] = db_applicant.id  # Link household members to the applicant
+                db_household_member = HouseholdMember(**member_data)
+                self.db_session.add(db_household_member)
+
+            # Commit transaction to save both applicant and household members
+            self.db_session.commit()
+            self.db_session.refresh(db_applicant)
+            return db_applicant
+
+        except SQLAlchemyError as e:
+            # Rollback transaction in case of any errors
+            self.db_session.rollback()
+            raise e
+        
+    
 
     def get_applicants_by_filters(self, filters: Dict) -> List[Applicant]:
         """
@@ -294,6 +449,7 @@ class CRUDOperations:
             Optional[Scheme]: The Scheme object if found, otherwise None.
         """
         return self.db_session.query(Scheme).filter(Scheme.id == scheme_id).first()
+    
 
     def get_schemes_by_filters(self, filters: Dict, fetch_valid_schemes: bool = True) -> List[Scheme]:
         """
@@ -365,6 +521,55 @@ class CRUDOperations:
         self.db_session.commit()
         self.db_session.refresh(db_application)
         return db_application
+
+    def get_all_applications(self, 
+                            page: int = 1, 
+                            page_size: int = 10, 
+                            sort_by: Optional[str] = 'created_at', 
+                            sort_order: Optional[str] = 'asc') -> Tuple[List[Application], int]:
+        """
+        Retrieve all applications with pagination and sorting options.
+
+        Args:
+            page (int): The page number to retrieve.
+            page_size (int): The number of applications to retrieve per page.
+            sort_by (Optional[str]): The field to sort by ('created_at').
+            sort_order (Optional[str]): The sort order ('asc' or 'desc').
+
+        Returns:
+            Tuple[List[Application], int]: A tuple containing a list of applications for the specified page and the total count of applications.
+        """
+        # Validate pagination parameters
+        if page < 1:
+            raise InvalidPaginationParameterException("Page number must be greater than 0.")
+        if page_size < 1:
+            raise InvalidPaginationParameterException("Page size must be greater than 0.")
+
+        # Validate sorting parameters
+        if sort_by not in ['created_at']:
+            raise InvalidSortingParameterException(f"Invalid sort_by field '{sort_by}'. Allowed value is 'created_at'.")
+        if sort_order not in ['asc', 'desc']:
+            raise InvalidSortingParameterException(f"Invalid sort_order '{sort_order}'. Allowed values are 'asc' or 'desc'.")
+
+        # Calculate offset for pagination
+        offset = (page - 1) * page_size
+        
+        # Define sorting criteria
+        sort_column = Application.created_at
+        sort_direction = asc if sort_order == 'asc' else desc
+
+        # Retrieve applications from the database with pagination and sorting
+        applications = (self.db_session
+                        .query(Application)
+                        .order_by(sort_direction(sort_column))
+                        .offset(offset)
+                        .limit(page_size)
+                        .all())
+        
+        # Retrieve total count of applications for pagination purposes
+        total_count = self.db_session.query(Application).count()
+
+        return applications, total_count
 
     def get_application(self, application_id: int) -> Optional[Application]:
         """

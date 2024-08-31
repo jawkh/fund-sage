@@ -34,7 +34,7 @@ from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 from environs import Env
 from datetime import datetime
-
+from datetime import datetime, timedelta 
 from dal.crud_operations import CRUDOperations
 from dal.system_config import SystemConfig
 from dal.database import Base
@@ -54,7 +54,6 @@ test_engine = create_engine(TEST_DATABASE_URL)
 
 # Create a configured "Session" class for testing
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
-
 
 @pytest.fixture(scope="session")
 def setup_database():
@@ -90,7 +89,6 @@ def test_db(connection):
         transaction.rollback()  # Rollback the transaction to clean up after the test
     finally:
         session.close()  # Close the session to release the connection
-    
 
 @pytest.fixture(scope="function")
 def crud_operations(test_db):
@@ -98,6 +96,8 @@ def crud_operations(test_db):
     Fixture to provide a CRUDOperations instance with a testing session. (using a transaction that rolls back after each test)
     """
     yield CRUDOperations(test_db)
+    
+
     
     
 @pytest.fixture(scope="function")
@@ -205,7 +205,7 @@ def retrenchment_assistance_scheme(scheme_service):
     yield scheme_service.create_scheme(scheme_data)
     
 @pytest.fixture(scope="function")
-def middleaged_reskilling_assistance_scheme(crud_operations):
+def middleaged_reskilling_assistance_scheme(scheme_service):
     """
     Fixture to create essential mock data required for testing.
     Ensures referential integrity for 'Applications' by creating necessary 'Schemes' records first.
@@ -235,10 +235,10 @@ def middleaged_reskilling_assistance_scheme(crud_operations):
         "validity_start_date": datetime(2024, 1, 1),
         "validity_end_date": None
     }
-    yield crud_operations.create_scheme(middleaged_reskilling_assistance_scheme_data)
+    yield scheme_service.create_scheme(middleaged_reskilling_assistance_scheme_data)
     
 @pytest.fixture(scope="function")
-def senior_citizen_assistance_scheme(crud_operations):
+def senior_citizen_assistance_scheme(scheme_service):
     """
     Fixture to create essential mock data required for testing.
     Ensures referential integrity for 'Applications' by creating necessary 'Schemes' records first.
@@ -267,7 +267,7 @@ def senior_citizen_assistance_scheme(crud_operations):
         "validity_start_date": datetime(2024, 1, 1),
         "validity_end_date": None
     }
-    yield crud_operations.create_scheme(senior_citizen_assistance_scheme_data)
+    yield scheme_service.create_scheme(senior_citizen_assistance_scheme_data)
 
 @pytest.fixture(scope="function")
 def test_applicant(crud_operations):
@@ -344,3 +344,84 @@ def test_application(crud_operations):
         "created_by_admin_id": ad.id  # Link to the admin who created it
     }
     yield crud_operations.create_application(application_data) # Create a mock application
+    
+    
+    # Assuming these are additions to conftest.py
+
+
+
+@pytest.fixture(scope="function")
+def multiple_applicants(crud_operations, test_administrator):
+    """Fixture to create multiple applicants for pagination testing."""
+    applicants_data = [
+        {"name": "Bob Johnson", "employment_status": "unemployed", "sex": "M", "date_of_birth": datetime(1970, 8, 20), "marital_status": "married", "created_by_admin_id": test_administrator.id},
+        {"name": "Alice Smith", "employment_status": "employed", "sex": "F", "date_of_birth": datetime(1985, 5, 1), "marital_status": "single", "created_by_admin_id": test_administrator.id},
+        {"name": "Carol White", "employment_status": "employed", "sex": "F", "date_of_birth": datetime(1992, 11, 15), "marital_status": "single", "created_by_admin_id": test_administrator.id},
+        {"name": "David Black", "employment_status": "unemployed", "sex": "M", "date_of_birth": datetime(1988, 2, 10), "marital_status": "single", "created_by_admin_id": test_administrator.id},
+        {"name": "Eve Green", "employment_status": "employed", "sex": "F", "date_of_birth": datetime(1995, 4, 25), "marital_status": "married", "created_by_admin_id": test_administrator.id},
+    ]
+    
+    for data in applicants_data:
+        crud_operations.create_applicant(data)
+
+    yield applicants_data  # Yielding data for further verification if needed
+
+
+
+
+
+@pytest.fixture(scope='function')
+def setup_applicants(applicant_service: ApplicantService, test_administrator):
+    """
+    Fixture to create 20 diverse applicants with household members for testing.
+    
+    Args:
+        applicant_service (ApplicantService): An instance of the ApplicantService.
+
+    Returns:
+        List[int]: A list of created applicant IDs for further use in tests.
+    """
+    applicants_data = []
+    household_data = []
+
+    # Create diverse applicants
+    for i in range(20):
+        applicant_data = {
+            "name": f"Applicant {i}",
+            "employment_status": "employed" if i % 2 == 0 else "unemployed",
+            "sex": "M" if i % 2 == 0 else "F",
+            "date_of_birth": datetime.now() - timedelta(days=365 * (20 + i)),  # Ages between 20 to 40
+            "marital_status": "single" if i % 3 == 0 else "married",
+            "created_by_admin_id": test_administrator.id,
+        }
+
+        # Create household members for each applicant
+        household_members_data = []
+        if i % 2 == 0:
+            household_members_data.append({
+                "name": f"Child {i}",
+                "relation": "child",
+                "date_of_birth": datetime.now() - timedelta(days=365 * 5),  # Child age 5
+                "employment_status": "unemployed",
+                "sex": "F" if i % 2 == 0 else "M",
+            })
+        if i % 3 == 0:
+            household_members_data.append({
+                "name": f"Spouse {i}",
+                "relation": "spouse",
+                "date_of_birth": datetime.now() - timedelta(days=365 * (20 + i)),  # Similar age to applicant
+                "employment_status": "employed",
+                "sex": "F" if i % 2 != 0 else "M",
+            })
+
+        applicants_data.append(applicant_data)
+        household_data.append(household_members_data)
+
+    # Create applicants and household members using the service
+    created_applicants = []
+    for applicant_data, household_members_data in zip(applicants_data, household_data):
+        created_applicant = applicant_service.create_applicant(applicant_data, household_members_data)
+        created_applicants.append(created_applicant.id)
+
+    yield created_applicants
+

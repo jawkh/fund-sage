@@ -2,7 +2,7 @@
 # scheme_service.py
 # This file contains the SchemeService class that handles the business logic related to financial assistance schemes.
 
-from typing import List, Optional, Type
+from typing import List, Optional, Type, Dict
 from dal.crud_operations import CRUDOperations
 from dal.models import Scheme
 from exceptions import SchemeNotFoundException, InvalidSchemeDataException  

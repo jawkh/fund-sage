@@ -86,9 +86,9 @@ class Applicant(Base):
     created_at: DateTime = Column(DateTime(timezone=True), server_default=func.now())
     updated_at: DateTime = Column(DateTime(timezone=True), onupdate=func.now())
 
-    # Relationships
+   # Relationships with eager loading
     creator = relationship("Administrator", back_populates="applicants_created")
-    household_members = relationship("HouseholdMember", back_populates="applicant", cascade="all, delete-orphan")
+    household_members = relationship("HouseholdMember", back_populates="applicant", cascade="all, delete-orphan", lazy='joined')
     applications = relationship("Application", back_populates="applicant", cascade="all, delete-orphan")
 
     # Add CheckConstraints at the table level
@@ -165,11 +165,11 @@ class Application(Base):
     created_at: DateTime = Column(DateTime(timezone=True), server_default=func.now())
     updated_at: DateTime = Column(DateTime(timezone=True), onupdate=func.now())
 
-    # Relationships
-    applicant = relationship("Applicant", back_populates="applications")
-    scheme = relationship("Scheme", back_populates="applications")
-    creator = relationship("Administrator", back_populates="applications_created")  
-
+    # Relationships with eager loading
+    applicant = relationship("Applicant", back_populates="applications", lazy='joined')
+    scheme = relationship("Scheme", back_populates="applications", lazy='joined')
+    creator = relationship("Administrator", back_populates="applications_created", lazy='joined')
+    
     # Add CheckConstraints at the table level
     __table_args__ = (
         CheckConstraint("status IN ('pending', 'approved', 'rejected')", name="check_status"),

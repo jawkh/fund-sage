@@ -10,25 +10,22 @@ Design Pattern:
 2. Dependency Injection:
 - The class takes a database session as a dependency, enabling it to interact with the database to retrieve scheme information.
 
-3. Error Handling:
-- The get_eligibility_definition method raises an EligibilityStrategyNotFoundException if no eligibility strategy is found for a given scheme. This exception provides clear feedback when an issue occurs.
-
-4. Use of Lambdas for Instantiation:
+3. Use of Lambdas for Instantiation:
 - The use of lambdas in the eligibility_definitions_mapping dictionary allows for flexible instantiation of eligibility strategies based on the scheme type. This approach ensures that the correct eligibility strategy is used for each scheme.
 
-5. Type Annotations:
+4. Type Annotations:
 - The use of type annotations for method arguments and return types enhances code readability and type safety.
 
-6. Encapsulation:
+5. Encapsulation:
 - The class encapsulates the logic for creating SchemeEligibilityChecker objects, providing a clean interface for loading eligibility checkers for different schemes.
 
-7. Readability and Maintainability:
+6. Readability and Maintainability:
 - The class structure and method names are well-organized, making the code easy to understand and maintain.
 
-8. Consistency and Fallback Strategy:
+7. Consistency and Fallback Strategy:
 - The get_eligibility_definition method defaults to returning an instance of DefaultEligibility if no strategy is found in the eligibility_definitions_mapping. This ensures that all schemes have a fallback eligibility strategy, preventing errors and maintaining consistency.
 
-9. Flexibility and Extensibility (Open/Closed Principle):
+8. Flexibility and Extensibility (Open/Closed Principle):
 - The class can be easily extended to support additional schemes and eligibility strategies by adding entries to the eligibility_definitions_mapping dictionary.
 """
 # scheme_eligibility_checker_factory.py

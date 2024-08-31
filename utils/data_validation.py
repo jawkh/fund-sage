@@ -126,7 +126,7 @@ def validate_household_member_data(household_member_data: dict, for_create_mode:
     Returns True if all fields are valid, False otherwise and provides a reason for failure.
     """
     # Required fields for creation
-    required_fields_for_create_mode = ['applicant_id', 'name', 'relation', 'date_of_birth']
+    required_fields_for_create_mode = ['name', 'relation', 'date_of_birth'] # Removing 'applicant_id' from here. We need to assign it in the service layer after the applicant record has been created.
 
     # Check for missing or empty required fields when in creation mode
     if for_create_mode:

@@ -51,3 +51,11 @@ class InvalidSystemConfigDataException(Exception):
 class EligibilityStrategyNotFoundException(Exception):
     """Exception raised when no eligibility strategy is found for a scheme."""
     pass
+
+class InvalidPaginationParameterException(Exception):
+    """Invalid pagination parameter provided."""
+    pass
+
+class InvalidSortingParameterException(Exception):
+    """Invalid sorting parameter provided."""
+    pass

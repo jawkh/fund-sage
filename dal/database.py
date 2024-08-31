@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Load environment variables
-DATABASE_URL = Env().str("DATABASE_URL", "DATABASE_URL is not set. ") 
+DATABASE_URL = Env().str("DATABASE_URL", "DATABASE_URL is not set.") 
 
 # Ensure the DATABASE_URL is set correctly
 if not DATABASE_URL:

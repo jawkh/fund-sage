@@ -31,13 +31,14 @@ Design Patterns:
 """
 # application_service.py
 
-from typing import List
+from typing import List, Tuple, Optional
 from dal.crud_operations import CRUDOperations
 from dal.models import Application, Scheme
-from exceptions import ApplicationNotFoundException, ApplicantNotFoundException, SchemeNotFoundException, InvalidApplicationDataException, AdministratorNotFoundException
+from exceptions import ApplicationNotFoundException, ApplicantNotFoundException, SchemeNotFoundException, InvalidApplicationDataException, AdministratorNotFoundException, InvalidPaginationParameterException, InvalidSortingParameterException
 from bl.factories.base_scheme_eligibility_checker_factory import BaseSchemeEligibilityCheckerFactory
 from bl.schemes.schemes_manager import SchemesManager
 from utils.data_validation import validate_application_data
+from sqlalchemy import asc, desc
 class ApplicationService:
     """
     Service class to handle all business logic related to applications.
@@ -45,6 +46,15 @@ class ApplicationService:
 
     def __init__(self, crud_operations: CRUDOperations):
         self.crud_operations = crud_operations
+
+
+    def get_all_applications(self, 
+                            page: int = 1, 
+                            page_size: int = 100, 
+                            sort_by: Optional[str] = 'created_at', 
+                            sort_order: Optional[str] = 'asc') -> Tuple[List[Application], int]:
+
+        return self.crud_operations.get_all_applications(page, page_size, sort_by, sort_order)
 
     def get_application_by_id(self, application_id: int) -> Application:
         """

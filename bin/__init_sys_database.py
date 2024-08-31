@@ -17,4 +17,6 @@ from dal.database import Base, engine
 from dal.models import Administrator, Applicant, HouseholdMember, Scheme, Application, SystemConfiguration
 
 # Create all tables in the staging database
+print("Creating all tables in the staging database...\n")
 Base.metadata.create_all(bind=engine)
+print("All tables created successfully.\n")

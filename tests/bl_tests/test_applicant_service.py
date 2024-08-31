@@ -12,7 +12,7 @@ from dal.models import Applicant
 from datetime import datetime
 # from exceptions import InvalidDataException
 from bl.services.applicant_service import ApplicantService
-from exceptions import ApplicantNotFoundException, InvalidApplicantDataException, HouseholdMemberNotFoundException, InvalidHouseholdMemberDataException
+from exceptions import ApplicantNotFoundException, InvalidApplicantDataException, HouseholdMemberNotFoundException, InvalidHouseholdMemberDataException, InvalidPaginationParameterException, InvalidSortingParameterException
 from dateutil.relativedelta import relativedelta
 
 # Test ApplicantService methods
@@ -392,3 +392,206 @@ def test_lazy_loading_multiple_household_members(crud_operations, test_applicant
 
     assert any(member.name == "Alice Doe" for member in household_members)
     assert any(member.name == "Bob Doe" for member in household_members)
+
+
+# New tests to add to test_applicant_service.py
+
+def test_get_all_applicants_with_pagination(applicant_service, multiple_applicants):
+    """
+    Test retrieving all applicants with pagination.
+    """
+    # Retrieve the first page with 2 applicants per page
+    applicants, total_count = applicant_service.get_all_applicants(page=1, page_size=2)
+    
+    assert len(applicants) == 2  # Expect 2 applicants on the first page
+    assert total_count == len(multiple_applicants)  # Total count should match the number of created applicants
+
+    # Verify pagination content
+    assert applicants[0].name == "Alice Smith"
+    assert applicants[1].name == "Bob Johnson"
+
+def test_get_all_applicants_with_sorting(applicant_service, multiple_applicants):
+    """
+    Test retrieving all applicants with sorting by 'name' in ascending order.
+    """
+    applicants, total_count = applicant_service.get_all_applicants(page=1, page_size=5, sort_by='name', sort_order='asc')
+    
+    # Verify all applicants are returned in sorted order by name
+    assert len(applicants) == 5
+    assert applicants[0].name == "Alice Smith"
+    assert applicants[1].name == "Bob Johnson"
+    assert applicants[2].name == "Carol White"
+    assert applicants[3].name == "David Black"
+    assert applicants[4].name == "Eve Green"
+
+def test_get_all_applicants_with_sorting_descending(applicant_service, multiple_applicants):
+    """
+    Test retrieving all applicants with sorting by 'name' in descending order.
+    """
+    applicants, total_count = applicant_service.get_all_applicants(page=1, page_size=5, sort_by='name', sort_order='desc')
+    
+    # Verify all applicants are returned in sorted order by name in descending order
+    assert len(applicants) == 5
+    assert applicants[0].name == "Eve Green"
+    assert applicants[1].name == "David Black"
+    assert applicants[2].name == "Carol White"
+    assert applicants[3].name == "Bob Johnson"
+    assert applicants[4].name == "Alice Smith"
+
+def test_get_all_applicants_pagination_beyond_range(applicant_service, multiple_applicants):
+    """
+    Test retrieving a page beyond the total number of applicants.
+    """
+    # Attempt to retrieve a page that is beyond the number of available applicants
+    applicants, total_count = applicant_service.get_all_applicants(page=10, page_size=2)
+
+    assert len(applicants) == 0  # No applicants should be returned for an out-of-range page
+    assert total_count == len(multiple_applicants)  # Total count remains the same
+
+
+# Updated negative test cases in test_applicant_service.py
+
+def test_get_all_applicants_invalid_page_number(applicant_service):
+    """
+    Test retrieving applicants with an invalid page number.
+    """
+    with pytest.raises(InvalidPaginationParameterException) as exc_info:
+        applicant_service.get_all_applicants(page=-1, page_size=2)  # Invalid page number
+    assert str(exc_info.value) == "Page number must be greater than 0."
+
+def test_get_all_applicants_invalid_page_size(applicant_service):
+    """
+    Test retrieving applicants with an invalid page size.
+    """
+    with pytest.raises(InvalidPaginationParameterException) as exc_info:
+        applicant_service.get_all_applicants(page=1, page_size=-10)  # Invalid page size
+    assert str(exc_info.value) == "Page size must be greater than 0."
+
+def test_get_all_applicants_invalid_sort_by_field(applicant_service):
+    """
+    Test retrieving applicants with an invalid sort_by field.
+    """
+    with pytest.raises(InvalidSortingParameterException) as exc_info:
+        applicant_service.get_all_applicants(page=1, page_size=2, sort_by='invalid_field', sort_order='asc')
+    assert str(exc_info.value) == "Invalid sort_by field 'invalid_field'. Allowed values are 'name' or 'created_at'."
+
+def test_get_all_applicants_invalid_sort_order(applicant_service):
+    """
+    Test retrieving applicants with an invalid sort order.
+    """
+    with pytest.raises(InvalidSortingParameterException) as exc_info:
+        applicant_service.get_all_applicants(page=1, page_size=2, sort_by='name', sort_order='invalid_order')
+    assert str(exc_info.value) == "Invalid sort_order 'invalid_order'. Allowed values are 'asc' or 'desc'."
+
+
+
+
+def test_create_applicant_with_valid_data_and_household_members(applicant_service, test_administrator):
+    """
+    Test creating an applicant with valid data and household members.
+    """
+    applicant_data = {
+        "name": "John Doe",
+        "employment_status": "employed",
+        "sex": "M",
+        "date_of_birth": datetime(1990, 1, 1),
+        "marital_status": "single",
+        "created_by_admin_id": test_administrator.id
+    }
+    household_members_data = [
+        {"name": "Alice Doe", "relation": "child", "date_of_birth": datetime(2010, 5, 1), "employment_status": "unemployed", "sex": "F"},
+        {"name": "Bob Doe", "relation": "parent", "date_of_birth": datetime(1960, 8, 20), "employment_status": "unemployed", "sex": "M"}
+    ]
+
+    applicant = applicant_service.create_applicant(applicant_data, household_members_data)
+
+    assert applicant.name == "John Doe"
+    assert len(applicant.household_members) == 2
+
+def test_create_applicant_with_invalid_household_member_data(applicant_service, test_administrator):
+    """
+    Test creating an applicant with invalid household member data to trigger a rollback.
+    """
+    applicant_data = {
+        "name": "Jane Doe",
+        "employment_status": "employed",
+        "sex": "F",
+        "date_of_birth": datetime(1985, 5, 5),
+        "marital_status": "single",
+        "created_by_admin_id": test_administrator.id
+    }
+    household_members_data = [
+        {"name": "", "relation": "child", "date_of_birth": datetime(2010, 5, 1), "employment_status": "unemployed", "sex": "F"}  # Invalid name
+    ]
+
+    with pytest.raises(InvalidHouseholdMemberDataException) as exc_info:
+        applicant_service.create_applicant(applicant_data, household_members_data)
+
+
+def test_create_applicant_exceeding_parent_limit(applicant_service, test_administrator):
+    """
+    Test creating an applicant with more than two parents to trigger validation failure.
+    """
+    applicant_data = {
+        "name": "Alex Smith",
+        "employment_status": "unemployed",
+        "sex": "M",
+        "date_of_birth": datetime(1990, 1, 1),
+        "marital_status": "single",
+        "created_by_admin_id": test_administrator.id
+    }
+    household_members_data = [
+        {"name": "Parent One", "relation": "parent", "date_of_birth": datetime(1950, 5, 1), "employment_status": "employed", "sex": "M"},
+        {"name": "Parent Two", "relation": "parent", "date_of_birth": datetime(1955, 6, 1), "employment_status": "employed", "sex": "F"},
+        {"name": "Parent Three", "relation": "parent", "date_of_birth": datetime(1952, 7, 1), "employment_status": "employed", "sex": "M"}
+    ]
+
+    with pytest.raises(InvalidHouseholdMemberDataException) as exc_info:
+        applicant_service.create_applicant(applicant_data, household_members_data)
+
+    assert str(exc_info.value) == "An applicant cannot have more than two parents."
+
+
+
+def test_get_all_applicants_pagination(applicant_service: ApplicantService, setup_applicants):
+    """
+    Test pagination for retrieving applicants.
+    """
+    # Test first page with page_size = 5
+    applicants, total_count = applicant_service.get_all_applicants(page=1, page_size=5)
+    assert len(applicants) == 5
+    assert total_count == 20  # Total applicants in the database from setup
+
+    # Test second page with page_size = 5
+    applicants, total_count = applicant_service.get_all_applicants(page=2, page_size=5)
+    assert len(applicants) == 5
+
+def test_get_all_applicants_pagination_edge_case(applicant_service: ApplicantService, setup_applicants):
+    """
+    Test pagination for edge case where requested page exceeds total pages.
+    """
+    # Test page number that exceeds total available pages
+    applicants, total_count = applicant_service.get_all_applicants(page=5, page_size=5)
+    assert len(applicants) == 0  # No applicants should be returned for out-of-bounds page
+
+def test_get_all_applicants_filter_by_employment_status(applicant_service: ApplicantService, setup_applicants):
+    """
+    Test filtering applicants by employment status.
+    """
+    # Filter by employed status
+    filters = {"employment_status": "employed"}
+    applicants, total_count = applicant_service.get_all_applicants(page=1, page_size=20, filters=filters)
+    assert all(applicant.employment_status == "employed" for applicant in applicants)
+
+    # Filter by unemployed status
+    filters = {"employment_status": "unemployed"}
+    applicants, total_count = applicant_service.get_all_applicants(page=1, page_size=20, filters=filters)
+    assert all(applicant.employment_status == "unemployed" for applicant in applicants)
+
+def test_get_all_applicants_combined_filters(applicant_service: ApplicantService, setup_applicants):
+    """
+    Test filtering applicants by multiple criteria.
+    """
+    filters = {"employment_status": "employed", "marital_status": "married"}
+    applicants, total_count = applicant_service.get_all_applicants(page=1, page_size=20, filters=filters)
+    assert all(applicant.employment_status == "employed" and applicant.marital_status == "married" for applicant in applicants)
