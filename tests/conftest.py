@@ -42,7 +42,7 @@ from bl.services.applicant_service import ApplicantService
 from bl.services.scheme_service import SchemeService
 from bl.services.application_service import ApplicationService
 from bl.factories.scheme_eligibility_checker_factory import SchemeEligibilityCheckerFactory
-from   bl.schemes.schemes_manager import SchemesManager
+from bl.schemes.schemes_manager import SchemesManager
 
 # Load environment variables
 load_dotenv()
