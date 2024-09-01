@@ -5,15 +5,41 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Flask",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "api",
+                "FLASK_ENV": "development",
+                "FLASK_DEBUG": "0"
+            },
+            "args": [
+                "run",
+                "--no-debugger",
+                "--no-reload"
+            ],
+            "jinja": true,
+            "justMyCode": false  // This line allows stepping into library code
+        },
+        {
             "name": "Python: BL Pytest with Poetry",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/.venv/bin/pytest", // Path to pytest within the Poetry virtual environment
-            "args": ["--cov=bl", "tests/bl_tests", "--capture=no"], // Pytest arguments
+            "args": [
+                "--cov=bl",
+                "tests/bl_tests",
+                "run",
+                "--no-debugger",
+                "--no-reload"
+            ], // Pytest arguments
             "console": "integratedTerminal",
             "justMyCode": false, // Set to false to debug external libraries if needed
             "cwd": "${workspaceFolder}",
-            "env": { "PYTHONPATH": "${workspaceFolder}" } // Ensure PYTHONPATH is set correctly
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            } // Ensure PYTHONPATH is set correctly
         }
     ]
 }

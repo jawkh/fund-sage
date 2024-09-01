@@ -77,7 +77,7 @@ class ApplicationSchema(Schema):
     eligibility_verdict = fields.Str(validate=validate.Length(max=1000))  
     awarded_benefits = fields.Dict()  
     submission_date = fields.DateTime(dump_only=True)
-    created_by_admin_id = fields.Int()
+    created_by_admin_id = fields.Int(required=True)
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)
     applicant = fields.Nested('ApplicantSchema', dump_only=True)

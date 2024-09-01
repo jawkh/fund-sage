@@ -50,7 +50,7 @@ By addressing these points, the codebase demonstrates strong adherence to non-fu
 # api/routes/applications.py
 
 from flask import Blueprint, request, jsonify, g
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from bl.services.application_service import ApplicationService
 from api.schemas.all_schemas import ApplicationSchema
 from marshmallow import ValidationError
@@ -82,8 +82,8 @@ def get_applications():
         )
         
         # Use Marshmallow schema to serialize the application objects
-        application_schema = ApplicationSchema(many=True)
-        result = application_schema.dump(applications)
+        application_schema = ApplicationSchema(many=True) # <<<TO BE REMOVED
+        result = application_schema.dump(applications) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
         
         # Prepare response with pagination metadata
         response = {
@@ -111,14 +111,23 @@ def create_application():
     application_service = ApplicationService(crud_operations)
     schemeEligibilityCheckerFactory = SchemeEligibilityCheckerFactory(session) 
     try:
+         # Extract 'id' from JWT claims to use as created_by_admin_id
+        admin_id = get_jwt_identity()['id']
+
+        # Load and validate request data using Marshmallow schema
         data = request.json
-        application_data = ApplicationSchema().load(data)
-        admin_id = request.headers.get('admin_id') # placeholder for admin_id
+        data["created_by_admin_id"] = admin_id
+        application_data = ApplicationSchema().load(data) # <<< TO BE REMOVED (NO NEED TO DESRIALIZE)
+        
         application = application_service.create_application(data.get('applicant_id'), data.get('scheme_id'), admin_id, schemeEligibilityCheckerFactory)
         application_data = ApplicationSchema().dump(application)
         return jsonify(application_data), 201
     except ValidationError as err:
         return jsonify(err.messages), 400
     except Exception as e:
+        print("An unexpected error occurred.")
         return jsonify({'error': str(e)}), 400
-
+    except:
+        # This will catch any other exceptions that are not handled above
+        print("An unexpected error occurred.")
+        return jsonify({'error': 'An unexpected error occurred.'}), 500

@@ -43,7 +43,7 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, J
 from sqlalchemy.orm import relationship, configure_mappers
 from sqlalchemy.sql import func
 from dal.database import Base
-
+from datetime import datetime
 class Administrator(Base):
     """ 
     Summary: ORM class for the Administrators table in the database.
@@ -98,6 +98,12 @@ class Applicant(Base):
         CheckConstraint("marital_status IN ('single', 'married', 'divorced', 'widowed')", name="check_marital_status"),
     )
 
+    # def age(self):
+    #     return calculate_age(self.date_of_birth) 
+    # def employment_status_changed_months(self):
+    #     if self.employment_status_change_date:
+    #         return (datetime.now() - self.employment_status_change_date).days // 30
+    #     return None
 
 class HouseholdMember(Base):
     """ 
@@ -127,7 +133,7 @@ class HouseholdMember(Base):
 
 
 
-
+from utils.date_utils import calculate_age
 class Scheme(Base):
     """ 
     summary: ORM class for the Schemes table in the database.
@@ -147,7 +153,8 @@ class Scheme(Base):
     # Relationship with Applications
     applications = relationship("Application", back_populates="scheme", cascade="all, delete-orphan")
 
-
+    
+        
 
 
 class Application(Base):

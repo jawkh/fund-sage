@@ -92,8 +92,8 @@ def get_applicants():
             filters=filters
         )
         # Use Marshmallow schema to serialize the applicant objects
-        applicant_schema = ApplicantSchema(many=True)
-        result = applicant_schema.dump(applicants)
+        applicant_schema = ApplicantSchema(many=True) # <<< TO BE REMOVED
+        result = applicant_schema.dump(applicants) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
         
         # Prepare response with pagination metadata
         response = {
@@ -135,9 +135,9 @@ def create_applicant():
         data['created_by_admin_id'] = admin_id  # Overwrite created_by_admin_id to ensure security
         
         # Deserialize and validate input data
-        applicant_data = ApplicantSchema().load(data)  
+        applicant_data = ApplicantSchema().load(data)  # <<< TO BE REMOVED (NO NEED TO DESRIALIZE). Use the data directly
         # Extract household members data as a list of dictionaries``
-        household_members_data = applicant_data.pop('household_members', []) # Extract household members from the data
+        household_members_data = applicant_data.pop('household_members', []) # <<< HANDLE THE DATA DIRECTLY. Extract household members from the data
 
         # Use the applicant service to create the applicant and associated household members
         applicant = applicant_service.create_applicant(
@@ -146,7 +146,7 @@ def create_applicant():
         )
 
         # Serialize the newly created applicant object for the response
-        result = ApplicantSchema().dump(applicant)
+        result = ApplicantSchema().dump(applicant) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
         return jsonify(result), 201  # Return a 201 Created status code on success
 
     except ValidationError as err:

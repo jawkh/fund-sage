@@ -19,6 +19,13 @@ from datetime import datetime, timedelta
 from typing import List
 from bl.services.applicant_service import ApplicantService
 from bl.services.administrator_service import AdministratorService
+from random import randint
+from datetime import datetime, timedelta
+from dotenv import load_dotenv
+from environs import Env
+# Load environment variables (e.g., API_BASE_URL)
+load_dotenv()
+ADMIN_USER_NAME = Env().str("ADMIN_USER_NAME", "ADMIN_USER_NAME is not set.")
 
 
 connection = engine.connect()
@@ -26,7 +33,7 @@ session = SessionLocal(bind=connection)
 crud_operations = CRUDOperations(session)
 
 # Get the system administrator for creating applicants
-creator = AdministratorService(crud_operations).get_administrator_by_username("sa")
+creator = AdministratorService(crud_operations).get_administrator_by_username(ADMIN_USER_NAME)
 
 def setup_applicants(applicant_service: ApplicantService, creator) -> List[int]:
     """
@@ -45,10 +52,11 @@ def setup_applicants(applicant_service: ApplicantService, creator) -> List[int]:
     for i in range(20):
         applicant_data = {
             "name": f"Applicant {i}",
-            "employment_status": "employed" if i % 2 == 0 else "unemployed",
-            "sex": "M" if i % 2 == 0 else "F",
-            "date_of_birth": datetime.now() - timedelta(days=365 * (20 + i)),  # Ages between 20 to 40
-            "marital_status": "single" if i % 3 == 0 else "married",
+            "employment_status": "employed" if i % 2 == 0 else "unemployed", # Half employed, half unemployed
+            "employment_status_change_date": datetime.now() - timedelta(days=30 * randint(3, 7)),  # Employed/Unemployed for 3 to 7 months
+            "sex": "M" if i % 2 == 0 else "F", # Half Male, Half Female
+            "date_of_birth": datetime.now() - timedelta(days=365 * randint(35, 80)),  # Ages between 35 to 80 yo
+            "marital_status": "married" if i % 2 == 0 else "single", # Half married, half single
             "created_by_admin_id": creator.id,
         }
 
@@ -56,19 +64,35 @@ def setup_applicants(applicant_service: ApplicantService, creator) -> List[int]:
         household_members_data = []
         if i % 2 == 0:
             household_members_data.append({
-                "name": f"Child {i}",
+                "name": f"Child A",
                 "relation": "child",
-                "date_of_birth": datetime.now() - timedelta(days=365 * 5),  # Child age 5
+                "date_of_birth": datetime.now() - timedelta(days=365 * randint(5, 19)),  # Ages between 5 to 19 yo
+                "employment_status": "unemployed",
+                "sex": "F" if i % 2 == 0 else "M"
+            })
+        if i % 2 == 0:
+            household_members_data.append({
+                "name": f"Child B",
+                "relation": "child",
+                "date_of_birth": datetime.now() - timedelta(days=365 * randint(5, 19)),  # Ages between 5 to 19 yo
                 "employment_status": "unemployed",
                 "sex": "F" if i % 2 == 0 else "M"
             })
         if i % 3 == 0:
             household_members_data.append({
-                "name": f"Spouse {i}",
+                "name": f"Spouse",
                 "relation": "spouse",
-                "date_of_birth": datetime.now() - timedelta(days=365 * (20 + i)),  # Similar age to applicant
+                "date_of_birth": datetime.now() - timedelta(days=365 * randint(35, 80)),  # Ages between 35 to 80 yo (similar to applicant)
                 "employment_status": "employed",
-                "sex": "F" if i % 2 != 0 else "M"
+                "sex": "F" if i % 2 != 0 else "M" # Opposite Sex as Applicant
+            })
+        if i % 2 == 0:
+            household_members_data.append({
+                "name": f"Parent",
+                "relation": "parent",
+                "date_of_birth": datetime.now() - timedelta(days=365 * randint(55, 100)),  # Ages between 55 to 100 yo
+                "employment_status": "unemployed",
+                "sex": "F" if i % 2 == 0 else "M"
             })
 
         applicants_data.append(applicant_data)

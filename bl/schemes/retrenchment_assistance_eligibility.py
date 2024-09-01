@@ -81,12 +81,10 @@ retrenchment_assistance_scheme_data = {
 
 # retrenchment_assistance_eligibility.py
 
-from datetime import datetime
 from dal.models import Applicant, Scheme
 from bl.schemes.base_eligibility import BaseEligibility
 from utils.date_utils import is_within_last_months, calculate_age
 from typing import Dict, List, Any
-from sqlalchemy.orm import Session
 
 class RetrenchmentAssistanceEligibility(BaseEligibility):
     """

@@ -13,6 +13,7 @@ from api.routes.applications import applications_bp
 from api.routes.auth import auth_bp  
 from config import Config
 from dal.database import Base  # Import your Base model
+import logging
 
 # Initialize extensions
 ma = Marshmallow()
@@ -26,6 +27,21 @@ from environs import Env
 DATABASE_URL = Env().str("DATABASE_URL", "DATABASE_URL is not set.") 
 engine = create_engine(DATABASE_URL)
 SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
+
+def setup_db_session(app):
+    """Setup SQLAlchemy sessions for the app."""
+
+    @app.before_request
+    def create_session():
+        """Create a new database session for a request."""
+        g.db_session = SessionLocal() # Note: This is a normal session, not a scoped_session
+
+    @app.teardown_appcontext
+    def remove_session(exception=None):
+        """Remove the database session after the request ends."""
+        db_session = g.pop('db_session', None)
+        if db_session is not None:
+            db_session.close() # Use close() instead of remove() for regular session
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -47,6 +63,7 @@ def create_app(config_class=Config):
     # Error handler for Marshmallow validation errors
     @app.errorhandler(ValidationError)
     def handle_marshmallow_validation_error(e):
+        app.logger.error(f"Marshmallow Validation Error: {e}")
         return jsonify({"errors": e.messages}), 400
 
     # Error handler for SQLAlchemy errors
@@ -56,29 +73,21 @@ def create_app(config_class=Config):
         session = g.get('db_session')
         if session is not None:
             session.rollback()  # Properly rollback the session
+        app.logger.error(f"SQLAlchemy Error: {e}")
         return jsonify({"error": "A database error occurred."}), 500
 
     # General error handler
     @app.errorhandler(Exception)
     def handle_generic_error(e):
+        app.logger.error(f"Unhandled Exception: {e}")
         return jsonify({"error": str(e)}), 500
     
     return app
 
-def setup_db_session(app):
-    """Setup SQLAlchemy sessions for the app."""
 
-    @app.before_request
-    def create_session():
-        """Create a new database session for a request."""
-        g.db_session = SessionLocal() # Note: This is a normal session, not a scoped_session
-
-    @app.teardown_appcontext
-    def remove_session(exception=None):
-        """Remove the database session after the request ends."""
-        db_session = g.pop('db_session', None)
-        if db_session is not None:
-            db_session.close() # Use close() instead of remove() for regular session
 
 # Ensure our database tables are created (Idempotent operation):
 Base.metadata.create_all(bind=engine)
+
+# Setup logging
+logging.basicConfig(level=logging.DEBUG)  # Set to DEBUG to capture more details

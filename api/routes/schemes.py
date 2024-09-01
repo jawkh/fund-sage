@@ -110,8 +110,8 @@ def get_schemes():
         )
 
         # Serialize the scheme objects using Marshmallow schema
-        scheme_schema = SchemeSchema(many=True)
-        result = scheme_schema.dump(schemes)
+        scheme_schema = SchemeSchema(many=True) # <<< TO BE REMOVED
+        result = scheme_schema.dump(schemes) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
 
         response = {
             'data': result,
@@ -158,8 +158,8 @@ def get_eligible_schemes():
         scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
         
         eligibility_results, eligible_schemes = scheme_manager.check_schemes_eligibility_for_applicant({}, True, applicant)
-        scheme_schema = SchemeSchema(many=True)
-        eligible_schemes = scheme_schema.dump(eligible_schemes)
+        scheme_schema = SchemeSchema(many=True) # <<< TO BE REMOVED
+        eligible_schemes = scheme_schema.dump(eligible_schemes) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
         
         response = {
             'data': {"eligible_schemes": eligible_schemes, "eligibility_results": eligibility_results}  

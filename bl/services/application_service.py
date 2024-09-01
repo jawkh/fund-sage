@@ -103,7 +103,7 @@ class ApplicationService:
         # If the applicant has a rejected or pending application, they can apply again
         existing_application = self.crud_operations.get_approved_application_by_applicant_and_scheme(applicant_id, scheme_id)
         if existing_application and existing_application.status == "approved":
-            raise InvalidApplicationDataException(f"Applicant {applicant_id} has already successfully applied to scheme {scheme_id}.")
+            raise InvalidApplicationDataException(f"Applicant {applicant.name} has already successfully applied to scheme {scheme.name}.")
 
 
         # Checks that the Applicant is eligible for the Scheme to determine the status of the application

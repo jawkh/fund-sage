@@ -56,7 +56,7 @@ api_test_engine = create_engine(API_TEST_DATABASE_URL)
 # Create a configured "Session" class for testing
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
 ApiTestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=api_test_engine)
-
+ADMIN_USER_PASSWORD = Env().str("ADMIN_USER_PASSWORD", "ADMIN_USER_PASSWORD is not set.")
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -204,7 +204,7 @@ def test_administrator(crud_operations):
     """
     try:
     # Create mock administrators
-        yield crud_operations.create_administrator(username="test_admin", password_hash="correct_password", salt="salt")
+        yield crud_operations.create_administrator(username="test_admin", password_hash=ADMIN_USER_PASSWORD, salt="salt")
     except SQLAlchemyError as e:
         print(e)
         raise e
@@ -331,7 +331,7 @@ def test_applicant(crud_operations):
     Fixture to create essential mock data required for testing.
     Ensures referential integrity for 'Applications' by creating necessary 'applicant' records first.
     """
-    ad = crud_operations.create_administrator(username="test_admin_a", password_hash="hashed_password", salt="salt") # Create a mock admin used to create the applicant
+    ad = crud_operations.create_administrator(username="test_admin_a", password_hash=ADMIN_USER_PASSWORD, salt="salt") # Create a mock admin used to create the applicant
     
     applicant_data = {
         "name": "John Doe",
@@ -372,7 +372,7 @@ def test_application(crud_operations):
     """
     Fixture to create essential mock data required for testing.
     """
-    ad = crud_operations.create_administrator(username="test_admin_b", password_hash="hashed_password", salt="salt") # Create a mock admin used to create the applicant and application
+    ad = crud_operations.create_administrator(username="test_admin_b", password_hash=ADMIN_USER_PASSWORD, salt="salt") # Create a mock admin used to create the applicant and application 
     applicant_data = {
         "name": "John Doe",
         "employment_status": "employed",
@@ -521,7 +521,7 @@ def api_test_admin(api_test_db__NonTransactional):
     crud_operations__NonTransactional = CRUDOperations(api_test_db__NonTransactional)
     admin_service = AdministratorService(crud_operations__NonTransactional)
     username = str(uuid.uuid4())  # Generate a unique username for each test run
-    temp_admin = admin_service.create_administrator({'username': username, 'password_hash': 'Helloworld123!'})
+    temp_admin = admin_service.create_administrator({'username': username, 'password_hash': ADMIN_USER_PASSWORD})
 
     yield temp_admin  # Provide the created admin for the test
 
@@ -545,7 +545,7 @@ class helper:
             
     def get_JWT_via_user_login(test_client, api_test_create_temp_admin):
         # Step 1: Authenticate to get JWT token
-        response = test_client.post('/api/auth/login', json={'username': api_test_create_temp_admin.username, 'password': 'Helloworld123!'})
+        response = test_client.post('/api/auth/login', json={'username': api_test_create_temp_admin.username, 'password': ADMIN_USER_PASSWORD})
         assert response.status_code == 200
         token_data = response.get_json()
         assert 'access_token' in token_data

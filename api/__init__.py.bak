@@ -1,0 +1,52 @@
+from flask import Flask, g, jsonify
+from flask_marshmallow import Marshmallow
+from marshmallow import ValidationError
+from flask_jwt_extended import JWTManager
+from sqlalchemy import create_engine
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import scoped_session, sessionmaker
+from api.routes.applicants import applicants_bp
+from api.routes.schemes import schemes_bp
+from api.routes.applications import applications_bp
+from api.routes.auth import auth_bp  
+from config import Config
+from dal.database import Base  # Import your Base model
+import logging
+import os
+from logging.handlers import RotatingFileHandler
+
+# Initialize extensions
+ma = Marshmallow()
+jwt = JWTManager()
+
+def setup_logging(app):
+    # Set up logging to console
+    logging.basicConfig(level=logging.DEBUG)  # Set to DEBUG for detailed output
+
+    # Set up logging to a file
+    if not os.path.exists('logs'):
+        os.mkdir('logs')
+    file_handler = RotatingFileHandler('logs/flask_app.log', maxBytes=10240, backupCount=10)
+    file_handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
+    file_handler.setFormatter(formatter)
+    app.logger.addHandler(file_handler)
+
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+    
+    # Setup logging
+    setup_logging(app)
+
+    # Initialize extensions and register blueprints
+    ma.init_app(app)
+    jwt.init_app(app)
+
+    # Register routes and error handlers
+    app.register_blueprint(applicants_bp)
+    app.register_blueprint(schemes_bp)
+    app.register_blueprint(applications_bp)
+    app.register_blueprint(auth_bp)
+    setup_db_session(app)
+    return app
