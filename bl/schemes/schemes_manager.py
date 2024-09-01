@@ -78,6 +78,7 @@ Design Pattern:
 # schemes_manager.py
 
 class EligibilityResult(NamedTuple):
+    scheme_id: int
     scheme_name: str
     scheme_description: str
     scheme_start_date: str
@@ -95,17 +96,21 @@ class SchemesManager:
         self.__crud_operations = crud_operations
         self.__schemeFactory = schemeFactory
 
-    def check_schemes_eligibility_for_applicant(self, schemes_filters: dict, fetch_valid_schemes: bool, applicant: Applicant) -> List[EligibilityResult]:
+    def check_schemes_eligibility_for_applicant(self, schemes_filters: dict, fetch_valid_schemes: bool, applicant: Applicant) -> tuple[List[EligibilityResult], List[Scheme]]:
         """
         Check which schemes an applicant is eligible for using various eligibility strategies.
         """
         schemes = self.__crud_operations.get_schemes_by_filters(schemes_filters, fetch_valid_schemes)
         eligibility_results = []
+        eligible_schemes = []
 
         for scheme in schemes:
-            eligibility_results.append(self.check_scheme_eligibility_for_applicant(scheme, applicant))
+            eligibility_result = self.check_scheme_eligibility_for_applicant(scheme, applicant)
+            eligibility_results.append(eligibility_result)
+            if eligibility_result.is_eligible:
+                eligible_schemes.append(scheme) # Add eligible schemes to the list
 
-        return eligibility_results
+        return eligibility_results, eligible_schemes
     
     def check_scheme_eligibility_for_applicant(self, scheme: Scheme, applicant: Applicant) -> EligibilityResult:
         """
@@ -115,6 +120,7 @@ class SchemesManager:
         is_eligible, message = scheme_eligibility_checker._check_eligibility(applicant)
         eligible_benefits = scheme_eligibility_checker._calculate_benefits(applicant) if is_eligible else []
         return EligibilityResult(
+            scheme_id=scheme.id,
             scheme_name=scheme.name,
             scheme_description=scheme.description,
             scheme_start_date=scheme.validity_start_date,
