@@ -6,9 +6,9 @@ from dal.crud_operations import CRUDOperations
 from exceptions import ApplicantNotFoundException
 from tests.conftest import helper
 
-def test__api_create_applicant_success(test_client, test_db__NonTransactional, create_temp_admin):
+def test__api_create_applicant_success(api_test_client, api_test_db__NonTransactional, api_test_admin):
     # Step 1: Authenticate to get JWT token
-    access_token = helper.get_JWT_via_user_login(test_client, create_temp_admin)
+    access_token = helper.get_JWT_via_user_login(api_test_client, api_test_admin)
     
     # Step 2: Prepare applicant data
     applicant_data = {
@@ -25,7 +25,7 @@ def test__api_create_applicant_success(test_client, test_db__NonTransactional, c
     }
 
     # Step 3: Send POST request to create applicant with JWT token in header
-    response = test_client.post(
+    response = api_test_client.post(
         '/api/applicants',  # Direct URL path used here
         json=applicant_data,
         headers={'Authorization': f'Bearer {access_token}'}
@@ -38,7 +38,7 @@ def test__api_create_applicant_success(test_client, test_db__NonTransactional, c
     assert len(data['household_members']) == len(applicant_data['household_members'])
     
     # Cleanup: Remove the created applicant
-    crud_operations = CRUDOperations(test_db__NonTransactional)
+    crud_operations = CRUDOperations(api_test_db__NonTransactional)
     applicant_service = ApplicantService(crud_operations)
     applicant_service.delete_applicant(data['id'])
     with pytest.raises(ApplicantNotFoundException):
@@ -46,12 +46,12 @@ def test__api_create_applicant_success(test_client, test_db__NonTransactional, c
 
 
 
-def test__api_create_applicant_missing_data(test_client, test_db__NonTransactional, create_temp_admin):
+def test__api_create_applicant_missing_data(api_test_client, api_test_admin):
     """
     Test creating an applicant with missing required fields to trigger validation errors.
     """
     # Step 1: Authenticate to get JWT token
-    access_token = helper.get_JWT_via_user_login(test_client, create_temp_admin)
+    access_token = helper.get_JWT_via_user_login(api_test_client, api_test_admin)
     
     # Step 2: Prepare Applicant data with missing required fields
     applicant_data = {
@@ -61,7 +61,7 @@ def test__api_create_applicant_missing_data(test_client, test_db__NonTransaction
     }
 
     # Step 3: Send POST request to create applicant with JWT token in header
-    response = test_client.post(
+    response = api_test_client.post(
         '/api/applicants',  # Direct URL path used here
         json=applicant_data,
         headers={'Authorization': f'Bearer {access_token}'}
@@ -72,7 +72,7 @@ def test__api_create_applicant_missing_data(test_client, test_db__NonTransaction
     assert 'errors' in data
 
 
-def test__api_create_applicant_unauthorized(test_client, test_db__NonTransactional):
+def test__api_create_applicant_unauthorized(api_test_client):
     """
     Test creating an applicant without JWT token to trigger unauthorized access.
     """
@@ -88,7 +88,7 @@ def test__api_create_applicant_unauthorized(test_client, test_db__NonTransaction
     }
 
     # Step 2: Send POST request to create applicant with JWT token in header
-    response = test_client.post(
+    response = api_test_client.post(
         '/api/applicants',  # Direct URL path used here
         json=applicant_data
     )
@@ -99,12 +99,12 @@ def test__api_create_applicant_unauthorized(test_client, test_db__NonTransaction
     assert data['msg'] == "Missing Authorization Header"
 
 
-def test__api_create_applicant_invalid_household_member_data(test_client, test_db__NonTransactional, create_temp_admin):
+def test__api_create_applicant_invalid_household_member_data(api_test_client, api_test_admin):
     """
     Test creating an applicant with invalid household member data.
     """
     # Step 1: Authenticate to get JWT token
-    access_token = helper.get_JWT_via_user_login(test_client, create_temp_admin)
+    access_token = helper.get_JWT_via_user_login(api_test_client, api_test_admin)
     
     # Step 2: Applicant data with invalid household member relation
     applicant_data = {
@@ -120,7 +120,7 @@ def test__api_create_applicant_invalid_household_member_data(test_client, test_d
     }
 
     # Step 3: Send POST request to create applicant with JWT token in header
-    response = test_client.post(
+    response = api_test_client.post(
         '/api/applicants',  # Direct URL path used here
         json=applicant_data,
         headers={'Authorization': f'Bearer {access_token}'}

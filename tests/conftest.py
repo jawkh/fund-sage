@@ -43,46 +43,73 @@ from bl.services.scheme_service import SchemeService
 from bl.services.application_service import ApplicationService
 from bl.factories.scheme_eligibility_checker_factory import SchemeEligibilityCheckerFactory
 from bl.schemes.schemes_manager import SchemesManager
+from sqlalchemy.exc import SQLAlchemyError
 
 # Load environment variables
 load_dotenv()
-TEST_DATABASE_URL = Env().str("DATABASE_URL", "DATABASE_URL is not set.")
-# TEST_DATABASE_URL = Env().str("TEST_DATABASE_URL", "DATABASE_URL is not set.") # Switched to API DB. Used for both automated pytest and manual testings using PostMan
+API_TEST_DATABASE_URL = Env().str("DATABASE_URL", "DATABASE_URL is not set.") # API Test DB - Used for both automated pytest and manual testings using PostMan
+TEST_DATABASE_URL = Env().str("TEST_DATABASE_URL", "TEST_DATABASE_URL is not set.") # For non-API automated pytest only. DB Tables will be provisioned and destroyed for each test session. 
 
 # Create a new engine for the test database
 test_engine = create_engine(TEST_DATABASE_URL)
-
+api_test_engine = create_engine(API_TEST_DATABASE_URL)
 # Create a configured "Session" class for testing
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+ApiTestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=api_test_engine)
+
+
+
+@pytest.fixture(scope="session", autouse=True)
+def initialize_database(setup_emphemeral_database, setup_api_test_database): # Ensure the setup_emphemeral_database and setup_api_test_database fixtures are called before this fixture
+    pass
 
 @pytest.fixture(scope="session")
-def setup_database():
+def setup_emphemeral_database():
     """
-    Set up the database once for the entire test session.
+    Set up the database Tables once for the entire test session.
     This fixture will create all the tables at the start of the session and drop them at the end.
     """
     # Create all tables
     Base.metadata.create_all(bind=test_engine)
     yield
     # # Drop all tables after the test session is complete
-    # Base.metadata.drop_all(bind=test_engine) # Commented out to prevent dropping tables after the test session (Switching to API DB. Will need to retain the DB for Manual POSTMan Testing)
+    Base.metadata.drop_all(bind=test_engine) 
 
 @pytest.fixture(scope="session")
-def connection(setup_database):
+def setup_api_test_database():
+    """
+    Set up the database Tables once and for all.
+    Database Tables will not be destroyed after the test session.
+    """
+    # Create all tables
+    Base.metadata.create_all(bind=api_test_engine)
+    yield
+
+@pytest.fixture(scope="session")
+def test_db_connection():
     """
     Creates a single database connection for the test session.
     """
     connection = test_engine.connect()
     yield connection
     connection.close()
+    
+@pytest.fixture(scope="session")
+def api_test_db_connection():
+    """
+    Creates a single database connection for the test session.
+    """
+    connection = api_test_engine.connect()
+    yield connection
+    connection.close()
 
 @pytest.fixture(scope="function")
-def test_db(connection):
+def test_db(test_db_connection):
     """
     Creates a new database session for each test function, using a transaction that rolls back after each test.
     """
-    transaction = connection.begin()  # Begin a new transaction on the connection
-    session = TestingSessionLocal(bind=connection)  # Bind the session to the same connection
+    transaction = test_db_connection.begin()  # Begin a new transaction on the connection
+    session = TestingSessionLocal(bind=test_db_connection)  # Bind the session to the same connection
     try:
         yield session  # This is where the test using the session will run
         session.flush()  # Ensure all changes are flushed to the database
@@ -91,11 +118,24 @@ def test_db(connection):
         session.close()  # Close the session to release the connection
 
 @pytest.fixture(scope="function")
-def test_db__NonTransactional(connection):
+def api_test_db(api_test_db_connection):
+    """
+    Creates a new database session for each test function, using a transaction that rolls back after each test.
+    """
+    transaction = api_test_db_connection.begin()  # Begin a new transaction on the connection
+    session = ApiTestingSessionLocal(bind=api_test_db_connection)  # Bind the session to the same connection
+    try:
+        yield session  # This is where the test using the session will run
+        session.flush()  # Ensure all changes are flushed to the database
+    finally:
+        session.close()  # Close the session to release the connection
+
+@pytest.fixture(scope="function")
+def api_test_db__NonTransactional(api_test_db_connection):
     """
     Creates a new database session for each test function. Will not roll back after each test.
     """
-    session = TestingSessionLocal(bind=connection)  # Bind the session to the same connection
+    session = ApiTestingSessionLocal(bind=api_test_db_connection)  # Bind the session to the api test db connection
     try:
         yield session  # This is where the test using the session will run
         session.flush()  # Ensure all changes are flushed to the database
@@ -162,9 +202,13 @@ def test_administrator(crud_operations):
     Fixture to create essential mock data required for testing.
     Ensures referential integrity for 'Applications' by creating necessary 'Schemes' records first.
     """
+    try:
     # Create mock administrators
-    yield crud_operations.create_administrator(username="test_admin", password_hash="correct_password", salt="salt")
-
+        yield crud_operations.create_administrator(username="test_admin", password_hash="correct_password", salt="salt")
+    except SQLAlchemyError as e:
+        print(e)
+        raise e
+    
 @pytest.fixture(scope="function")
 def retrenchment_assistance_scheme(scheme_service):
     """
@@ -442,7 +486,7 @@ def setup_applicants(applicant_service: ApplicantService, test_administrator):
 from api import create_app
 
 @pytest.fixture(scope='module')
-def test_client():
+def api_test_client():
     
     app = create_app()
     testing_client = app.test_client()
@@ -452,7 +496,7 @@ def test_client():
         yield testing_client  # this is where the testing happens!
 
 @pytest.fixture(scope='module')
-def test_db__NonTransactional():
+def api_test_db__NonTransactional():
     # Setup the database for tests
     session = SessionLocal()
 
@@ -469,13 +513,13 @@ from bl.services.administrator_service import AdministratorService
 
 
 @pytest.fixture
-def create_temp_admin(test_db__NonTransactional):
+def api_test_admin(api_test_db__NonTransactional):
     """
     Fixture to create and clean up a temporary administrator for testing.
     """
     
-    crud_operations = CRUDOperations(test_db__NonTransactional)
-    admin_service = AdministratorService(crud_operations)
+    crud_operations__NonTransactional = CRUDOperations(api_test_db__NonTransactional)
+    admin_service = AdministratorService(crud_operations__NonTransactional)
     username = str(uuid.uuid4())  # Generate a unique username for each test run
     temp_admin = admin_service.create_administrator({'username': username, 'password_hash': 'Helloworld123!'})
 
@@ -499,9 +543,9 @@ class helper:
             # If the response is not in JSON format, print the raw data
             print(response.data)
             
-    def get_JWT_via_user_login(test_client, create_temp_admin):
+    def get_JWT_via_user_login(test_client, api_test_create_temp_admin):
         # Step 1: Authenticate to get JWT token
-        response = test_client.post('/api/auth/login', json={'username': create_temp_admin.username, 'password': 'Helloworld123!'})
+        response = test_client.post('/api/auth/login', json={'username': api_test_create_temp_admin.username, 'password': 'Helloworld123!'})
         assert response.status_code == 200
         token_data = response.get_json()
         assert 'access_token' in token_data

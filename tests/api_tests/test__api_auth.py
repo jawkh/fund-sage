@@ -8,8 +8,8 @@ from flask_jwt_extended import create_access_token
 from bl.services.administrator_service import AdministratorService
 from dal.crud_operations import CRUDOperations
 
-def test_login_success(test_client, test_db__NonTransactional):
-    crud_operations = CRUDOperations(test_db__NonTransactional)
+def test_login_success(api_test_client, api_test_db__NonTransactional):
+    crud_operations = CRUDOperations(api_test_db__NonTransactional)
     AS = AdministratorService(crud_operations)
         
     try:
@@ -17,7 +17,7 @@ def test_login_success(test_client, test_db__NonTransactional):
         temp_admin = AS.create_administrator({'username': username, 'password_hash': 'Helloworld123!'}) # Create a temporary administrator record
         
         # Mock a successful login
-        response = test_client.post('/api/auth/login', json={'username': temp_admin.username, 'password': 'Helloworld123!'})
+        response = api_test_client.post('/api/auth/login', json={'username': temp_admin.username, 'password': 'Helloworld123!'})
         data = response.get_json()
         assert response.status_code == 200
         assert 'access_token' in data
@@ -26,27 +26,27 @@ def test_login_success(test_client, test_db__NonTransactional):
         assert AS.get_administrator_by_id(temp_admin.id) is None   # Ensure the admin was deleted
     
     
-def test_login_failure(test_client):
+def test_login_failure(api_test_client):
     # Mock a failed login
-    response = test_client.post('/api/auth/login', json={'username': 'sa', 'password': 'wrong_password'})
+    response = api_test_client.post('/api/auth/login', json={'username': 'sa', 'password': 'wrong_password'})
     data = response.get_json()
     assert response.status_code == 401
     assert 'error' in data
     assert data['error'] == f"Invalid password. {AdministratorService.MAX_PASSWORD_RETRIES - 1} attempts remaining."
 
-def test_protected_endpoint_without_token(test_client):
+def test_protected_endpoint_without_token(api_test_client):
     # Attempt to access a protected endpoint without a token
-    response = test_client.get('/api/applicants')
+    response = api_test_client.get('/api/applicants')
     data = response.get_json()
     assert response.status_code == 401
     assert 'msg' in data
     assert data['msg'] == "Missing Authorization Header"
 
-def test_protected_endpoint_with_token(test_client):
+def test_protected_endpoint_with_token(api_test_client):
     # Login to get a token
-    response = test_client.post('/api/auth/login', json={'username': 'sa', 'password': 'sa__Pa55w0rd'})
+    response = api_test_client.post('/api/auth/login', json={'username': 'sa', 'password': 'sa__Pa55w0rd'})
     token = response.get_json().get('access_token')
 
     # Access a protected endpoint with the token
-    response = test_client.get('/api/applicants', headers={'Authorization': f'Bearer {token}'})
+    response = api_test_client.get('/api/applicants', headers={'Authorization': f'Bearer {token}'})
     assert response.status_code == 200

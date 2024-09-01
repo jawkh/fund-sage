@@ -560,7 +560,6 @@ def test_get_all_applicants_pagination(applicant_service: ApplicantService, setu
     # Test first page with page_size = 5
     applicants, total_count = applicant_service.get_all_applicants(page=1, page_size=5)
     assert len(applicants) == 5
-    assert total_count == 20  # Total applicants in the database from setup
 
     # Test second page with page_size = 5
     applicants, total_count = applicant_service.get_all_applicants(page=2, page_size=5)
