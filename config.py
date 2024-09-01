@@ -6,21 +6,26 @@
 
 from environs import Env
 from dotenv import load_dotenv
+
 load_dotenv()
 
 class Config:
-    SECRET_KEY = Env().str('SECRET_KEY', "SECRET_KEY is not set.")
-    SQLALCHEMY_DATABASE_URI = Env().str('DATABASE_URL', 'DATABASE_URL is not set.')
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_SECRET_KEY = Env().str('JWT_SECRET_KEY', 'JWT_SECRET_KEY is not set.')
+    SQLALCHEMY_DATABASE_URI = Env().str('DATABASE_URL', 'DATABASE_URL is not set.') # Database URI
+    SQLALCHEMY_TRACK_MODIFICATIONS = False # Disable tracking modifications
+    SECRET_KEY = Env().str('SECRET_KEY') # Secret key for the application
+    JWT_SECRET_KEY = Env().str('JWT_SECRET_KEY') # Secret key for JWT
+    JWT_ACCESS_TOKEN_EXPIRES = int(Env().str('JWT_ACCESS_TOKEN_EXPIRES', "3600"))  # Token expiration time (default: 1 hour)
+    SERVER_NAME = Env().str('SERVER_NAME', '127.0.0.1:5000')  # Configuring the server name
+    APPLICATION_ROOT = Env().str('APPLICATION_ROOT', '/')  # Setting the root path for the application
+    PREFERRED_URL_SCHEME = Env().str('PREFERRED_URL_SCHEME', 'http')  # Default URL scheme
 
 class DevelopmentConfig(Config):
     DEBUG = True
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = Env().str("TEST_DATABASE_URL", "TEST_DATABASE_URL is not set.")
-    WTF_CSRF_ENABLED = False
+    SQLALCHEMY_DATABASE_URI = Env().str("DATABASE_URL", "DATABASE_URL is not set.")
+    WTF_CSRF_ENABLED = False  # Disable CSRF protection in the testing environment
 
 class ProductionConfig(Config):
     DEBUG = False

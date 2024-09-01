@@ -45,7 +45,7 @@ def test__neg_validate_scheme_data_invalid_data_type():
     assert not is_valid
     assert message == "Invalid value for eligibility_criteria: must be a JSON object (dict)"
 
-def test__neg_validate_scheme_data_invalid_values():
+def test_validate_scheme_data_invalid_validity_start_date():
     scheme_data = {
         "name": "Health Scheme",
         "description": "A comprehensive health benefits scheme.",
@@ -53,9 +53,9 @@ def test__neg_validate_scheme_data_invalid_values():
         "benefits": {"coverage": "up to $10,000 per year"},
         "validity_start_date": "2024-01-01"  # Invalid type
     }
-    is_valid, message = validate_scheme_data(scheme_data, for_create_mode=True)
-    assert not is_valid
-    assert message == "Invalid value for validity_start_date: must be a datetime object"
+    is_valid, message = validate_scheme_data(scheme_data, for_create_mode=True) # upgraded the validate_scheme_data function to auto convert a 'date' object to 'datetime'. Making it valid now.
+    assert is_valid
+    # assert message == "Invalid value for validity_start_date: must be a datetime object"
 
 def test_validate_scheme_data_optional_fields():
     scheme_data = {
@@ -87,13 +87,12 @@ def test__neg_validate_scheme_data_update_invalid_field_type():
     assert not is_valid
     assert message == "Invalid value for eligibility_criteria: must be a JSON object (dict)"
 
-def test__neg_validate_scheme_data_update_invalid_value():
+def test_validate_scheme_data_update_invalid_value():
     scheme_data = {
         "validity_start_date": "2024-01-01"  # Invalid type
     }
-    is_valid, message = validate_scheme_data(scheme_data, for_create_mode=False)
-    assert not is_valid
-    assert message == "Invalid value for validity_start_date: must be a datetime object"
+    is_valid, message = validate_scheme_data(scheme_data, for_create_mode=False) # auto convert date to datetime
+    assert is_valid
 
 def test_validate_scheme_data_update_partial_fields():
     scheme_data = {

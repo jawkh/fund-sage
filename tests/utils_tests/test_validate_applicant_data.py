@@ -90,7 +90,7 @@ def test__neg_validate_household_member_data_missing_required_fields():
     assert not is_valid
     assert message == "Missing or empty field: relation"
 
-def test__neg_validate_household_member_data_invalid_data_type():
+def test_validate_household_member_data_invalid_data_type():
     household_member_data = {
         "applicant_id": 1,
         "name": "Jane Doe",
@@ -99,9 +99,9 @@ def test__neg_validate_household_member_data_invalid_data_type():
         "employment_status": "unemployed",
         "sex": "F"
     }
-    is_valid, message = validate_household_member_data(household_member_data, for_create_mode=True)
-    assert not is_valid
-    assert message == "Invalid value for date_of_birth: must be a datetime object"
+    is_valid, message = validate_household_member_data(household_member_data, for_create_mode=True) # upgraded the validate_household_member_data function to auto convert a 'date' object to 'datetime'. Making it valid now.
+    assert is_valid
+    # assert message == "Invalid value for date_of_birth: must be a datetime object"
 
 def test__neg_validate_household_member_data_invalid_values():
     household_member_data = {
@@ -169,13 +169,13 @@ def test_validate_household_member_data_update_valid():
     assert is_valid
     assert message == "All fields are valid"
 
-def test__neg_validate_household_member_data_update_invalid_field_type():
+def test_validate_household_member_data_update_invalid_date_of_birth_type():
     household_member_data = {
         "date_of_birth": "2010-05-20"  # Invalid type
     }
-    is_valid, message = validate_household_member_data(household_member_data, for_create_mode=False)
-    assert not is_valid
-    assert message == "Invalid value for date_of_birth: must be a datetime object"
+    is_valid, message = validate_household_member_data(household_member_data, for_create_mode=False) # auto convert date to datetime
+    assert is_valid
+    # assert message == "Invalid value for date_of_birth: must be a datetime object"
 
 def test__neg_validate_household_member_data_update_invalid_value():
     household_member_data = {

@@ -92,6 +92,8 @@ class ApplicantService:
         Returns:
             Applicant: The created applicant with household members.
         """
+        
+        
         # Phase 1: Validate all data
         isApplicantDataValid, msg = validate_applicant_data(applicant_data, for_create_mode=True)
         if not isApplicantDataValid:

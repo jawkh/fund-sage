@@ -46,8 +46,8 @@ from bl.schemes.schemes_manager import SchemesManager
 
 # Load environment variables
 load_dotenv()
-TEST_DATABASE_URL = Env().str("TEST_DATABASE_URL", "TEST_DATABASE_URL is not set.")
-
+TEST_DATABASE_URL = Env().str("DATABASE_URL", "DATABASE_URL is not set.")
+# TEST_DATABASE_URL = Env().str("TEST_DATABASE_URL", "DATABASE_URL is not set.") # Switched to API DB. Used for both automated pytest and manual testings using PostMan
 
 # Create a new engine for the test database
 test_engine = create_engine(TEST_DATABASE_URL)
@@ -64,8 +64,8 @@ def setup_database():
     # Create all tables
     Base.metadata.create_all(bind=test_engine)
     yield
-    # Drop all tables after the test session is complete
-    Base.metadata.drop_all(bind=test_engine)
+    # # Drop all tables after the test session is complete
+    # Base.metadata.drop_all(bind=test_engine) # Commented out to prevent dropping tables after the test session (Switching to API DB. Will need to retain the DB for Manual POSTMan Testing)
 
 @pytest.fixture(scope="session")
 def connection(setup_database):
@@ -87,6 +87,18 @@ def test_db(connection):
         yield session  # This is where the test using the session will run
         session.flush()  # Ensure all changes are flushed to the database
         transaction.rollback()  # Rollback the transaction to clean up after the test
+    finally:
+        session.close()  # Close the session to release the connection
+
+@pytest.fixture(scope="function")
+def test_db__NonTransactional(connection):
+    """
+    Creates a new database session for each test function. Will not roll back after each test.
+    """
+    session = TestingSessionLocal(bind=connection)  # Bind the session to the same connection
+    try:
+        yield session  # This is where the test using the session will run
+        session.flush()  # Ensure all changes are flushed to the database
     finally:
         session.close()  # Close the session to release the connection
 
@@ -440,7 +452,7 @@ def test_client():
         yield testing_client  # this is where the testing happens!
 
 @pytest.fixture(scope='module')
-def init_database():
+def test_db__NonTransactional():
     # Setup the database for tests
     session = SessionLocal()
 
@@ -451,6 +463,27 @@ def init_database():
 
     # Teardown the database after tests
     session.close()
+
+import uuid
+from bl.services.administrator_service import AdministratorService
+
+
+@pytest.fixture
+def create_temp_admin(test_db__NonTransactional):
+    """
+    Fixture to create and clean up a temporary administrator for testing.
+    """
+    
+    crud_operations = CRUDOperations(test_db__NonTransactional)
+    admin_service = AdministratorService(crud_operations)
+    username = str(uuid.uuid4())  # Generate a unique username for each test run
+    temp_admin = admin_service.create_administrator({'username': username, 'password_hash': 'Helloworld123!'})
+
+    yield temp_admin  # Provide the created admin for the test
+
+    # Cleanup after the test
+    admin_service.delete_administrator(temp_admin.id)
+    assert admin_service.get_administrator_by_id(temp_admin.id) is None
     
 class helper:
     def print_response(response):
@@ -465,3 +498,12 @@ class helper:
         except (TypeError, ValueError):
             # If the response is not in JSON format, print the raw data
             print(response.data)
+            
+    def get_JWT_via_user_login(test_client, create_temp_admin):
+        # Step 1: Authenticate to get JWT token
+        response = test_client.post('/api/auth/login', json={'username': create_temp_admin.username, 'password': 'Helloworld123!'})
+        assert response.status_code == 200
+        token_data = response.get_json()
+        assert 'access_token' in token_data
+        access_token = token_data['access_token']
+        return access_token

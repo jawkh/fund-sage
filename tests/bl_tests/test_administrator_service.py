@@ -73,15 +73,20 @@ def test_delete_administrator(crud_operations, test_administrator):
 
 # Tests for security-related methods in AdministratorService
 
-def test_verify_login_credentials_success(crud_operations):
+@pytest.mark.parametrize (
+    "created_username, password, login_username, login_password", 
+    [("admin1", "  password1", " admin1 ", "password1"), 
+    ("  ADMIN2", "password2  ", "Admin2", "  password2"), 
+    ("admin3  ", "password3 ", " ADMIN3 ", "  password3  ")])
+def test_verify_login_credentials_success(crud_operations, created_username, password, login_username, login_password):
     """
     Test successful verification of login credentials.
     """
     admin_service = AdministratorService(crud_operations)
     correct_password = "correct_password"
-    new_admin = admin_service.create_administrator({"username": "admin_test", "password_hash": correct_password})
+    new_admin = admin_service.create_administrator({"username": created_username, "password_hash": password})
 
-    verified_new_admin, mesg = admin_service.verify_login_credentials(new_admin.username, correct_password)
+    verified_new_admin, mesg = admin_service.verify_login_credentials(login_username, password) # Verifying the conditions: username is case-insensitive and will be auto stripped of leading/trailing whitespaces
     assert verified_new_admin is not None
     assert verified_new_admin.username == new_admin.username
     assert mesg == f"Welcome [{new_admin.username}]!"

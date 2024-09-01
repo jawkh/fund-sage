@@ -3,6 +3,7 @@
 # api/routes/schemes.py
 
 from flask import Blueprint, request, jsonify, g
+from flask_jwt_extended import jwt_required
 from bl.services.scheme_service import SchemeService
 from api.schemas.all_schemas import SchemeSchema
 # from marshmallow import ValidationError
@@ -14,6 +15,7 @@ from bl.services.applicant_service import ApplicantService
 schemes_bp = Blueprint('schemes', __name__)
 
 @schemes_bp.route('/api/schemes', methods=['GET'])
+@jwt_required()
 def get_schemes():
     session = g.db_session  # Get the session from Flask's g object
     crud_operations = CRUDOperations(session)
@@ -24,6 +26,7 @@ def get_schemes():
         return jsonify({'error': str(e)}), 400
     
 @schemes_bp.route('/api/schemes/eligible', methods=['GET'])
+@jwt_required()
 def get_eligible_schemes():
     applicant_id = request.args.get('applicant')
     if not applicant_id:

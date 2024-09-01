@@ -5,6 +5,7 @@
 
 from flask import Blueprint, request, jsonify, g
 from bl.services.applicant_service import ApplicantService
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from marshmallow import ValidationError
 from dal.crud_operations import CRUDOperations
 from api.schemas.all_schemas import ApplicantSchema
@@ -14,6 +15,7 @@ from sqlalchemy.exc import SQLAlchemyError
 applicants_bp = Blueprint('applicants', __name__)
 
 @applicants_bp.route('/api/applicants', methods=['GET'])
+@jwt_required()
 def get_applicants():
     session = g.db_session  # Get the session from Flask's g object
     crud_operations = CRUDOperations(session)
@@ -68,16 +70,42 @@ def get_applicants():
         return jsonify({'error': 'An unexpected error occurred', 'details': str(e)}), 500
 
 @applicants_bp.route('/api/applicants', methods=['POST'])
+@jwt_required()
 def create_applicant():
+    """
+    Endpoint to create a new applicant along with their household members.
+    Automatically assigns the created_by_admin_id from the JWT token to ensure security.
+    """
     session = g.db_session  # Get the session from Flask's g object
     crud_operations = CRUDOperations(session)
     applicant_service = ApplicantService(crud_operations)
     try:
+        # Extract 'id' from JWT claims to use as created_by_admin_id
+        admin_id = get_jwt_identity()['id']
+
+        # Load and validate request data using Marshmallow schema
         data = request.json
-        applicant_data = ApplicantSchema().load(data)
-        applicant = applicant_service.create_applicant(data, data.get('household_members', []))
-        return jsonify(applicant), 201
+        data['created_by_admin_id'] = admin_id  # Overwrite created_by_admin_id to ensure security
+        
+        # Deserialize and validate input data
+        applicant_data = ApplicantSchema().load(data)  
+        # Extract household members data as a list of dictionaries``
+        household_members_data = applicant_data.pop('household_members', []) # Extract household members from the data
+
+        # Use the applicant service to create the applicant and associated household members
+        applicant = applicant_service.create_applicant(
+            applicant_data, 
+            household_members_data=household_members_data  # Pass the household members as a list of dicts
+        )
+
+        # Serialize the newly created applicant object for the response
+        result = ApplicantSchema().dump(applicant)
+        return jsonify(result), 201  # Return a 201 Created status code on success
+
     except ValidationError as err:
-        return jsonify(err.messages), 400
+        # Handle validation errors from Marshmallow schema
+        return jsonify({'errors': err.messages}), 400
+
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        # General error handler for any unexpected issues
+        return jsonify({'error': 'An unexpected error occurred', 'details': str(e)}), 500

@@ -4,6 +4,7 @@
 # api/routes/applications.py
 
 from flask import Blueprint, request, jsonify, g
+from flask_jwt_extended import jwt_required
 from bl.services.application_service import ApplicationService
 from api.schemas.all_schemas import ApplicationSchema
 from marshmallow import ValidationError
@@ -15,6 +16,7 @@ from exceptions import InvalidPaginationParameterException, InvalidSortingParame
 applications_bp = Blueprint('applications', __name__)
 
 @applications_bp.route('/api/applications', methods=['GET'])
+@jwt_required()
 def get_applications():
     session = g.db_session  # Get the session from Flask's g object
     crud_operations = CRUDOperations(session)
@@ -56,6 +58,7 @@ def get_applications():
         return jsonify({'error': 'An unexpected error occurred'}), 500
 
 @applications_bp.route('/api/applications', methods=['POST'])
+@jwt_required()
 def create_application():
     session = g.db_session  # Get the session from Flask's g object
     crud_operations = CRUDOperations(session)

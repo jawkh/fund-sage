@@ -12,6 +12,7 @@ Design Pattern: Data Validation
 from datetime import datetime
 from typing import Tuple
 from utils.date_utils import is_future_date
+from utils.date_utils import convert_to_datetime
 
 def validate_administrator_data(administrator_data: dict, for_create_mode: bool) -> Tuple[bool, str]:
     """
@@ -104,6 +105,7 @@ def validate_applicant_data(applicant_data: dict, for_create_mode: bool) -> Tupl
             return False, "Invalid value for marital_status: must be 'single', 'married', 'divorced', or 'widowed'"
 
     if 'employment_status_change_date' in applicant_data and applicant_data['employment_status_change_date'] is not None:
+        applicant_data['employment_status_change_date'] = convert_to_datetime(applicant_data['employment_status_change_date']) # Convert to datetime object to be safe
         if not isinstance(applicant_data['employment_status_change_date'], datetime):
             return False, "Invalid value for employment_status_change_date: must be a datetime object"
         elif 'employment_status_change_date' in applicant_data and is_future_date(applicant_data['employment_status_change_date']):
@@ -145,7 +147,10 @@ def validate_household_member_data(household_member_data: dict, for_create_mode:
         if not isinstance(household_member_data['relation'], str) or household_member_data['relation'] not in ['parent', 'child', 'spouse', 'sibling', 'other']:
             return False, "Invalid value for relation: must be 'parent', 'child', 'spouse', 'sibling', or 'other'"
 
-    if "date_of_birth" in household_member_data and not isinstance(household_member_data['date_of_birth'], datetime):
+    if "date_of_birth" in household_member_data:
+        household_member_data['date_of_birth'] = convert_to_datetime(household_member_data['date_of_birth']) # Convert to datetime object to be safe 
+
+    if  "date_of_birth" in household_member_data and not isinstance(household_member_data['date_of_birth'], datetime):
         return False, "Invalid value for date_of_birth: must be a datetime object"
     elif "date_of_birth" in household_member_data and is_future_date(household_member_data['date_of_birth']):
         return False, "Invalid value for date_of_birth: must be a past date"
@@ -205,10 +210,14 @@ def validate_scheme_data(scheme_data: dict, for_create_mode: bool = True) -> Tup
     if "benefits" in scheme_data and not isinstance(scheme_data['benefits'], dict):
         return False, "Invalid value for benefits: must be a JSON object (dict)"
 
+    if "validity_start_date" in scheme_data:
+        scheme_data['validity_start_date'] = convert_to_datetime(scheme_data['validity_start_date']) # Convert to datetime object to be safe
+
     if "validity_start_date" in scheme_data and not isinstance(scheme_data['validity_start_date'], datetime):
         return False, "Invalid value for validity_start_date: must be a datetime object"
 
     if "validity_end_date" in scheme_data:
+        scheme_data['validity_end_date'] = convert_to_datetime(scheme_data['validity_end_date']) # Convert to datetime object to be safe
         if scheme_data['validity_end_date'] is not None and not isinstance(scheme_data['validity_end_date'], datetime):
             return False, "Invalid value for validity_end_date: must be a datetime object or None"
         elif scheme_data['validity_end_date'] is not None and scheme_data['validity_end_date'] < scheme_data['validity_start_date']:
@@ -251,6 +260,8 @@ def validate_application_data(application_data: dict, for_create_mode: bool = Tr
         if not isinstance(application_data['status'], str) or application_data['status'] not in ['pending', 'approved', 'rejected']:
             return False, "Invalid value for status: must be 'pending', 'approved', or 'rejected'"
 
+    if "submission_date" in application_data:
+        application_data['submission_date'] = convert_to_datetime(application_data['submission_date']) # Convert to datetime object to be safe
     if "submission_date" in application_data and not isinstance(application_data['submission_date'], datetime):
         return False, "Invalid value for submission_date: must be a datetime object"
     elif "submission_date" in application_data and is_future_date(application_data['submission_date']):
@@ -294,6 +305,8 @@ def validate_system_configuration_data(config_data: dict, for_create_mode: bool 
         if not isinstance(config_data['description'], str):
             return False, "Invalid value for description: must be a string or None"
 
+    if "last_updated" in config_data:
+        config_data['last_updated'] = convert_to_datetime(config_data['last_updated']) # Convert to datetime object to be safe
     if "last_updated" in config_data and not isinstance(config_data['last_updated'], datetime):
         return False, "Invalid value for last_updated: must be a datetime object"
 

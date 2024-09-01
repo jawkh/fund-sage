@@ -60,25 +60,33 @@ class AdministratorService:
         """
         Retrieve an administrator by ID.
         """
-        return self.crud_operations.get_administrator(admin_id) # Check if the admin exists. Raises an exception if not found.
+        return self.crud_operations.get_administrator(admin_id) # Check if the admin exists. 
     
     def get_administrator_by_username(self, username: str) -> Administrator:
         """
         Retrieve an administrator by username.
         """
-        return self.__get_admin_by_username(username) # Check if the admin exists. Raises an exception if not found.
+        username = username.strip().lower() # Remove leading and trailing whitespaces. Sets username to lowercase
+        return self.__get_admin_by_username(username) # Check if the admin exists. 
 
 
     def create_administrator(self, admin_data: dict) -> Administrator:
-                    
+        
+        if ("password_hash" in admin_data):
+            admin_data["password_hash"] = admin_data["password_hash"].strip() # Remove leading and trailing whitespaces
+        
         # Generate a salt
         salt = os.urandom(16).hex()
         raw_password = admin_data["password_hash"] # Extract the raw password from the data
         # Hash the password with the salt
         password_hash = self.__hash_password(raw_password, salt)
+        
+        if ("username" in admin_data): 
+            admin_data["username"] = admin_data["username"].strip().lower() # Remove leading and trailing whitespaces. Sets username to lowercase
+            
         admin_data["password_hash"] = password_hash # Replace the raw password with the hashed password
         admin_data["salt"] = salt
-
+        
         isValid, msg = validate_administrator_data(admin_data, True)
         if not isValid:
             raise InvalidAdministratorDataException(msg)
@@ -111,8 +119,19 @@ class AdministratorService:
         """
         Verify login credentials for an administrator.
         """
-        admin = self.__get_admin_by_username(username) # Check if the admin exists. Raises an exception if not found.
+        if not username or not password:
+            return None, "Missing required parameters [username / password]"
         
+        if username:
+            username = username.strip().lower() # Remove leading and trailing whitespaces. Sets username to lowercase
+        if password:
+            password = password.strip() # reomve leading and trailing whitespaces
+        
+        try:
+            admin = self.__get_admin_by_username(username) # Check if the admin exists. Raises an exception if not found.
+        except AdministratorNotFoundException as e:
+            return None, str(e)
+            
         if admin: 
             if not admin.account_locked:
                 if self.__verify_password(admin.password_hash, password, admin.salt):
@@ -224,7 +243,12 @@ class AdministratorService:
         """
         Retrieve an administrator by username.
         """
+        if username:
+            username = username.strip().lower() # Remove leading and trailing whitespaces. Sets username to lowercase
+        else:
+            raise AdministratorNotFoundException("Username cannot be empty.") 
+        
         admin = self.crud_operations.get_administrator_by_username(username)
         if not admin:
-            raise AdministratorNotFoundException(f"Administrator with Isername {username} not found.")
+            raise AdministratorNotFoundException(f"Administrator with Username {username} not found.")
         return admin
