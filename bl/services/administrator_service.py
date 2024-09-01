@@ -66,7 +66,7 @@ class AdministratorService:
         """
         Retrieve an administrator by username.
         """
-        return self._get_admin_by_username(username) # Check if the admin exists. Raises an exception if not found.
+        return self.__get_admin_by_username(username) # Check if the admin exists. Raises an exception if not found.
 
 
     def create_administrator(self, admin_data: dict) -> Administrator:
@@ -75,7 +75,7 @@ class AdministratorService:
         salt = os.urandom(16).hex()
         raw_password = admin_data["password_hash"] # Extract the raw password from the data
         # Hash the password with the salt
-        password_hash = self.hash_password(raw_password, salt)
+        password_hash = self.__hash_password(raw_password, salt)
         admin_data["password_hash"] = password_hash # Replace the raw password with the hashed password
         admin_data["salt"] = salt
 
@@ -107,27 +107,34 @@ class AdministratorService:
         return self.crud_operations.get_administrators_by_filters({})
 
     # Security methods
-    def verify_login_credentials(self, username: str, password: str) -> Optional[Administrator]:
+    def verify_login_credentials(self, username: str, password: str) -> tuple[Optional[Administrator], str]:
         """
         Verify login credentials for an administrator.
         """
-        admin = self._get_admin_by_username(username) # Check if the admin exists. Raises an exception if not found.
-        if admin and not admin.account_locked:
-            if self.verify_password(admin.password_hash, password, admin.salt):
-                # Reset login failure counters on successful login
-                self.reset_login_failure_counters(admin.id)
-                return admin
+        admin = self.__get_admin_by_username(username) # Check if the admin exists. Raises an exception if not found.
+        
+        if admin: 
+            if not admin.account_locked:
+                if self.__verify_password(admin.password_hash, password, admin.salt):
+                    # Reset login failure counters on successful login
+                    self.reset_login_failure_counters(admin.id)
+                    return admin, f"Welcome [{admin.username}]!"
+                else:
+                    # Increment login failure counters
+                    consecutive_failed_logins = self.__increment_login_failure_counter(admin.id)
+                    mesg = f"Invalid password. {self.MAX_PASSWORD_RETRIES - consecutive_failed_logins} attempts remaining."
             else:
-                # Increment login failure counters
-                self.increment_login_failure_counter(admin.id)
-        return None
+                mesg = "Account is locked. Please contact the administrator."
+        else:
+            mesg = "Invalid username. Please try again."
+        return None, mesg
     
-    def increment_login_failure_counter(self, admin_id: int) -> None:
+    def __increment_login_failure_counter(self, admin_id: int) -> int:
         """
         Increment the consecutive_failed_logins counter and set failed_login_starttime.
         Lock the account if necessary, considering the retry time window.
         """
-        admin = self._get_admin_by_id(admin_id) # Check if the admin exists. Raises an exception if not found.
+        admin = self.__get_admin_by_id(admin_id) # Check if the admin exists. Raises an exception if not found.
         current_time = datetime.now(timezone.utc)  # Use timezone-aware datetime
         current_count = admin.consecutive_failed_logins
         time_window = timedelta(minutes=self.PASSWORD_RETRIES_TIME_WINDOW_MINUTES)  # Configure this as needed
@@ -149,8 +156,9 @@ class AdministratorService:
                 update_data = {"consecutive_failed_logins": current_count}
         else:
             # First failed attempt within a new window
+            current_count = 1
             update_data = {
-                "consecutive_failed_logins": 1,
+                "consecutive_failed_logins": current_count,
                 "failed_login_starttime": current_time
             }
 
@@ -159,6 +167,7 @@ class AdministratorService:
             update_data["account_locked"] = True
 
         self.crud_operations.update_administrator(admin_id, update_data)
+        return current_count
 
 
     def reset_login_failure_counters(self, admin_id: int) -> None:
@@ -171,24 +180,24 @@ class AdministratorService:
         }
         self.crud_operations.update_administrator(admin_id, update_data)
     
-    def hash_password(self, password: str, salt: str) -> str:
+    def __hash_password(self, password: str, salt: str) -> str:
         """
         Hash a password with a salt using SHA-256.
         """
         return hashlib.sha256(f'{salt}:{password}'.encode('utf-8')).hexdigest()
 
-    def verify_password(self, stored_password_hash: str, provided_password: str, salt: str) -> bool:
+    def __verify_password(self, stored_password_hash: str, provided_password: str, salt: str) -> bool:
         """
         Verify a provided password against the stored password hash using the salt.
         """
-        return stored_password_hash == self.hash_password(provided_password, salt)
+        return stored_password_hash == self.__hash_password(provided_password, salt)
 
         
     def unlock_administrator_account(self, admin_id: int) -> None:
         """
         Unlock an administrator's account, resetting the lock status and failure counters.
         """
-        self._get_admin_by_id(admin_id) # Check if the admin exists. Raises an exception if not found.
+        self.__get_admin_by_id(admin_id) # Check if the admin exists. Raises an exception if not found.
         update_data = {
             "account_locked": False,
             "consecutive_failed_logins": 0,
@@ -196,22 +205,22 @@ class AdministratorService:
         }
         self.crud_operations.update_administrator(admin_id, update_data)
 
-    def lock_administrator_account(self, admin_id: int) -> None:
+    def __lock_administrator_account(self, admin_id: int) -> None:
         """
         Lock an administrator's account after too many consecutive login failures.
         """
-        self._get_admin_by_id(admin_id) # Check if the admin exists. Raises an exception if not found.
+        self.__get_admin_by_id(admin_id) # Check if the admin exists. Raises an exception if not found.
         update_data = {"account_locked": True}
         self.crud_operations.update_administrator(admin_id, update_data)
 
 
-    def _get_admin_by_id(self, admin_id: int) -> Administrator:
+    def __get_admin_by_id(self, admin_id: int) -> Administrator:
         admin = self.crud_operations.get_administrator(admin_id)
         if not admin:
             raise AdministratorNotFoundException(f"Administrator with ID {admin_id} not found.")
         return admin
 
-    def _get_admin_by_username(self, username: str) -> Administrator:
+    def __get_admin_by_username(self, username: str) -> Administrator:
         """
         Retrieve an administrator by username.
         """

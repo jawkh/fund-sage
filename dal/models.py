@@ -86,7 +86,7 @@ class Applicant(Base):
     created_at: DateTime = Column(DateTime(timezone=True), server_default=func.now())
     updated_at: DateTime = Column(DateTime(timezone=True), onupdate=func.now())
 
-   # Relationships with eager loading
+    # Relationships with eager loading
     creator = relationship("Administrator", back_populates="applicants_created")
     household_members = relationship("HouseholdMember", back_populates="applicant", cascade="all, delete-orphan", lazy='joined')
     applications = relationship("Application", back_populates="applicant", cascade="all, delete-orphan")

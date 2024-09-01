@@ -37,7 +37,7 @@ from datetime import datetime
 from datetime import datetime, timedelta 
 from dal.crud_operations import CRUDOperations
 from dal.system_config import SystemConfig
-from dal.database import Base
+from dal.database import Base, SessionLocal
 from bl.services.applicant_service import ApplicantService
 from bl.services.scheme_service import SchemeService
 from bl.services.application_service import ApplicationService
@@ -425,3 +425,43 @@ def setup_applicants(applicant_service: ApplicantService, test_administrator):
 
     yield created_applicants
 
+#################################################
+# Test Fixtures for Flask Application and Client
+from api import create_app
+
+@pytest.fixture(scope='module')
+def test_client():
+    
+    app = create_app()
+    testing_client = app.test_client()
+
+    # Establish an application context
+    with app.app_context():
+        yield testing_client  # this is where the testing happens!
+
+@pytest.fixture(scope='module')
+def init_database():
+    # Setup the database for tests
+    session = SessionLocal()
+
+    # Initialize the database here
+    # e.g., insert test data
+
+    yield session  # this is where the testing happens!
+
+    # Teardown the database after tests
+    session.close()
+    
+class helper:
+    def print_response(response):
+        """
+        Helper function to print the response data in a readable JSON format.
+        """
+        import json  # Import json for pretty-printing
+
+        try:
+            # Try to pretty print the JSON response
+            print(json.dumps(response.get_json(), indent=4))
+        except (TypeError, ValueError):
+            # If the response is not in JSON format, print the raw data
+            print(response.data)
