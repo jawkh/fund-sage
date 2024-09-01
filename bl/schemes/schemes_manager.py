@@ -100,7 +100,7 @@ class SchemesManager:
         """
         Check which schemes an applicant is eligible for using various eligibility strategies.
         """
-        schemes = self.__crud_operations.get_schemes_by_filters(schemes_filters, fetch_valid_schemes)
+        schemes, total_Schemes = self.__crud_operations.get_schemes_by_filters(schemes_filters, fetch_valid_schemes)
         eligibility_results = []
         eligible_schemes = []
 

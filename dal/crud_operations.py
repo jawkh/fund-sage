@@ -451,19 +451,60 @@ class CRUDOperations:
         return self.db_session.query(Scheme).filter(Scheme.id == scheme_id).first()
     
 
-    def get_schemes_by_filters(self, filters: Dict, fetch_valid_schemes: bool = True) -> List[Scheme]:
+    # def get_schemes_by_filters(self, filters: Dict, fetch_valid_schemes: bool = True) -> List[Scheme]:
+    #     """
+    #     Retrieve multiple schemes based on common filters.
+
+    #     Args:
+    #         filters (Dict): A dictionary of filters (e.g., {"validity_start_date": "2023-01-01"}).
+    #         fetch_valid_schemes (bool): Flag to determine whether to fetch only schemes valid as of today's date.
+
+    #     Returns:
+    #         List[Scheme]: A list of Scheme objects that match the filters and are valid if fetch_valid_schemes is True.
+    #     """
+    #     query = self.db_session.query(Scheme)
+        
+    #     # Apply filters provided in the function argument
+    #     for attribute, value in filters.items():
+    #         query = query.filter(getattr(Scheme, attribute) == value)
+
+    #     # Apply validity date filtering if fetch_valid_schemes is True
+    #     if fetch_valid_schemes:
+    #         today = date.today()
+    #         query = query.filter(Scheme.validity_start_date <= today).filter(
+    #             (Scheme.validity_end_date.is_(None)) | (Scheme.validity_end_date >= today)
+    #         )
+
+    #     return query.all()
+
+    def get_schemes_by_filters(
+    self, 
+    filters: Dict, 
+    fetch_valid_schemes: bool = True, 
+    page: int = 1, 
+    per_page: int = 10
+    ) -> Tuple[List[Scheme], int]:
         """
-        Retrieve multiple schemes based on common filters.
+        Retrieve multiple schemes based on common filters with optional pagination.
 
         Args:
             filters (Dict): A dictionary of filters (e.g., {"validity_start_date": "2023-01-01"}).
             fetch_valid_schemes (bool): Flag to determine whether to fetch only schemes valid as of today's date.
+            page (int): The page number for pagination.
+            per_page (int): The number of schemes per page.
 
         Returns:
-            List[Scheme]: A list of Scheme objects that match the filters and are valid if fetch_valid_schemes is True.
+            Tuple[List[Scheme], int]: A tuple containing a list of Scheme objects that match the filters and
+                                    a total count of schemes.
         """
-        query = self.db_session.query(Scheme)
+        # Validate pagination parameters
+        if page < 1:
+            raise InvalidPaginationParameterException("Page number must be greater than 0.")
+        if per_page < 1:
+            raise InvalidPaginationParameterException("Page size must be greater than 0.")
         
+        query = self.db_session.query(Scheme)
+
         # Apply filters provided in the function argument
         for attribute, value in filters.items():
             query = query.filter(getattr(Scheme, attribute) == value)
@@ -475,7 +516,13 @@ class CRUDOperations:
                 (Scheme.validity_end_date.is_(None)) | (Scheme.validity_end_date >= today)
             )
 
-        return query.all()
+        # Get total count before applying pagination
+        total_count = query.count()
+
+        # Apply pagination
+        schemes = query.offset((page - 1) * per_page).limit(per_page).all()
+
+        return schemes, total_count
 
     def update_scheme(self, scheme_id: int, update_data: Dict) -> Optional[Scheme]:
         """

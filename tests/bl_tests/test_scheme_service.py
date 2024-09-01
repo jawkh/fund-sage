@@ -160,9 +160,9 @@ def test_get_schemes_by_filters(crud_operations, retrenchment_assistance_scheme)
     Test retrieving schemes using specific filters.
     """
     scheme_service = SchemeService(crud_operations)
-    schemes = scheme_service.get_schemes_by_filters({"name": retrenchment_assistance_scheme.name}, fetch_valid_schemes=True)
+    schemes, rec_counts = scheme_service.get_schemes_by_filters({"name": retrenchment_assistance_scheme.name}, fetch_valid_schemes=True)
     
-    assert len(schemes) > 0
+    assert rec_counts > 0
     assert schemes[0].name == retrenchment_assistance_scheme.name
 
 # Negative Test Cases

@@ -7,6 +7,7 @@ from dal.crud_operations import CRUDOperations
 from dal.models import Scheme
 from exceptions import SchemeNotFoundException, InvalidSchemeDataException  
 from utils.data_validation import validate_scheme_data
+from typing import List, Tuple
 """ 
 Summary: The SchemeService class is responsible for handling all business logic related to financial assistance schemes, including CRUD operations and potentially complex logic involving scheme eligibility
 
@@ -78,10 +79,32 @@ class SchemeService:
         """
         Retrieve all schemes, optionally filtering for valid schemes based on current date.
         """
-        return self.crud_operations.get_schemes_by_filters({}, fetch_valid_schemes)
+        schemes, rec_count = self.crud_operations.get_schemes_by_filters({}, fetch_valid_schemes)
+        return schemes
+    
+    def get_schemes_by_filters(
+        self, 
+        filters: dict = {}, 
+        fetch_valid_schemes: bool = True, 
+        page: int = 1, 
+        per_page: int = 10
+    ) -> Tuple[List[Scheme], int]:
+        """
+        Retrieve schemes with optional filters and pagination.
 
-    def get_schemes_by_filters(self, filters: dict, fetch_valid_schemes: bool=True) -> List[Scheme]:
+        Args:
+            filters (dict): Filters to apply to the query.
+            fetch_valid_schemes (bool): Flag to determine whether to fetch only valid schemes.
+            page (int): The page number for pagination.
+            per_page (int): The number of items per page for pagination.
+
+        Returns:
+            Tuple[List[Scheme], int]: A list of schemes and total count of schemes.
         """
-        Retrieve schemes by specific filters, optionally checking for validity.
-        """
-        return self.crud_operations.get_schemes_by_filters(filters, fetch_valid_schemes)
+        return self.crud_operations.get_schemes_by_filters(
+            filters=filters,
+            fetch_valid_schemes=fetch_valid_schemes,
+            page=page,
+            per_page=per_page
+        )
+
