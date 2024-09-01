@@ -108,14 +108,15 @@ def get_applications():
 def create_application():
     session = g.db_session  # Get the session from Flask's g object
     crud_operations = CRUDOperations(session)
-    appllication_service = ApplicationService(crud_operations)
+    application_service = ApplicationService(crud_operations)
     schemeEligibilityCheckerFactory = SchemeEligibilityCheckerFactory(session) 
     try:
         data = request.json
         application_data = ApplicationSchema().load(data)
         admin_id = request.headers.get('admin_id') # placeholder for admin_id
-        application = appllication_service.create_application(data.get('applicant_id'), data.get('scheme_id'), admin_id, schemeEligibilityCheckerFactory)
-        return jsonify(application), 201
+        application = application_service.create_application(data.get('applicant_id'), data.get('scheme_id'), admin_id, schemeEligibilityCheckerFactory)
+        application_data = ApplicationSchema().dump(application)
+        return jsonify(application_data), 201
     except ValidationError as err:
         return jsonify(err.messages), 400
     except Exception as e:

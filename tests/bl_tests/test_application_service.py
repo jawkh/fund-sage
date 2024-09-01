@@ -5,8 +5,8 @@ import pytest
 from bl.services.application_service import ApplicationService
 from exceptions import ApplicantNotFoundException, SchemeNotFoundException, InvalidApplicationDataException,  InvalidPaginationParameterException, InvalidSortingParameterException
 from bl.factories.scheme_eligibility_checker_factory import SchemeEligibilityCheckerFactory
-
-
+from bl.schemes.schemes_manager import SchemesManager
+from dal.crud_operations import CRUDOperations
 
 def test_create_application_invalid_applicant(application_service, crud_operations, test_administrator, retrenchment_assistance_scheme):
     """
@@ -96,3 +96,91 @@ def test_get_all_applications_invalid_sorting(application_service):
     with pytest.raises(InvalidSortingParameterException) as exc_info:
         application_service.get_all_applications(page=1, page_size=2, sort_by='created_at', sort_order='invalid_order')
     assert str(exc_info.value) == "Invalid sort_order 'invalid_order'. Allowed values are 'asc' or 'desc'."
+
+
+
+# tests/test_application_service.py
+
+def test_create_application_valid(app_service: ApplicationService, mocker):
+    eligibility_results = mocker.Mock(is_eligible=True, eligibility_message="Eligible", eligible_benefits={"benefit1": "value1"})
+    mocker.patch.object(SchemesManager, 'check_scheme_eligibility_for_applicant', return_value=eligibility_results)
+    
+    application = app_service.create_application(1, 2, 3, mocker.Mock())
+    
+    assert application.status == "approved"
+    assert application.eligibility_verdict == "Eligible"
+    assert application.awarded_benefits == {"benefit1": "value1"}
+
+def test_update_application_recheck_eligibility(app_service: ApplicationService, mocker):
+    eligibility_results = mocker.Mock(is_eligible=False, eligibility_message="Not Eligible", eligible_benefits={})
+    mocker.patch.object(SchemesManager, 'check_scheme_eligibility_for_applicant', return_value=eligibility_results)
+
+    updated_application = app_service.update_application(1, {"applicant_id": 2}, mocker.Mock())
+    
+    assert updated_application.status == "rejected"
+    assert updated_application.eligibility_verdict == "Not Eligible"
+    assert updated_application.awarded_benefits == {}
+
+
+# tests/test_application_service.py
+
+def test_create_application_valid(app_service: ApplicationService, mocker):
+    eligibility_results = mocker.Mock(is_eligible=True, eligibility_message="Eligible", eligible_benefits={"benefit1": "value1"})
+    mocker.patch.object(SchemesManager, 'check_scheme_eligibility_for_applicant', return_value=eligibility_results)
+    
+    application = app_service.create_application(1, 2, 3, mocker.Mock())
+    
+    assert application.status == "approved"
+    assert application.eligibility_verdict == "Eligible"
+    assert application.awarded_benefits == {"benefit1": "value1"}
+
+def test_update_application_recheck_eligibility(app_service: ApplicationService, mocker):
+    eligibility_results = mocker.Mock(is_eligible=False, eligibility_message="Not Eligible", eligible_benefits={})
+    mocker.patch.object(SchemesManager, 'check_scheme_eligibility_for_applicant', return_value=eligibility_results)
+
+    updated_application = app_service.update_application(1, {"applicant_id": 2}, mocker.Mock())
+    
+    assert updated_application.status == "rejected"
+    assert updated_application.eligibility_verdict == "Not Eligible"
+    assert updated_application.awarded_benefits == {}
+
+def test_create_application_with_new_fields(application_service, crud_operations, test_administrator, retrenchment_assistance_scheme):
+    with pytest.raises(ApplicantNotFoundException):
+        application_service.create_application(
+            applicant_id=9999,
+            scheme_id=retrenchment_assistance_scheme.id,
+            created_by_admin_id=test_administrator.id,
+            schemeEligibilityCheckerFactory=SchemeEligibilityCheckerFactory(crud_operations.db_session)
+        )
+
+
+# tests/test_application_service.py
+
+def test_create_application_approved_already_exists(app_service: ApplicationService, mocker):
+    """
+    Test that creating an application fails if an approved application already exists.
+    """
+    # Mock existing approved application
+    approved_application = mocker.Mock(status="approved")
+    mocker.patch.object(CRUDOperations, 'get_approved_application_by_applicant_and_scheme', return_value=approved_application)
+    
+    with pytest.raises(InvalidApplicationDataException) as exc_info:
+        app_service.create_application(1, 2, 3, mocker.Mock())
+
+    assert str(exc_info.value) == "Applicant 1 has already successfully applied to scheme 2."
+
+def test_create_application_rejected_or_pending(app_service: ApplicationService, mocker):
+    """
+    Test that creating an application is allowed if no approved application exists, or existing application is rejected.
+    """
+    # Mock no approved application found
+    mocker.patch.object(CRUDOperations, 'get_approved_application_by_applicant_and_scheme', return_value=None)
+    
+    eligibility_results = mocker.Mock(is_eligible=True, eligibility_message="Eligible", eligible_benefits={"benefit1": "value1"})
+    mocker.patch.object(SchemesManager, 'check_scheme_eligibility_for_applicant', return_value=eligibility_results)
+
+    application = app_service.create_application(1, 2, 3, mocker.Mock())
+    
+    assert application.status == "approved"
+    assert application.eligibility_verdict == "Eligible"
+    assert application.awarded_benefits == {"benefit1": "value1"}

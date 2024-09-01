@@ -74,6 +74,8 @@ class ApplicationSchema(Schema):
     applicant_id = fields.Int(required=True)
     scheme_id = fields.Int(required=True)
     status = fields.Str(required=True, validate=validate.OneOf(["pending", "approved", "rejected"]))
+    eligibility_verdict = fields.Str(validate=validate.Length(max=1000))  
+    awarded_benefits = fields.Dict()  
     submission_date = fields.DateTime(dump_only=True)
     created_by_admin_id = fields.Int()
     created_at = fields.DateTime(dump_only=True)

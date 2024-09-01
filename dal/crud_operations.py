@@ -143,56 +143,6 @@ class CRUDOperations:
         self.db_session.refresh(db_applicant)
         return db_applicant
     
-    
-    # def get_all_applicants(self, 
-    #                     page: int = 1, 
-    #                     page_size: int = 10, 
-    #                     sort_by: Optional[str] = 'name', 
-    #                     sort_order: Optional[str] = 'asc') -> Tuple[List[Applicant], int]:
-    #     """
-    #     Retrieve all applicants with pagination and sorting options.
-
-    #     Args:
-    #         page (int): The page number to retrieve.
-    #         page_size (int): The number of applicants to retrieve per page.
-    #         sort_by (Optional[str]): The field to sort by ('name' or 'created_at').
-    #         sort_order (Optional[str]): The sort order ('asc' or 'desc').
-
-    #     Returns:
-    #         Tuple[List[Applicant], int]: A tuple containing a list of applicants for the specified page and the total count of applicants.
-    #     """
-    #     # Validate pagination parameters
-    #     if page < 1:
-    #         raise InvalidPaginationParameterException("Page number must be greater than 0.")
-    #     if page_size < 1:
-    #         raise InvalidPaginationParameterException("Page size must be greater than 0.")
-
-    #     # Validate sorting parameters
-    #     if sort_by not in ['name', 'created_at']:
-    #         raise InvalidSortingParameterException(f"Invalid sort_by field '{sort_by}'. Allowed values are 'name' or 'created_at'.")
-    #     if sort_order not in ['asc', 'desc']:
-    #         raise InvalidSortingParameterException(f"Invalid sort_order '{sort_order}'. Allowed values are 'asc' or 'desc'.")
-
-    #     # Calculate offset for pagination
-    #     offset = (page - 1) * page_size
-        
-    #     # Define sorting criteria
-    #     sort_column = Applicant.name if sort_by == 'name' else Applicant.created_at
-    #     sort_direction = asc if sort_order == 'asc' else desc
-
-    #     # Retrieve applicants from the database with pagination and sorting
-    #     applicants = (self.db_session
-    #                 .query(Applicant)
-    #                 .order_by(sort_direction(sort_column))
-    #                 .offset(offset)
-    #                 .limit(page_size)
-    #                 .all())
-        
-    #     # Retrieve total count of applicants for pagination purposes
-    #     total_count = self.db_session.query(Applicant).count()
-
-    #     return applicants, total_count
-
 
     def get_all_applicants(self, 
                         page: int = 1, 
@@ -451,31 +401,6 @@ class CRUDOperations:
         return self.db_session.query(Scheme).filter(Scheme.id == scheme_id).first()
     
 
-    # def get_schemes_by_filters(self, filters: Dict, fetch_valid_schemes: bool = True) -> List[Scheme]:
-    #     """
-    #     Retrieve multiple schemes based on common filters.
-
-    #     Args:
-    #         filters (Dict): A dictionary of filters (e.g., {"validity_start_date": "2023-01-01"}).
-    #         fetch_valid_schemes (bool): Flag to determine whether to fetch only schemes valid as of today's date.
-
-    #     Returns:
-    #         List[Scheme]: A list of Scheme objects that match the filters and are valid if fetch_valid_schemes is True.
-    #     """
-    #     query = self.db_session.query(Scheme)
-        
-    #     # Apply filters provided in the function argument
-    #     for attribute, value in filters.items():
-    #         query = query.filter(getattr(Scheme, attribute) == value)
-
-    #     # Apply validity date filtering if fetch_valid_schemes is True
-    #     if fetch_valid_schemes:
-    #         today = date.today()
-    #         query = query.filter(Scheme.validity_start_date <= today).filter(
-    #             (Scheme.validity_end_date.is_(None)) | (Scheme.validity_end_date >= today)
-    #         )
-
-    #     return query.all()
 
     def get_schemes_by_filters(
     self, 
@@ -552,6 +477,20 @@ class CRUDOperations:
     # ===============================
     # CRUD Operations for Application
     # ===============================
+
+    def get_approved_application_by_applicant_and_scheme(self, applicant_id: int, scheme_id: int) -> Optional[Application]:
+        """
+        Retrieve an approved application by applicant ID and scheme ID.
+        Returns the first approved application found or None if no such application exists.
+        
+        This is used for Pre-eligibility checks to prevent an applicant from **successfully** applying to the same scheme multiple times.
+        Applicant may apply for the same scheme multiple times but only one application should be approved.
+        """
+        return self.db_session.query(Application).filter(
+            Application.applicant_id == applicant_id,
+            Application.scheme_id == scheme_id,
+            Application.status == "approved"  # Only look for approved applications
+        ).first()
 
     def create_application(self, application_data: Dict) -> Application:
         """

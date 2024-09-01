@@ -160,6 +160,8 @@ class Application(Base):
     applicant_id: int = Column(Integer, ForeignKey('Applicants.id', ondelete='CASCADE'))
     scheme_id: int = Column(Integer, ForeignKey('Schemes.id', ondelete='CASCADE'))
     status: str = Column(String(50), nullable=False)
+    eligibility_verdict: str = Column(String, nullable=True)
+    awarded_benefits: dict = Column(JSON, nullable=True)  
     submission_date: DateTime = Column(DateTime(timezone=True), default=func.now())
     created_by_admin_id: int = Column(Integer, ForeignKey('Administrators.id')) 
     created_at: DateTime = Column(DateTime(timezone=True), server_default=func.now())

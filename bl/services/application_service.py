@@ -73,11 +73,14 @@ class ApplicationService:
         1. Retrieve Applicant and Scheme:
         - The function starts by retrieving the applicant and scheme using the provided IDs. If either is not found, a corresponding exception is raised. This is a good practice to ensure that all prerequisites are met before proceeding with further logic.
         
-        2. Eligibility Check:
+        2. Pre-Eligibility Check:
+        - The function checks if an approved application already exists for the applicant and scheme. If such an application is found, it raises an exception to prevent duplicate applications for the same scheme.
+        
+        3. Eligibility Check:
         - The SchemesManager is instantiated with the crud_operations and schemeEligibilityCheckerFactory to check the applicant's eligibility for the scheme.
         - The eligibility_results dictionary contains a boolean flag, "is_eligible", which is used to set the application status ("approved" if eligible, "rejected" if not). This ensures that the application status reflects the eligibility result.
         
-        3. Application Creation:
+        4. Application Creation:
         - An application_data dictionary is constructed with the appropriate values, including the determined status.
         - The application is created using the crud_operations.create_application method, which is a standard way to interact with the database.
         """
@@ -94,6 +97,15 @@ class ApplicationService:
         if not admin:
             raise AdministratorNotFoundException(f"Administrator with ID {created_by_admin_id} not found.")
 
+        # Check if an approved application already exists for this applicant and scheme
+        # If an approved application exists, prevent duplicate applications
+        # This is to ensure that an applicant does not **successfully** apply multiple times for the same scheme
+        # If the applicant has a rejected or pending application, they can apply again
+        existing_application = self.crud_operations.get_approved_application_by_applicant_and_scheme(applicant_id, scheme_id)
+        if existing_application and existing_application.status == "approved":
+            raise InvalidApplicationDataException(f"Applicant {applicant_id} has already successfully applied to scheme {scheme_id}.")
+
+
         # Checks that the Applicant is eligible for the Scheme to determine the status of the application
         scheme_manager = SchemesManager(self.crud_operations, schemeEligibilityCheckerFactory)
         eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(scheme, applicant)
@@ -105,6 +117,8 @@ class ApplicationService:
             "applicant_id": applicant_id,
             "scheme_id": scheme_id,
             "status": status,
+            "eligibility_verdict": eligibility_results.eligibility_message, 
+            "awarded_benefits": eligibility_results.eligible_benefits,  
             "created_by_admin_id": created_by_admin_id
         }
         isvalid , msg = validate_application_data(application_data, True)
@@ -163,7 +177,9 @@ class ApplicationService:
             
             # Update the status based on new eligibility results
             update_data["status"] = "approved" if eligibility_results.is_eligible else "rejected"
-
+            update_data["eligibility_verdict"] = eligibility_results.eligibility_message  
+            update_data["awarded_benefits"] = eligibility_results.eligible_benefits  
+            
         updated_application = self.crud_operations.update_application(application_id, update_data)
         return updated_application
 
