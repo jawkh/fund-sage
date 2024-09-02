@@ -10,7 +10,7 @@ The ORM Data Access Layer (DAL) is a foundational component of this project, ena
 
 2. **Data Validation with Check Constraints**:
    - SQLAlchemy Check Constraints are employed to enforce data integrity at the database level, ensuring that only valid data is stored. This reduces the risk of data corruption and enforces business rules directly within the schema.
-   - **Example**: The `Applicant` class includes constraints like `CheckConstraint("employment_status IN ('employed', 'unemployed')")`, ensuring that only predefined employment statuses are alloI d.
+   - **Example**: The `Applicant` class includes constraints like `CheckConstraint("employment_status IN ('employed', 'unemployed')")`, ensuring that only predefined employment statuses are allowed.
 
 3. **Encapsulation and Separation of Concerns**:
    - The DAL encapsulates all database interactions, providing a clean interface for CRUD operations while adhering to the Single Responsibility Principle (SRP). This separation of concerns makes the codebase more modular and easier to maintain.
@@ -44,13 +44,5 @@ The ORM Data Access Layer (DAL) is a foundational component of this project, ena
     - The DAL is flexible and easy to configure, with support for multiple database backends and environments (development, testing, production). The use of SQLAlchemy's session management and environment-specific configurations ensures seamless integration and deployment.
     - **Example**: The `Session` object is passed to the `CRUDOperations` class, allowing for easy switching betI en different database connections and settings.
 
-## Upcoming Enhancements
-
-- **Database Migrations**: I  plan to include detailed instructions on setting up and running database migrations using tools like Flask-Migrate. This will ensure the database schema remains in sync across all environments.
-- **Comprehensive API Documentation**: Future updates will provide detailed API documentation, possibly using Swagger or Postman collections, to help developers understand and interact with the API endpoints effectively.
-- **Developer Setup Guide**: A step-by-step guide for setting up the development environment will be provided, including instructions on installing dependencies, configuring the database, and running the application locally.
-
 By adhering to these best practices and leveraging poI rful tools like SQLAlchemy ORM, our project’s data access layer is both robust and flexible, supporting the needs of modern web applications.
-
----
 
