@@ -77,15 +77,18 @@ Design Pattern:
 
 # schemes_manager.py
 
-class EligibilityResult(NamedTuple):
-    scheme_id: int
-    scheme_name: str
-    scheme_description: str
-    scheme_start_date: str
-    scheme_end_date: str
-    is_eligible: bool
-    eligibility_message: str
-    eligible_benefits: dict
+class EligibilityResult():
+    
+    def __init__(self, scheme_id: int, scheme_name: str, scheme_description: str, scheme_start_date: str, scheme_end_date: str, is_eligible: bool, eligibility_message: str, eligible_benefits: dict):
+        self.report = {}
+        self.report["scheme_id"] = scheme_id
+        self.report["scheme_name"] = scheme_name
+        self.report["scheme_description"] = scheme_description
+        self.report["scheme_start_date"] = scheme_start_date
+        self.report["scheme_end_date"] = scheme_end_date
+        self.report["is_eligible"] = is_eligible
+        self.report["eligibility_message"] = eligibility_message
+        self.report["eligible_benefits"] = eligible_benefits
     
 class SchemesManager:
     """
@@ -107,7 +110,7 @@ class SchemesManager:
         for scheme in schemes:
             eligibility_result = self.check_scheme_eligibility_for_applicant(scheme, applicant)
             eligibility_results.append(eligibility_result)
-            if eligibility_result.is_eligible:
+            if eligibility_result.report["is_eligible"]:
                 eligible_schemes.append(scheme) # Add eligible schemes to the list
 
         return eligibility_results, eligible_schemes

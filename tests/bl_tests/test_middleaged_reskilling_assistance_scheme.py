@@ -52,11 +52,11 @@ def test_middleaged_reskilling_assistance_eligibility(application_service, appli
 
     # Verify eligibility results
     assert eligibility_results is not None
-    assert eligibility_results.is_eligible == (application.status == "approved")
-    assert eligibility_results.scheme_name == middleaged_reskilling_assistance_scheme.name
-    assert eligibility_results.scheme_description == middleaged_reskilling_assistance_scheme.description
-    assert eligibility_results.scheme_start_date == middleaged_reskilling_assistance_scheme.validity_start_date
-    assert eligibility_results.scheme_end_date == middleaged_reskilling_assistance_scheme.validity_end_date
+    assert eligibility_results.report["is_eligible"] == (application.status == "approved")
+    assert eligibility_results.report["scheme_name"] == middleaged_reskilling_assistance_scheme.name
+    assert eligibility_results.report["scheme_description"] == middleaged_reskilling_assistance_scheme.description
+    assert eligibility_results.report["scheme_start_date"] == middleaged_reskilling_assistance_scheme.validity_start_date
+    assert eligibility_results.report["scheme_end_date"] == middleaged_reskilling_assistance_scheme.validity_end_date
 
     # Verify the expected benefits
     expected_benefits = [
@@ -79,4 +79,4 @@ def test_middleaged_reskilling_assistance_eligibility(application_service, appli
     ]
 
     for expected_benefit in expected_benefits:
-        assert any(benefit == expected_benefit for benefit in eligibility_results.eligible_benefits), f"Expected {expected_benefit['benefit_name']} not found in list."
+        assert any(benefit == expected_benefit for benefit in eligibility_results.report["eligible_benefits"]), f"Expected {expected_benefit['benefit_name']} not found in list."

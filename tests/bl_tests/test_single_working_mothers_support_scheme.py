@@ -122,13 +122,13 @@ def test_single_working_mothers_support_scheme_eligibility(application_service, 
     scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(single_working_mothers_support_scheme, applicant)
 
-    assert eligibility_results.is_eligible
-    assert eligibility_results.eligibility_message == "Eligible for Single Working Mothers Support Scheme."
-    assert any(benefit["benefit_name"] == "cash_assistance" for benefit in eligibility_results.eligible_benefits)
-    assert any(benefit["benefit_name"] == f"income_tax_rebates for eligible_child: {household_member_data_child_one.get('name')}" for benefit in eligibility_results.eligible_benefits)
-    assert any(benefit["benefit_name"] == f"income_tax_rebates for eligible_child: {household_member_data_child_two.get('name')}" for benefit in eligibility_results.eligible_benefits)
-    assert not any(benefit["benefit_name"] == f"income_tax_rebates for eligible_child: {household_member_data_child_three.get('name')}" for benefit in eligibility_results.eligible_benefits)
-    assert not any(benefit["benefit_name"] == f"income_tax_rebates for eligible_child: {household_member_father.get('name')}" for benefit in eligibility_results.eligible_benefits)
+    assert eligibility_results.report["is_eligible"]
+    assert eligibility_results.report["eligibility_message"] == "Eligible for Single Working Mothers Support Scheme."
+    assert any(benefit["benefit_name"] == "cash_assistance" for benefit in eligibility_results.report["eligible_benefits"])
+    assert any(benefit["benefit_name"] == f"income_tax_rebates for eligible_child: {household_member_data_child_one.get('name')}" for benefit in eligibility_results.report["eligible_benefits"])
+    assert any(benefit["benefit_name"] == f"income_tax_rebates for eligible_child: {household_member_data_child_two.get('name')}" for benefit in eligibility_results.report["eligible_benefits"])
+    assert not any(benefit["benefit_name"] == f"income_tax_rebates for eligible_child: {household_member_data_child_three.get('name')}" for benefit in eligibility_results.report["eligible_benefits"])
+    assert not any(benefit["benefit_name"] == f"income_tax_rebates for eligible_child: {household_member_father.get('name')}" for benefit in eligibility_results.report["eligible_benefits"])
 
     cash_assistance_benefit = {
         "benefit_name": "cash_assistance",
@@ -156,9 +156,9 @@ def test_single_working_mothers_support_scheme_eligibility(application_service, 
         "disbursment_duration_month": 60
     }
     # Check if the expected benefits are in the list using any()
-    assert any(benefit == cash_assistance_benefit for benefit in eligibility_results.eligible_benefits), "Expected cash_assistance_benefit not found in list."
-    assert any(benefit == income_tax_rebates_benefit_child_one for benefit in eligibility_results.eligible_benefits), f"Expected income_tax_rebates for eligible_child: {household_member_data_child_one.get('name')} not found in list."
-    assert any(benefit == income_tax_rebates_benefit_child_two for benefit in eligibility_results.eligible_benefits), f"Expected income_tax_rebates for eligible_child: {household_member_data_child_two.get('name')} not found in list."
+    assert any(benefit == cash_assistance_benefit for benefit in eligibility_results.report["eligible_benefits"]), "Expected cash_assistance_benefit not found in list."
+    assert any(benefit == income_tax_rebates_benefit_child_one for benefit in eligibility_results.report["eligible_benefits"]), f"Expected income_tax_rebates for eligible_child: {household_member_data_child_one.get('name')} not found in list."
+    assert any(benefit == income_tax_rebates_benefit_child_two for benefit in eligibility_results.report["eligible_benefits"]), f"Expected income_tax_rebates for eligible_child: {household_member_data_child_two.get('name')} not found in list."
     
 
 
@@ -204,8 +204,8 @@ def test_single_working_mothers_support_scheme_ineligible_due_to_no_child(applic
     scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(single_working_mothers_support_scheme, applicant)
 
-    assert not eligibility_results.is_eligible
-    assert eligibility_results.eligibility_message == "Not eligible: No child 18 years old or younger in the household."
+    assert not eligibility_results.report["is_eligible"]
+    assert eligibility_results.report["eligibility_message"] == "Not eligible: No child 18 years old or younger in the household."
 
 
 def test_single_working_mothers_support_scheme_child_at_age_threshold(application_service, applicant_service, crud_operations, test_administrator, single_working_mothers_support_scheme):
@@ -251,10 +251,10 @@ def test_single_working_mothers_support_scheme_child_at_age_threshold(applicatio
     scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(single_working_mothers_support_scheme, applicant)
 
-    assert eligibility_results.is_eligible
-    assert eligibility_results.eligibility_message == "Eligible for Single Working Mothers Support Scheme."
-    assert any(benefit["benefit_name"] == "cash_assistance" for benefit in eligibility_results.eligible_benefits)
-    assert any(benefit["benefit_name"] == f"income_tax_rebates for eligible_child: {household_member_data['name']}" for benefit in eligibility_results.eligible_benefits)
+    assert eligibility_results.report["is_eligible"]
+    assert eligibility_results.report["eligibility_message"] == "Eligible for Single Working Mothers Support Scheme."
+    assert any(benefit["benefit_name"] == "cash_assistance" for benefit in eligibility_results.report["eligible_benefits"])
+    assert any(benefit["benefit_name"] == f"income_tax_rebates for eligible_child: {household_member_data['name']}" for benefit in eligibility_results.report["eligible_benefits"])
 
 
 def test_single_working_mothers_support_scheme_only_adult_children(application_service, applicant_service, crud_operations, test_administrator, single_working_mothers_support_scheme):
@@ -310,8 +310,8 @@ def test_single_working_mothers_support_scheme_only_adult_children(application_s
     scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(single_working_mothers_support_scheme, applicant)
 
-    assert not eligibility_results.is_eligible
-    assert eligibility_results.eligibility_message == "Not eligible: No child 18 years old or younger in the household."
+    assert not eligibility_results.report["is_eligible"]
+    assert eligibility_results.report["eligibility_message"] == "Not eligible: No child 18 years old or younger in the household."
 
 
 def test_single_working_mothers_support_scheme_not_employed(application_service, applicant_service, crud_operations, test_administrator, single_working_mothers_support_scheme):
@@ -357,8 +357,8 @@ def test_single_working_mothers_support_scheme_not_employed(application_service,
     scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(single_working_mothers_support_scheme, applicant)
 
-    assert not eligibility_results.is_eligible
-    assert eligibility_results.eligibility_message == "Not eligible: Applicant is not employed."
+    assert not eligibility_results.report["is_eligible"]
+    assert eligibility_results.report["eligibility_message"] == "Not eligible: Applicant is not employed."
 
 def test_single_working_mothers_support_scheme_male_applicant(application_service, applicant_service, crud_operations, test_administrator, single_working_mothers_support_scheme):
     """
@@ -403,8 +403,8 @@ def test_single_working_mothers_support_scheme_male_applicant(application_servic
     scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(single_working_mothers_support_scheme, applicant)
 
-    assert not eligibility_results.is_eligible
-    assert eligibility_results.eligibility_message == "Not eligible: Applicant is not female."
+    assert not eligibility_results.report["is_eligible"]
+    assert eligibility_results.report["eligibility_message"] == "Not eligible: Applicant is not female."
 
 
 def test_single_working_mothers_support_scheme_incorrect_marital_status(application_service, applicant_service, crud_operations, test_administrator, single_working_mothers_support_scheme):
@@ -450,8 +450,8 @@ def test_single_working_mothers_support_scheme_incorrect_marital_status(applicat
     scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(single_working_mothers_support_scheme, applicant)
 
-    assert not eligibility_results.is_eligible
-    assert eligibility_results.eligibility_message == "Not eligible: Applicant is not single, divorced, or widowed."
+    assert not eligibility_results.report["is_eligible"]
+    assert eligibility_results.report["eligibility_message"] == "Not eligible: Applicant is not single, divorced, or widowed."
 
 
 def test_single_working_mothers_support_scheme_children_at_and_above_age_threshold(application_service, applicant_service, crud_operations, test_administrator, single_working_mothers_support_scheme):
@@ -507,8 +507,8 @@ def test_single_working_mothers_support_scheme_children_at_and_above_age_thresho
     scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(single_working_mothers_support_scheme, applicant)
 
-    assert eligibility_results.is_eligible
-    assert eligibility_results.eligibility_message == "Eligible for Single Working Mothers Support Scheme."
-    assert any(benefit["benefit_name"] == "cash_assistance" for benefit in eligibility_results.eligible_benefits)
-    assert any(benefit["benefit_name"] == f"income_tax_rebates for eligible_child: {household_member_data[0]['name']}" for benefit in eligibility_results.eligible_benefits)
-    assert not any(benefit["benefit_name"] == f"income_tax_rebates for eligible_child: {household_member_data[1]['name']}" for benefit in eligibility_results.eligible_benefits)
+    assert eligibility_results.report["is_eligible"]
+    assert eligibility_results.report["eligibility_message"] == "Eligible for Single Working Mothers Support Scheme."
+    assert any(benefit["benefit_name"] == "cash_assistance" for benefit in eligibility_results.report["eligible_benefits"])
+    assert any(benefit["benefit_name"] == f"income_tax_rebates for eligible_child: {household_member_data[0]['name']}" for benefit in eligibility_results.report["eligible_benefits"])
+    assert not any(benefit["benefit_name"] == f"income_tax_rebates for eligible_child: {household_member_data[1]['name']}" for benefit in eligibility_results.report["eligible_benefits"])

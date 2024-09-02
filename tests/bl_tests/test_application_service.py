@@ -106,7 +106,11 @@ def test_update_application_recheck_eligibility(test_applicant, application_serv
 # tests/test_application_service.py
 
 def test_create_application_valid(test_applicant, retrenchment_assistance_scheme, test_administrator, application_service: ApplicationService, mocker):
-    eligibility_results = mocker.Mock(is_eligible=True, eligibility_message="Eligible", eligible_benefits={"benefit1": "value1"})
+    eligibility_results = mocker.Mock()
+    eligibility_results.report = { "is_eligible": True,
+                                    "eligibility_message": "Eligible",
+                                    "eligible_benefits": {"benefit1": "value1"}
+    }
     mocker.patch.object(SchemesManager, 'check_scheme_eligibility_for_applicant', return_value=eligibility_results)
     
     application = application_service.create_application(test_applicant.id, retrenchment_assistance_scheme.id, test_administrator.id, mocker.Mock())
@@ -114,9 +118,15 @@ def test_create_application_valid(test_applicant, retrenchment_assistance_scheme
     assert application.status == "approved"
     assert application.eligibility_verdict == "Eligible"
     assert application.awarded_benefits == {"benefit1": "value1"}
-
+        
 def test_update_application_recheck_eligibility(test_application, application_service: ApplicationService, mocker):
-    eligibility_results = mocker.Mock(is_eligible=False, eligibility_message="Not Eligible", eligible_benefits={})
+    # Create a mock for eligibility results with a dictionary for the report
+    eligibility_results = mocker.Mock()
+    eligibility_results.report = {
+        "is_eligible": False,
+        "eligibility_message": "Not Eligible",
+        "eligible_benefits": {}
+    }
     mocker.patch.object(SchemesManager, 'check_scheme_eligibility_for_applicant', return_value=eligibility_results)
 
     updated_application = application_service.update_application(test_application.id, {"applicant_id": test_application.applicant_id}, mocker.Mock())
@@ -157,7 +167,13 @@ def test_create_application_rejected_or_pending(test_administrator, retrenchment
     # Mock no approved application found
     mocker.patch.object(CRUDOperations, 'get_approved_application_by_applicant_and_scheme', return_value=None)
     
-    eligibility_results = mocker.Mock(is_eligible=True, eligibility_message="Eligible", eligible_benefits={"benefit1": "value1"})
+    # Create a mock for eligibility results with a dictionary for the report
+    eligibility_results = mocker.Mock()
+    eligibility_results.report = {
+        "is_eligible": True,
+        "eligibility_message": "Eligible",
+        "eligible_benefits": {"benefit1": "value1"}
+    }
     mocker.patch.object(SchemesManager, 'check_scheme_eligibility_for_applicant', return_value=eligibility_results)
 
     application = application_service.create_application(test_applicant.id, retrenchment_assistance_scheme.id, test_administrator.id, mocker.Mock())

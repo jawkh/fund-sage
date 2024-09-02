@@ -50,12 +50,12 @@ def test_senior_citizen_assistance_eligibility(application_service, applicant_se
 
     # Verify eligibility results
     assert eligibility_results is not None
-    assert eligibility_results.is_eligible == (application.status == "approved")
-    assert eligibility_results.eligibility_message == "Eligible for Senior Citizen Assistance Scheme."
-    assert eligibility_results.scheme_name == senior_citizen_assistance_scheme.name
-    assert eligibility_results.scheme_description == senior_citizen_assistance_scheme.description
-    assert eligibility_results.scheme_start_date == senior_citizen_assistance_scheme.validity_start_date
-    assert eligibility_results.scheme_end_date == senior_citizen_assistance_scheme.validity_end_date
+    assert eligibility_results.report["is_eligible"] == (application.status == "approved")
+    assert eligibility_results.report["eligibility_message"] == "Eligible for Senior Citizen Assistance Scheme."
+    assert eligibility_results.report["scheme_name"] == senior_citizen_assistance_scheme.name
+    assert eligibility_results.report["scheme_description"] == senior_citizen_assistance_scheme.description
+    assert eligibility_results.report["scheme_start_date"] == senior_citizen_assistance_scheme.validity_start_date
+    assert eligibility_results.report["scheme_end_date"] == senior_citizen_assistance_scheme.validity_end_date
 
     # Verify the expected benefits
     expected_benefits = [
@@ -78,7 +78,7 @@ def test_senior_citizen_assistance_eligibility(application_service, applicant_se
     ]
 
     for expected_benefit in expected_benefits:
-        assert any(benefit == expected_benefit for benefit in eligibility_results.eligible_benefits), f"Expected {expected_benefit['benefit_name']} not found in list."
+        assert any(benefit == expected_benefit for benefit in eligibility_results.report["eligible_benefits"]), f"Expected {expected_benefit['benefit_name']} not found in list."
 
 
 
@@ -121,10 +121,10 @@ def test_ineligible_applicant_senior_citizen_assistance(application_service, app
 
     # Verify eligibility results
     assert eligibility_results is not None
-    assert eligibility_results.is_eligible == (application.status == "approved")
-    assert eligibility_results.eligibility_message == "Not eligible for Senior Citizen Assistance Scheme."
+    assert eligibility_results.report["is_eligible"] == (application.status == "approved")
+    assert eligibility_results.report["eligibility_message"] == "Not eligible for Senior Citizen Assistance Scheme."
     
-    assert len(eligibility_results.eligible_benefits) == 0  # No benefits should be calculated for ineligible applicants
+    assert len(eligibility_results.report["eligible_benefits"]) == 0  # No benefits should be calculated for ineligible applicants
 
 def test_borderline_eligibility_senior_citizen_assistance(application_service, applicant_service, crud_operations, test_administrator, senior_citizen_assistance_scheme):
     """
@@ -165,14 +165,14 @@ def test_borderline_eligibility_senior_citizen_assistance(application_service, a
 
     # Verify eligibility results
     assert eligibility_results is not None
-    assert eligibility_results.is_eligible == (application.status == "approved")
-    assert eligibility_results.eligibility_message == "Eligible for Senior Citizen Assistance Scheme."
-    assert eligibility_results.scheme_name == senior_citizen_assistance_scheme.name
-    assert eligibility_results.scheme_description == senior_citizen_assistance_scheme.description
-    assert eligibility_results.scheme_start_date == senior_citizen_assistance_scheme.validity_start_date
-    assert eligibility_results.scheme_end_date == senior_citizen_assistance_scheme.validity_end_date
+    assert eligibility_results.report["is_eligible"] == (application.status == "approved")
+    assert eligibility_results.report["eligibility_message"] == "Eligible for Senior Citizen Assistance Scheme."
+    assert eligibility_results.report["scheme_name"] == senior_citizen_assistance_scheme.name
+    assert eligibility_results.report["scheme_description"] == senior_citizen_assistance_scheme.description
+    assert eligibility_results.report["scheme_start_date"] == senior_citizen_assistance_scheme.validity_start_date
+    assert eligibility_results.report["scheme_end_date"] == senior_citizen_assistance_scheme.validity_end_date
     
-    assert len(eligibility_results.eligible_benefits) > 0  # Benefits should be calculated for borderline eligible applicants
+    assert len(eligibility_results.report["eligible_benefits"]) > 0  # Benefits should be calculated for borderline eligible applicants
 
 
 
@@ -196,9 +196,9 @@ def test_senior_citizen_eligibility_age_64_and_11_months(applicant_service, crud
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(senior_citizen_assistance_scheme, applicant)
     
     # Verify that the applicant is not eligible due to being under 65 years old
-    assert not eligibility_results.is_eligible
-    assert eligibility_results.eligibility_message == "Not eligible for Senior Citizen Assistance Scheme."
-    assert eligibility_results.eligible_benefits == []
+    assert not eligibility_results.report["is_eligible"]
+    assert eligibility_results.report["eligibility_message"] == "Not eligible for Senior Citizen Assistance Scheme."
+    assert eligibility_results.report["eligible_benefits"] == []
 
 def test__neg_senior_citizen_eligibility_future_birth_date(applicant_service, test_administrator):
     """

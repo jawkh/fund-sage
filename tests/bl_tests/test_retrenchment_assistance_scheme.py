@@ -63,14 +63,14 @@ def test_retrenchment_assistance_eligibility(application_service, applicant_serv
 
     # Verify eligibility results
     assert eligibility_results is not None
-    assert eligibility_results.is_eligible == (application.status == "approved") 
-    assert eligibility_results.eligibility_message == "Eligible for Retrenchment Assistance Scheme."
-    assert eligibility_results.scheme_name == retrenchment_assistance_scheme.name
-    assert eligibility_results.scheme_description == retrenchment_assistance_scheme.description
-    assert eligibility_results.scheme_start_date == retrenchment_assistance_scheme.validity_start_date
-    assert eligibility_results.scheme_end_date == retrenchment_assistance_scheme.validity_end_date
+    assert eligibility_results.report["is_eligible"] == (application.status == "approved") 
+    assert eligibility_results.report["eligibility_message"] == "Eligible for Retrenchment Assistance Scheme."
+    assert eligibility_results.report["scheme_name"] == retrenchment_assistance_scheme.name
+    assert eligibility_results.report["scheme_description"] == retrenchment_assistance_scheme.description
+    assert eligibility_results.report["scheme_start_date"] == retrenchment_assistance_scheme.validity_start_date
+    assert eligibility_results.report["scheme_end_date"] == retrenchment_assistance_scheme.validity_end_date
     
-    # assert "cash_assistance" in [benefit["benefit_name"] for benefit in eligibility_results.eligible_benefits]
+    # assert "cash_assistance" in [benefit["benefit_name"] for benefit in eligibility_results.report["eligible_benefits"]]
 
     cash_assistance_benefit = {
         "benefit_name": "cash_assistance",
@@ -100,9 +100,9 @@ def test_retrenchment_assistance_eligibility(application_service, applicant_serv
     }
     
     # Check if the expected benefits are in the list using any()
-    assert any(benefit == cash_assistance_benefit for benefit in eligibility_results.eligible_benefits), "Expected cash_assistance_benefit not found in list."
-    assert any(benefit == school_meal_vouchers_benefit for benefit in eligibility_results.eligible_benefits), "Expected school_meal_vouchers_benefit not found in list."
-    assert any(benefit == extra_cdc_vouchers_benefit for benefit in eligibility_results.eligible_benefits), "Expected extra_cdc_vouchers_benefit not found in list."
+    assert any(benefit == cash_assistance_benefit for benefit in eligibility_results.report["eligible_benefits"]), "Expected cash_assistance_benefit not found in list."
+    assert any(benefit == school_meal_vouchers_benefit for benefit in eligibility_results.report["eligible_benefits"]), "Expected school_meal_vouchers_benefit not found in list."
+    assert any(benefit == extra_cdc_vouchers_benefit for benefit in eligibility_results.report["eligible_benefits"]), "Expected extra_cdc_vouchers_benefit not found in list."
     
 
 def test_multiple_eligible_household_members_retrenchment_assistance(application_service, applicant_service, crud_operations, test_administrator, retrenchment_assistance_scheme):
@@ -153,7 +153,7 @@ def test_multiple_eligible_household_members_retrenchment_assistance(application
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
 
     # Verify eligibility results
-    assert eligibility_results.is_eligible == (application.status == "approved")
+    assert eligibility_results.report["is_eligible"] == (application.status == "approved")
 
     expected_benefits = [
         {
@@ -199,7 +199,7 @@ def test_multiple_eligible_household_members_retrenchment_assistance(application
     ]
 
     for expected_benefit in expected_benefits:
-        assert any(benefit == expected_benefit for benefit in eligibility_results.eligible_benefits), f"Expected {expected_benefit['benefit_name']} not found in list."
+        assert any(benefit == expected_benefit for benefit in eligibility_results.report["eligible_benefits"]), f"Expected {expected_benefit['benefit_name']} not found in list."
 
 
 def test_recent_employment_status_change_retrenchment_assistance(application_service, applicant_service, crud_operations, test_administrator, retrenchment_assistance_scheme):
@@ -240,8 +240,8 @@ def test_recent_employment_status_change_retrenchment_assistance(application_ser
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
 
     # Verify eligibility results
-    assert eligibility_results.is_eligible == (application.status == "approved")
-    assert len(eligibility_results.eligible_benefits) > 0  # Should have benefits calculated
+    assert eligibility_results.report["is_eligible"] == (application.status == "approved")
+    assert len(eligibility_results.report["eligible_benefits"]) > 0  # Should have benefits calculated
 
 # Negative Test Cases
 
@@ -283,8 +283,8 @@ def test__neg_overdue_employment_status_change_retrenchment_assistance(applicati
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
 
     # Verify eligibility results
-    assert eligibility_results.is_eligible == (application.status == "approved")  # Should be false
-    assert len(eligibility_results.eligible_benefits) == 0  # No benefits should be calculated for ineligible applicants
+    assert eligibility_results.report["is_eligible"] == (application.status == "approved")  # Should be false
+    assert len(eligibility_results.report["eligible_benefits"]) == 0  # No benefits should be calculated for ineligible applicants
 
 
 def test_employed_applicant_retrenchment_assistance(application_service, applicant_service, crud_operations, test_administrator, retrenchment_assistance_scheme):
@@ -325,8 +325,8 @@ def test_employed_applicant_retrenchment_assistance(application_service, applica
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
 
     # Verify eligibility results
-    assert eligibility_results.is_eligible == (application.status == "approved")  # Should be false
-    assert len(eligibility_results.eligible_benefits) == 0  # No benefits should be calculated for ineligible applicants
+    assert eligibility_results.report["is_eligible"] == (application.status == "approved")  # Should be false
+    assert len(eligibility_results.report["eligible_benefits"]) == 0  # No benefits should be calculated for ineligible applicants
 
 
 def test_non_retrenched_unemployed_applicant_retrenchment_assistance(application_service, applicant_service, crud_operations, test_administrator, retrenchment_assistance_scheme):
@@ -367,8 +367,8 @@ def test_non_retrenched_unemployed_applicant_retrenchment_assistance(application
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
 
     # Verify eligibility results
-    assert eligibility_results.is_eligible == (application.status == "approved")  # Should be false
-    assert len(eligibility_results.eligible_benefits) == 0  # No benefits should be calculated for ineligible applicants
+    assert eligibility_results.report["is_eligible"] == (application.status == "approved")  # Should be false
+    assert len(eligibility_results.report["eligible_benefits"]) == 0  # No benefits should be calculated for ineligible applicants
 
 # parametrize the test cases (positive and negative)
 
@@ -394,7 +394,7 @@ def test_retrenchment_assistance_eligibility(applicant_service, crud_operations,
     scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
     
-    assert eligibility_results.is_eligible == expected_eligibility
+    assert eligibility_results.report["is_eligible"] == expected_eligibility
 
 
 def test__neg_retrenchment_assistance_eligibility_missing_employment_change_date(applicant_service, crud_operations, test_administrator, retrenchment_assistance_scheme):
@@ -418,8 +418,8 @@ def test__neg_retrenchment_assistance_eligibility_missing_employment_change_date
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
     
     # Verify that the applicant is not eligible due to missing employment status change date
-    assert not eligibility_results.is_eligible
-    assert eligibility_results.eligible_benefits == []
+    assert not eligibility_results.report["is_eligible"]
+    assert eligibility_results.report["eligible_benefits"] == []
 
 
 def test_retrenchment_assistance_eligibility_children_outside_age_range(application_service, applicant_service, crud_operations, test_administrator, retrenchment_assistance_scheme):
@@ -463,10 +463,10 @@ def test_retrenchment_assistance_eligibility_children_outside_age_range(applicat
     scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
 
-    assert eligibility_results.is_eligible
-    assert eligibility_results.eligibility_message == "Eligible for Retrenchment Assistance."
-    assert any(benefit["benefit_name"] == "cash_assistance" for benefit in eligibility_results.eligible_benefits)
-    assert not any(benefit["benefit_name"] == "school_meal_vouchers" for benefit in eligibility_results.eligible_benefits)  # No school meal vouchers
+    assert eligibility_results.report["is_eligible"]
+    assert eligibility_results.report["eligibility_message"] == "Eligible for Retrenchment Assistance."
+    assert any(benefit["benefit_name"] == "cash_assistance" for benefit in eligibility_results.report["eligible_benefits"])
+    assert not any(benefit["benefit_name"] == "school_meal_vouchers" for benefit in eligibility_results.report["eligible_benefits"])  # No school meal vouchers
 
 
 def test_retrenchment_assistance_eligibility_elderly_parents_below_age_threshold(application_service, applicant_service, crud_operations, test_administrator, retrenchment_assistance_scheme):
@@ -509,10 +509,10 @@ def test_retrenchment_assistance_eligibility_elderly_parents_below_age_threshold
     scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
 
-    assert eligibility_results.is_eligible
-    assert eligibility_results.eligibility_message == "Eligible for Retrenchment Assistance."
-    assert any(benefit["benefit_name"] == "cash_assistance" for benefit in eligibility_results.eligible_benefits)
-    assert not any(benefit["benefit_name"] == "extra_cdc_vouchers" for benefit in eligibility_results.eligible_benefits)  # No extra CDC vouchers
+    assert eligibility_results.report["is_eligible"]
+    assert eligibility_results.report["eligibility_message"] == "Eligible for Retrenchment Assistance."
+    assert any(benefit["benefit_name"] == "cash_assistance" for benefit in eligibility_results.report["eligible_benefits"])
+    assert not any(benefit["benefit_name"] == "extra_cdc_vouchers" for benefit in eligibility_results.report["eligible_benefits"])  # No extra CDC vouchers
 
 
 def test_retrenchment_assistance_eligibility_no_children_no_parents(application_service, applicant_service, crud_operations, test_administrator, retrenchment_assistance_scheme):
@@ -550,11 +550,11 @@ def test_retrenchment_assistance_eligibility_no_children_no_parents(application_
     scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
 
-    assert eligibility_results.is_eligible
-    assert eligibility_results.eligibility_message == "Eligible for Retrenchment Assistance."
-    assert any(benefit["benefit_name"] == "cash_assistance" for benefit in eligibility_results.eligible_benefits)
-    assert not any(benefit["benefit_name"] == "school_meal_vouchers" for benefit in eligibility_results.eligible_benefits)  # No school meal vouchers
-    assert not any(benefit["benefit_name"] == "extra_cdc_vouchers" for benefit in eligibility_results.eligible_benefits)  # No extra CDC vouchers
+    assert eligibility_results.report["is_eligible"]
+    assert eligibility_results.report["eligibility_message"] == "Eligible for Retrenchment Assistance."
+    assert any(benefit["benefit_name"] == "cash_assistance" for benefit in eligibility_results.report["eligible_benefits"])
+    assert not any(benefit["benefit_name"] == "school_meal_vouchers" for benefit in eligibility_results.report["eligible_benefits"])  # No school meal vouchers
+    assert not any(benefit["benefit_name"] == "extra_cdc_vouchers" for benefit in eligibility_results.report["eligible_benefits"])  # No extra CDC vouchers
 
 
 def test_retrenchment_assistance_eligibility_children_at_age_threshold(application_service, applicant_service, crud_operations, test_administrator, retrenchment_assistance_scheme):
@@ -596,7 +596,7 @@ def test_retrenchment_assistance_eligibility_children_at_age_threshold(applicati
     scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
     eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
 
-    assert eligibility_results.is_eligible
-    assert eligibility_results.eligibility_message == "Eligible for Retrenchment Assistance."
-    assert any(benefit["benefit_name"] == "cash_assistance" for benefit in eligibility_results.eligible_benefits)
-    assert any(benefit["benefit_name"] == "school_meal_vouchers" for benefit in eligibility_results.eligible_benefits)  # Eligible for school meal vouchers
+    assert eligibility_results.report["is_eligible"]
+    assert eligibility_results.report["eligibility_message"] == "Eligible for Retrenchment Assistance."
+    assert any(benefit["benefit_name"] == "cash_assistance" for benefit in eligibility_results.report["eligible_benefits"])
+    assert any(benefit["benefit_name"] == "school_meal_vouchers" for benefit in eligibility_results.report["eligible_benefits"])  # Eligible for school meal vouchers

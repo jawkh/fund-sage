@@ -152,9 +152,9 @@ def get_eligible_schemes():
         # scheme_schema = SchemeSchema(many=True) # <<< TO BE REMOVED
         # eligible_schemes_Serialized = scheme_schema.dump(eligible_schemes) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
         e_schemes = serialize(eligible_schemes) # <<< CUSTOM SERIALIZER  
-        
+        eligibility_reports_list = [result.report for result in eligibility_results] # Extracts the EligilibityResult.report from each result 
         response = {
-            'data': {"eligible_schemes": e_schemes, "eligibility_results": eligibility_results}  
+            'data': {"eligible_schemes": e_schemes, "eligibility_results": eligibility_reports_list}  
         }
         return jsonify(response), 200
     except ApplicantNotFoundException as e:

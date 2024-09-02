@@ -111,14 +111,14 @@ class ApplicationService:
         eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(scheme, applicant)
         status = "pending"
         
-        status = "approved" if eligibility_results.is_eligible else "rejected"
+        status = "approved" if eligibility_results.report["is_eligible"] else "rejected"
         
         application_data = {
             "applicant_id": applicant_id,
             "scheme_id": scheme_id,
             "status": status,
-            "eligibility_verdict": eligibility_results.eligibility_message, 
-            "awarded_benefits": eligibility_results.eligible_benefits,  
+            "eligibility_verdict": eligibility_results.report["eligibility_message"], 
+            "awarded_benefits": eligibility_results.report["eligible_benefits"],  
             "created_by_admin_id": created_by_admin_id
         }
         isvalid , msg = validate_application_data(application_data, True)
@@ -176,9 +176,9 @@ class ApplicationService:
             eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(scheme, applicant)
             
             # Update the status based on new eligibility results
-            update_data["status"] = "approved" if eligibility_results.is_eligible else "rejected"
-            update_data["eligibility_verdict"] = eligibility_results.eligibility_message  
-            update_data["awarded_benefits"] = eligibility_results.eligible_benefits  
+            update_data["status"] = "approved" if eligibility_results.report["is_eligible"] else "rejected"
+            update_data["eligibility_verdict"] = eligibility_results.report["eligibility_message"]  
+            update_data["awarded_benefits"] = eligibility_results.report["eligible_benefits"]  
             
         updated_application = self.crud_operations.update_application(application_id, update_data)
         return updated_application

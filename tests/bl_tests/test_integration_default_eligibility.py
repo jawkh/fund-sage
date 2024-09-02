@@ -54,9 +54,9 @@ def test_default_eligibility_for_unconfigured_scheme(applicant_service, crud_ope
 
     # Verify that the default eligibility checker was used
     assert eligibility_results is not None
-    assert eligibility_results.is_eligible == False  # Default eligibility should return False
-    assert eligibility_results.eligibility_message == "Scheme Eligibility Checker Not Configured for!"
-    assert eligibility_results.eligible_benefits == []  # Default benefits should be empty
+    assert eligibility_results.report["is_eligible"] == False  # Default eligibility should return False
+    assert eligibility_results.report["eligibility_message"] == "Scheme Eligibility Checker Not Configured for!"
+    assert eligibility_results.report["eligible_benefits"] == []  # Default benefits should be empty
 
 def test_factory_returns_default_eligibility_for_unconfigured_scheme(crud_operations):
     """
