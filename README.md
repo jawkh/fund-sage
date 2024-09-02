@@ -21,6 +21,53 @@ FundSage is a fictitious system crafted to manage various financial assistance s
 - **Quality Assurance with Pytest**: Comprehensive testing strategy covering unit, integration, and end-to-end tests to ensure code reliability and robustness.
 - **Container Packaging**: Simplified deployment using Docker to encapsulate the entire application environment, ensuring consistency across different stages of development and production.
 
+```
+MyProject
+├── api/                     # Presentation Layer (API frontend)
+│   ├── __init__.py          # Initialize Flask app and configure extensions
+│   ├── routes/
+│   │   ├── __init__.py      # Initialize routes
+│   │   ├── applicants.py    # Endpoint for applicant operations
+│   │   ├── schemes.py       # Endpoint for scheme operations
+│   │   ├── applications.py  # Endpoint for application operations
+│   │   └── auth.py          # Endpoint for authentication
+│   └── schemas/
+│       ├── __init__.py      # Initialize schemas (mostly deprecated - retained only for basic PL input validations)
+│       ├── applicant.py     # Marshmallow schema for Applicant
+│       ├── scheme.py        # Marshmallow schema for Scheme
+│       └── application.py   # Marshmallow schema for Application
+├── bl/                      # Business Layer
+│   ├──factories/            # BL Artefacts (Factory Pattern for contructing Schemes Strategy)
+│   ├──schemes/              # BL Artefacts (Strategy Pattern for custom Schemes Business Logic)
+│   ├──services/             # BL Artefacts (Business Services - 1-to-1 with DAL for encapsulation)
+│   └── ..
+├── dal/                     # Data Access Layer
+│   ├── crud_operations.py   # CRUD operations
+│   ├── models.py            # ORM models
+│   └── ..
+├── docs/                    # placeholders for all the project markdown documentations
+│   └── ..
+├── imgs/                    # placeholders for images used for project markdown documentations
+│   └── ..
+├── logs/                    # logs from executing the python database provisioning scripts ,pytests scripts or Flasks app
+│   ├── versions/            # Migration scripts
+│   └── env.py               # Migration environment setup
+├── tests/                   # Home of all the Test files
+│   ├── api_tests            # automated api tests  
+│   ├── bl_tests             # automated business layer tests
+│   ├── dal tests            # automated data access layer tests
+│   ├── util tests           # automated utilities tests
+│   └── conftest.py          # text fixtures
+├── utils/
+│   ├── ...                  # Utility functions and helpers
+├── .env copy                # Environment variables Templates
+├── config.py                # Flask's configurations
+├── poetry.lock              # Fuill Manifests of the Project's python dependencies
+├── pyproject.toml           # Explicitly declared project's python dependencies
+├── README.md                # This page itself (:
+└── ...
+```
+
 ## Getting Started ~ (*draft instructions*)
 
 ### Prerequisites
