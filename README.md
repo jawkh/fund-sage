@@ -156,7 +156,7 @@ Run all tests using the bash shell scripts located in the `/bin` folder:
 For detailed information on the software engineering practices applied, please refer to the following documents in the `docs/` directory:
 
 - [**Software Engineering Principles**](sw__eng_principles.md): In-depth explanation of the principles and patterns applied in the project.
-- [**Database and Data Access Layer Design**](db_design.md): Overview of the database schema and decisions made in the design process.
+- [**Database and Data Access Layer Design**](~/docs/db_design.md): Overview of the database schema and decisions made in the design process.
 - [**API Design**](api_design.md): Details on the RESTful API design, including endpoints, request/response formats, and error handling strategies.
 - [**API Testing Guide - POSTMAN**](api_testing.md): Step-by-step instructions for setting up the API endpoints on your VSCode IDE or a Docker container and manual testing guide for POSTMAN  
 - [**Deployment Guide**](deployment_guide.md): Instructions on how to package and deploy the application using Docker.
