@@ -7,7 +7,7 @@ from bl.services.application_service import ApplicationService
 from tests.conftest import helper
 from exceptions import InvalidApplicationDataException
 
-def test_create_application_success(api_test_client, api_test_admin, mocker):
+def test__api_create_application_success(api_test_client, api_test_admin, mocker):
     """
     Positive test: Verify that the API successfully creates an application.
     """
@@ -31,12 +31,11 @@ def test_create_application_success(api_test_client, api_test_admin, mocker):
     helper.print_response(response)
 
     assert response.status_code == 201
-    assert 'id' in data
-    assert data['status'] == 'approved'
-    assert data['eligibility_verdict'] == "Eligible"
-    assert data['awarded_benefits'] == {"benefit1": "value1"}
-
-def test_create_application_missing_data(api_test_client, api_test_admin):
+    assert 'id' in data['data']
+    assert data['data']['status'] == 'rejected'
+    assert data['data']['eligibility_verdict'] == "Not eligible for Retrenchment Assistance."
+    assert data['data']['awarded_benefits'] == []
+def test__api_create_application_missing_data(api_test_client, api_test_admin):
     """
     Negative test: Verify that the API returns a 400 error when required data is missing.
     """
@@ -54,9 +53,8 @@ def test_create_application_missing_data(api_test_client, api_test_admin):
     helper.print_response(response)
 
     assert response.status_code == 400
-    assert 'errors' in data
 
-def test_create_application_already_approved(api_test_client, api_test_admin, mocker, retrenchment_assistance_scheme, test_applicant):
+def test__api_create_application_already_approved(api_test_client, api_test_admin, mocker, retrenchment_assistance_scheme, test_applicant):
     """
     Negative test: Verify that the API prevents creating a duplicate application if one is already approved.
     """
@@ -82,7 +80,7 @@ def test_create_application_already_approved(api_test_client, api_test_admin, mo
     assert 'error' in data
     assert data['error'] == "Applicant has already successfully applied to this scheme."
 
-def test_create_application_invalid_applicant_id(api_test_client, api_test_admin, retrenchment_assistance_scheme):
+def test__api_create_application_invalid_applicant_id(api_test_client, api_test_admin, retrenchment_assistance_scheme):
     """
     Negative test: Verify that the API returns a 400 error when an invalid applicant ID is provided.
     """

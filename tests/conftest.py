@@ -57,7 +57,7 @@ api_test_engine = create_engine(API_TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
 ApiTestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=api_test_engine)
 ADMIN_USER_PASSWORD = Env().str("ADMIN_USER_PASSWORD", "ADMIN_USER_PASSWORD is not set.")
-
+ADMIN_USER_NAME = Env().str("ADMIN_USER_NAME", "ADMIN_USER_PASSWORD is not set.")
 
 @pytest.fixture(scope="session", autouse=True)
 def initialize_database(setup_emphemeral_database, setup_api_test_database): # Ensure the setup_emphemeral_database and setup_api_test_database fixtures are called before this fixture
@@ -520,15 +520,17 @@ def api_test_admin(api_test_db__NonTransactional):
     
     crud_operations__NonTransactional = CRUDOperations(api_test_db__NonTransactional)
     admin_service = AdministratorService(crud_operations__NonTransactional)
-    username = str(uuid.uuid4())  # Generate a unique username for each test run
-    temp_admin = admin_service.create_administrator({'username': username, 'password_hash': ADMIN_USER_PASSWORD})
+    # username = str(uuid.uuid4())  # Generate a unique username for each test run
+    temp_admin = admin_service.get_administrator_by_username(ADMIN_USER_NAME)
 
     yield temp_admin  # Provide the created admin for the test
 
-    # Cleanup after the test
-    admin_service.delete_administrator(temp_admin.id)
-    assert admin_service.get_administrator_by_id(temp_admin.id) is None
-    
+    # # Cleanup after the test
+    # try:
+    #     admin_service.delete_administrator(temp_admin.id)
+    # except  SQLAlchemyError as e:
+    #     print(e)
+        
 class helper:
     def print_response(response):
         """

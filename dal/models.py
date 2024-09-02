@@ -177,7 +177,7 @@ class Application(Base):
     # Relationships with eager loading
     applicant = relationship("Applicant", back_populates="applications", lazy='joined')
     scheme = relationship("Scheme", back_populates="applications", lazy='joined')
-    creator = relationship("Administrator", back_populates="applications_created", lazy='joined')
+    creator = relationship("Administrator", back_populates="applications_created")
     
     # Add CheckConstraints at the table level
     __table_args__ = (

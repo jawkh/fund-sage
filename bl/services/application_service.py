@@ -87,7 +87,7 @@ class ApplicationService:
         
         applicant = self.crud_operations.get_applicant(applicant_id)
         if not applicant:
-            raise ApplicantNotFoundException(f"Applicant with ID {applicant_id} not found.")
+            raise ApplicantNotFoundException(f"Applicant with ID {applicant_id if applicant_id else 'null'} not found.")
 
         scheme = self.crud_operations.get_scheme(scheme_id)
         if not scheme:
@@ -95,7 +95,7 @@ class ApplicationService:
         
         admin = self.crud_operations.get_administrator(created_by_admin_id)
         if not admin:
-            raise AdministratorNotFoundException(f"Administrator with ID {created_by_admin_id} not found.")
+            raise AdministratorNotFoundException(f"Administrator with ID {created_by_admin_id if created_by_admin_id else 'null'} not found.")
 
         # Check if an approved application already exists for this applicant and scheme
         # If an approved application exists, prevent duplicate applications

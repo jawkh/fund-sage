@@ -54,25 +54,14 @@ from flask import Blueprint, request, jsonify, g
 from flask_jwt_extended import jwt_required
 from bl.services.scheme_service import SchemeService
 from api.schemas.all_schemas import SchemeSchema
-# from marshmallow import ValidationError
+from marshmallow import ValidationError
 from dal.crud_operations import CRUDOperations
 from bl.factories.scheme_eligibility_checker_factory import SchemeEligibilityCheckerFactory
 from bl.schemes.schemes_manager import SchemesManager
 from bl.services.applicant_service import ApplicantService
 from sqlalchemy.exc import SQLAlchemyError
-from exceptions import InvalidPaginationParameterException, InvalidSortingParameterException
-from exceptions import ApplicantNotFoundException
-
-schemes_bp = Blueprint('schemes', __name__)
-
-# api/routes/schemes.py
-
-from flask import Blueprint, request, jsonify, g
-from flask_jwt_extended import jwt_required
-from bl.services.scheme_service import SchemeService
-from api.schemas.all_schemas import SchemeSchema
-from dal.crud_operations import CRUDOperations
-from sqlalchemy.exc import SQLAlchemyError
+from exceptions import InvalidPaginationParameterException, InvalidSortingParameterException, ApplicantNotFoundException
+from dal.custom_serializer import serialize
 
 schemes_bp = Blueprint('schemes', __name__)
 
@@ -110,8 +99,10 @@ def get_schemes():
         )
 
         # Serialize the scheme objects using Marshmallow schema
-        scheme_schema = SchemeSchema(many=True) # <<< TO BE REMOVED
-        result = scheme_schema.dump(schemes) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
+        # scheme_schema = SchemeSchema(many=True) # <<< TO BE REMOVED
+        # result = scheme_schema.dump(schemes) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
+        # Serialize the scheme objects using the custom serializer
+        result = serialize(schemes) # <<< CUSTOM SERIALIZER 
 
         response = {
             'data': result,
@@ -158,15 +149,16 @@ def get_eligible_schemes():
         scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
         
         eligibility_results, eligible_schemes = scheme_manager.check_schemes_eligibility_for_applicant({}, True, applicant)
-        scheme_schema = SchemeSchema(many=True) # <<< TO BE REMOVED
-        eligible_schemes = scheme_schema.dump(eligible_schemes) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
+        # scheme_schema = SchemeSchema(many=True) # <<< TO BE REMOVED
+        # eligible_schemes_Serialized = scheme_schema.dump(eligible_schemes) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
+        e_schemes = serialize(eligible_schemes) # <<< CUSTOM SERIALIZER  
         
         response = {
-            'data': {"eligible_schemes": eligible_schemes, "eligibility_results": eligibility_results}  
+            'data': {"eligible_schemes": e_schemes, "eligibility_results": eligibility_results}  
         }
         return jsonify(response), 200
     except ApplicantNotFoundException as e:
-        return jsonify({'error': str    (e)}), 404  # Handle specific exception
+        return jsonify({'error': str(e)}), 404  # Handle specific exception
     except SQLAlchemyError as e:  # Specific SQLAlchemy error handling
         return jsonify({'error': 'Database error occurred', 'details': str(e)}), 500
     except Exception as e:

@@ -6,7 +6,7 @@ from dal.crud_operations import CRUDOperations
 from exceptions import ApplicantNotFoundException
 from tests.conftest import helper
 
-def test__api_create_applicant_success(api_test_client, api_test_db__NonTransactional, api_test_admin):
+def test__api_create_applicant_success(api_test_client, api_test_admin):
     # Step 1: Authenticate to get JWT token
     access_token = helper.get_JWT_via_user_login(api_test_client, api_test_admin)
     
@@ -33,17 +33,10 @@ def test__api_create_applicant_success(api_test_client, api_test_db__NonTransact
 
     assert response.status_code == 201  # Expect a 201 Created status
     data = response.get_json()
-    assert 'id' in data
-    assert data['name'] == applicant_data['name']
-    assert len(data['household_members']) == len(applicant_data['household_members'])
+    assert 'id' in data['data']
+    assert data['data']['name'] == applicant_data['name']
+    assert len(data['data']['household_members']) == len(applicant_data['household_members'])
     
-    # Cleanup: Remove the created applicant
-    crud_operations = CRUDOperations(api_test_db__NonTransactional)
-    applicant_service = ApplicantService(crud_operations)
-    applicant_service.delete_applicant(data['id'])
-    with pytest.raises(ApplicantNotFoundException):
-        applicant_service.get_applicant_by_id(data['id']) is None
-
 
 
 def test__api_create_applicant_missing_data(api_test_client, api_test_admin):

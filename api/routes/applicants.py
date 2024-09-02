@@ -58,6 +58,7 @@ from dal.crud_operations import CRUDOperations
 from api.schemas.all_schemas import ApplicantSchema
 from exceptions import InvalidPaginationParameterException, InvalidSortingParameterException
 from sqlalchemy.exc import SQLAlchemyError
+from dal.custom_serializer import serialize
 
 applicants_bp = Blueprint('applicants', __name__)
 
@@ -92,8 +93,9 @@ def get_applicants():
             filters=filters
         )
         # Use Marshmallow schema to serialize the applicant objects
-        applicant_schema = ApplicantSchema(many=True) # <<< TO BE REMOVED
-        result = applicant_schema.dump(applicants) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
+        # applicant_schema = ApplicantSchema(many=True) # <<< TO BE REMOVED
+        # result = applicant_schema.dump(applicants) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
+        result = serialize(applicants) # <<< CUSTOM SERIALIZER
         
         # Prepare response with pagination metadata
         response = {
@@ -146,8 +148,12 @@ def create_applicant():
         )
 
         # Serialize the newly created applicant object for the response
-        result = ApplicantSchema().dump(applicant) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
-        return jsonify(result), 201  # Return a 201 Created status code on success
+        # result = ApplicantSchema().dump(applicant) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
+        result = serialize(applicant) # <<< CUSTOM SERIALIZER
+        response = {
+            'data': result
+        }
+        return jsonify(response), 201  # Return a 201 Created status code on success
 
     except ValidationError as err:
         # Handle validation errors from Marshmallow schema

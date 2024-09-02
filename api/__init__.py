@@ -25,8 +25,8 @@ from environs import Env
 
 # Load environment variables
 DATABASE_URL = Env().str("DATABASE_URL", "DATABASE_URL is not set.") 
-engine = create_engine(DATABASE_URL)
-SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
+api_engine = create_engine(DATABASE_URL)
+api_SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=api_engine))
 
 def setup_db_session(app):
     """Setup SQLAlchemy sessions for the app."""
@@ -34,7 +34,7 @@ def setup_db_session(app):
     @app.before_request
     def create_session():
         """Create a new database session for a request."""
-        g.db_session = SessionLocal() # Note: This is a normal session, not a scoped_session
+        g.db_session = api_SessionLocal() # Note: This is a normal session, not a scoped_session
 
     @app.teardown_appcontext
     def remove_session(exception=None):
@@ -60,11 +60,11 @@ def create_app(config_class=Config):
     # Initialize SQLAlchemy session handling
     setup_db_session(app)
 
-    # Error handler for Marshmallow validation errors
-    @app.errorhandler(ValidationError)
-    def handle_marshmallow_validation_error(e):
-        app.logger.error(f"Marshmallow Validation Error: {e}")
-        return jsonify({"errors": e.messages}), 400
+    # # Error handler for Marshmallow validation errors
+    # @app.errorhandler(ValidationError)
+    # def handle_marshmallow_validation_error(e):
+    #     app.logger.error(f"Marshmallow Validation Error: {e}")
+    #     return jsonify({"errors": e.messages}), 400
 
     # Error handler for SQLAlchemy errors
     @app.errorhandler(SQLAlchemyError)
@@ -87,7 +87,7 @@ def create_app(config_class=Config):
 
 
 # Ensure our database tables are created (Idempotent operation):
-Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=api_engine)
 
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)  # Set to DEBUG to capture more details

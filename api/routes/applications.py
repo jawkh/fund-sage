@@ -58,6 +58,7 @@ from dal.database import Base, engine, SessionLocal
 from dal.crud_operations import CRUDOperations
 from bl.factories.scheme_eligibility_checker_factory import SchemeEligibilityCheckerFactory
 from exceptions import InvalidPaginationParameterException, InvalidSortingParameterException
+from dal.custom_serializer import serialize
 
 applications_bp = Blueprint('applications', __name__)
 
@@ -70,20 +71,21 @@ def get_applications():
     # Extract pagination and sorting parameters from the request
     page = request.args.get('page', default=1, type=int)
     page_size = request.args.get('page_size', default=10, type=int)
-    sort_by = request.args.get('sort_by', default='created_at', type=str)
+    sort_by = "created_at" # request.args.get('sort_by', default='created_at', type=str)
     sort_order = request.args.get('sort_order', default='asc', type=str)
     
     try: 
         applications, total_count = ApplicationService(crud_operations).get_all_applications(
             page=page, 
             page_size=page_size, 
-            sort_by=sort_by, 
+            sort_by = "created_at", #sort_by=sort_by, 
             sort_order=sort_order
         )
         
         # Use Marshmallow schema to serialize the application objects
-        application_schema = ApplicationSchema(many=True) # <<<TO BE REMOVED
-        result = application_schema.dump(applications) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
+        # application_schema = ApplicationSchema(many=True) # <<<TO BE REMOVED
+        # result = application_schema.dump(applications) # <<< TO BE REPLACE BY CUSTOM SERIALIZER
+        result = serialize(applications) # <<< CUSTOM SERIALIZER
         
         # Prepare response with pagination metadata
         response = {
@@ -117,11 +119,15 @@ def create_application():
         # Load and validate request data using Marshmallow schema
         data = request.json
         data["created_by_admin_id"] = admin_id
-        application_data = ApplicationSchema().load(data) # <<< TO BE REMOVED (NO NEED TO DESRIALIZE)
+        # ApplicationSchema().load(data) # Input validations <<< TO BE REMOVED (NO NEED TO DESRIALIZE)
         
         application = application_service.create_application(data.get('applicant_id'), data.get('scheme_id'), admin_id, schemeEligibilityCheckerFactory)
-        application_data = ApplicationSchema().dump(application)
-        return jsonify(application_data), 201
+        # application_data_serialized = ApplicationSchema().dump(application) # <<< TO BE REMOVED
+        result = serialize(application) # <<< CUSTOM SERIALIZER
+        response = {
+            'data': result  
+        }
+        return jsonify(response), 201
     except ValidationError as err:
         return jsonify(err.messages), 400
     except Exception as e:

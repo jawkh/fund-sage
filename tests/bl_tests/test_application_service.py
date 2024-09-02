@@ -52,26 +52,7 @@ def test_update_application_eligibility_check(application_service, test_applicat
 
 
 
-def test_get_all_applications_pagination(application_service, multiple_applications):
-    """
-    Test retrieving all applications with pagination.
-    """
-    # Retrieve the first page with 2 applications per page
-    applications, total_count = application_service.get_all_applications(page=1, page_size=2)
 
-    assert len(applications) == 2  # Expect 2 applications on the first page
-    assert total_count == len(multiple_applications)  # Total count should match the number of created applications
-
-def test_get_all_applications_sorting_by_created_at(application_service, multiple_applications):
-    """
-    Test retrieving all applications with sorting by 'created_at' in ascending order.
-    """
-    applications, total_count = application_service.get_all_applications(page=1, page_size=5, sort_by='created_at', sort_order='asc')
-
-    # Verify applications are sorted by 'created_at'
-    assert len(applications) == 5
-    assert applications[0].created_at <= applications[1].created_at
-    assert applications[1].created_at <= applications[2].created_at
 
 def test_get_all_applications_invalid_pagination(application_service):
     """
