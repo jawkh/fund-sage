@@ -1,4 +1,14 @@
+#!/usr/bin/env python3
 # Copyright (c) 2024 by Jonathan AW
+
+# This script is run to provision the Applications for all the Applicants for all the schemes in the database. 
+# This script is not idempotent. Running this script each time will create 1 set of additional applications for each applicant for each scheme in the database. (Applicants are allowed to apply for a scheme multiple times if they were not successful in the previous applications. Successful applicants will not be allowed to reapply.)
+
+# Dependencies: __init_sys_database.py, __data_prep_administrators.py, __data_prep_supported_schemes.py, __data_prep_random_applicants.py
+# run this script from the root project folder after running the dependencies: 
+# `poetry run python3 bin/__data_prep_applications.py`
+
+
 import sys
 import os
 
@@ -7,7 +17,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 import logging
-import requests
 from dal.database import engine, SessionLocal
 from dal.crud_operations import CRUDOperations
 from bl.services.application_service import ApplicationService
@@ -52,11 +61,6 @@ def create_applications_business_layer():
     for applicant in applicants:
         for scheme in schemes:
             try:
-                # # Check if an approved application already exists for this applicant and scheme
-                # existing_application = crud_operations.get_approved_application_by_applicant_and_scheme(applicant.id, scheme.id)
-                # if existing_application:
-                #     logging.info(f"Applicant {applicant.id} has already successfully applied to scheme {scheme.id}. Skipping.")
-                #     continue
                 
                 # Create application using the business logic layer
                 application = application_service.create_application(
@@ -77,6 +81,7 @@ def create_applications_api():
     api_base_url = os.getenv('API_BASE_URL')
     app = create_app()
     test_client = app.test_client()
+    
 
     # Establish an application context
     with app.app_context():
@@ -86,34 +91,30 @@ def create_applications_api():
         token_data = response.get_json()
         access_token = token_data['access_token']
         response = test_client.get('/api/applicants' ,headers={'Authorization': f'Bearer {access_token}'})
-        data = response.get_json()
+        applicants = response.get_json()
+
+        response = test_client.get('/api/schemes' ,headers={'Authorization': f'Bearer {access_token}'})
+        schemes = response.get_json()
 
         
-
-        for applicant in applicants:
-            for scheme in schemes:
+        for applicant in applicants["data"]:
+            for scheme in schemes["data"]:
                 try:
-                    # Check if an approved application already exists for this applicant and scheme
-                    existing_application = crud_operations.get_approved_application_by_applicant_and_scheme(applicant.id, scheme.id)
-                    if existing_application:
-                        logging.info(f"Applicant {applicant.id} has already successfully applied to scheme {scheme.id}. Skipping.")
-                        continue
                     
                     # Prepare request data for the API
                     data = {
-                        "applicant_id": applicant.id,
-                        "scheme_id": scheme.id,
-                        "created_by_admin_id": 1  # Replace as necessary
+                        "applicant_id": applicant["id"],
+                        "scheme_id": scheme["id"],
                     }
-                    response = requests.post(f"{api_base_url}/api/applications", json=data, headers=headers)
-                    
+                    response = test_client.post('/api/applications', json=data, headers={'Authorization': f'Bearer {access_token}'})
+                    data = response.get_json()
                     if response.status_code == 201:
-                        logging.info(f"Application created successfully for Applicant {applicant.id} and Scheme {scheme.id}.")
+                        logging.info(f"Application created successfully for Applicant [{applicant['name']}] for Scheme [{scheme['name']}].")
                     else:
-                        logging.error(f"Failed to create application via API for Applicant {applicant.id} and Scheme {scheme.id}: {response.text}")
+                        logging.error(f"Failed to create application via API for Applicant [{applicant['name']}] for Scheme [{scheme['name']}]: {response.text}")
                 
                 except Exception as e:
-                    logging.error(f"Error creating application via API for Applicant {applicant.id} and Scheme {scheme.id}: {str(e)}")
+                    logging.error(f"Error creating application via API for Applicant [{applicant['name']}] and Scheme [{scheme['name']}]: {str(e)}")
 
 def generate_batch_run_report():
     """
@@ -126,14 +127,17 @@ def generate_batch_run_report():
             print(line.strip())
 
 if __name__ == "__main__":
-    mode = input("Select mode of operation (1 for Business Layer Code Mode, 2 for API Endpoint Mode): ")
+    # mode = input("Select mode of operation (1 for Business Layer Code Mode, 2 for API Endpoint Mode): ")
     
-    if mode == "1":
-        create_applications_business_layer()
-    elif mode == "2":
-        create_applications_api()
-    else:
-        print("Invalid mode selected. Please choose 1 or 2.")
+    # if mode == "1":
+    #     create_applications_business_layer()
+    # elif mode == "2":
+    #     create_applications_api()
+    # else:
+    #     print("Invalid mode selected. Please choose 1 or 2.")
+    print("Provisioning Applications for all existing Applicants for all supported schemes..\n")
+    print ("This script is not idempotent. Running this script each time will create 1 set of additional applications for each applicant for each scheme in the database.\nApplicants are allowed to apply for a scheme multiple times if they were not successful in the previous applications.\nSuccessful applicants will not be allowed to reapply.\n")
+    create_applications_business_layer() 
     
     # Close the session and connection
     session.close()

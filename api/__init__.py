@@ -1,3 +1,4 @@
+# Copyright (c) 2024 by Jonathan AW
 # api/__init__.py
 
 from flask import Flask, g, jsonify

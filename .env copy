@@ -1,18 +1,26 @@
+# Connection string for the ephemeral test database (for running pytest tests)
+TEST_DATABASE_URL=postgresql+psycopg2://postgres:Pa55w0rd@db:5432/test_financial_assistance_system 
 
-DATABASE_URL=postgresql+psycopg2://postgres:Pa55w0rd@localhost:5432/financial_assistance_system # Assuming postgresql user is 'postgres' and password is 'Pa55w0rd'
-TEST_DATABASE_URL=postgresql+psycopg2://postgres:Pa55w0rd@localhost:5432/test_financial_assistance_system # Assuming postgresql user is 'postgres' and password is 'Pa55w0rd'
+# Fund Sage Flask Application Configurations
+SECRET_KEY=your-secret-key
+JWT_SECRET_KEY=your-jwt-secret-key
+JWT_ACCESS_TOKEN_EXPIRES=3600
+SERVER_NAME=127.0.0.1:5000
+APPLICATION_ROOT=/
+PREFERRED_URL_SCHEME=http
 MAX_PASSWORD_RETRIES=5
 PASSWORD_RETRIES_TIME_WINDOW_MINUTES=1
+DATABASE_URL=postgresql+psycopg2://flask_user:flask_password@db:5432/fund_sage_db 
 
+# Fund Sage API Configurations
+ADMIN_USER_NAME=admin_user
+ADMIN_USER_PASSWORD=admin_password
+ADMIN_USER_NAME__2=admin_user2
+ADMIN_USER_PASSWORD__2=admin_password2
+ADMIN_USER_NAME__3=admin_user3
+ADMIN_USER_PASSWORD__3=admin_password3
 
-SECRET_KEY='your-secret-key'
-JWT_SECRET_KEY='your-jwt-secret-key'
-SERVER_NAME='127.0.0.1:5000'
-APPLICATION_ROOT='/'
-PREFERRED_URL_SCHEME='http'
-ADMIN_USER_NAME='ADMIN_USER_NAME'
-ADMIN_USER_PASSWORD='ADMIN_USER_PASSWORD'
-ADMIN_USER_NAME__2='ADMIN_USER_NAME__2'
-ADMIN_USER_PASSWORD__2='ADMIN_USER_PASSWORD__2'
-ADMIN_USER_NAME__3='ADMIN_USER_NAME__3'
-ADMIN_USER_PASSWORD__3='ADMIN_USER_PASSWORD__3'
+# PostgreSQL Database Configurations for Administrator
+ADMIN_DB_USER=admin_user
+ADMIN_DB_PASSWORD=admin_password
+POSTGRES_DB=fund_sage_db

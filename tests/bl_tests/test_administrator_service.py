@@ -123,38 +123,6 @@ def test_lock_and_unlock_administrator_account(crud_operations):
     unlocked_admin = admin_service.get_administrator_by_id(new_admin.id)
     assert not unlocked_admin.account_locked
 
-    
-# def test_increment_login_failure_counter(crud_operations, test_administrator):
-#     """
-#     Test incrementing the login failure counter and locking the account after reaching the maximum retries.
-#     """
-#     admin_service = AdministratorService(crud_operations)
-
-#     # Increment the failure counter
-#     for _ in range(AdministratorService.MAX_PASSWORD_RETRIES):
-#         admin_service.__increment_login_failure_counter(test_administrator.id)
-
-#     # Ensure the account is locked
-#     admin = admin_service.get_administrator_by_id(test_administrator.id)
-#     assert admin.account_locked
-#     assert admin.consecutive_failed_logins == AdministratorService.MAX_PASSWORD_RETRIES
-
-def test_reset_login_failure_counters(crud_operations, test_administrator):
-    """
-    Test resetting login failure counters after successful login.
-    """
-    admin_service = AdministratorService(crud_operations)
-
-    # Increment failure counters
-    admin_service.verify_login_credentials(test_administrator.username, "wrong_password")
-    admin_service.verify_login_credentials(test_administrator.username, "wrong_password")
-
-    # Reset counters after a successful login
-    admin_service.reset_login_failure_counters(test_administrator.id)
-
-    admin = admin_service.get_administrator_by_id(test_administrator.id)
-    assert admin.consecutive_failed_logins == 0
-    assert admin.failed_login_starttime is None
 
 def test__neg_repeated_failed_logins_until_account_is_locked(crud_operations, test_administrator):
     """

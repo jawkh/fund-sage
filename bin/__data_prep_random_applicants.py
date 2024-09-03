@@ -2,9 +2,12 @@
 # Copyright (c) 2024 by Jonathan AW
 
 # This script is run to provision the test Applicant Accounts 
-# This script is run only ONCE when the System is deployed to staging.
+# Use this to intialize the 20x Test Applicant Accounts with diverse profiles in the database
+# This script is not idempotent. Running this script each time will create 20x new Applicant Accounts with diverse profiles in the database.
 
-# Dependency: __data_prep_administrators.py
+# Dependencies: __init_sys_database.py, __data_prep_administrators.py
+# run this script from the root project folder after running the dependencies: 
+# `poetry run python3 bin/__data_prep_random_applicants.py`
 
 import sys
 import os
@@ -23,6 +26,7 @@ from random import randint
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from environs import Env
+from uuid import uuid4
 # Load environment variables (e.g., API_BASE_URL)
 load_dotenv()
 ADMIN_USER_NAME = Env().str("ADMIN_USER_NAME", "ADMIN_USER_NAME is not set.")
@@ -35,7 +39,7 @@ crud_operations = CRUDOperations(session)
 # Get the system administrator for creating applicants
 creator = AdministratorService(crud_operations).get_administrator_by_username(ADMIN_USER_NAME)
 
-def setup_applicants(applicant_service: ApplicantService, creator) -> List[int]:
+def setup_applicants(applicant_service: ApplicantService, creator, totalcount) -> List[int]:
     """
     Create 20 diverse applicants with household members for testing.
     
@@ -48,10 +52,11 @@ def setup_applicants(applicant_service: ApplicantService, creator) -> List[int]:
     applicants_data = []
     household_data = []
     
+    
     # Create diverse applicants
-    for i in range(20):
+    for i in range(totalcount):
         applicant_data = {
-            "name": f"Applicant {i}",
+            "name": f"Applicant {uuid4()}",
             "employment_status": "employed" if i % 2 == 0 else "unemployed", # Half employed, half unemployed
             "employment_status_change_date": datetime.now() - timedelta(days=30 * randint(3, 7)),  # Employed/Unemployed for 3 to 7 months
             "sex": "M" if i % 2 == 0 else "F", # Half Male, Half Female
@@ -64,7 +69,7 @@ def setup_applicants(applicant_service: ApplicantService, creator) -> List[int]:
         household_members_data = []
         if i % 2 == 0:
             household_members_data.append({
-                "name": f"Child A",
+                "name": f"Child {uuid4()}",
                 "relation": "child",
                 "date_of_birth": datetime.now() - timedelta(days=365 * randint(5, 19)),  # Ages between 5 to 19 yo
                 "employment_status": "unemployed",
@@ -72,7 +77,7 @@ def setup_applicants(applicant_service: ApplicantService, creator) -> List[int]:
             })
         if i % 2 == 0:
             household_members_data.append({
-                "name": f"Child B",
+                "name": f"Child {uuid4()}",
                 "relation": "child",
                 "date_of_birth": datetime.now() - timedelta(days=365 * randint(5, 19)),  # Ages between 5 to 19 yo
                 "employment_status": "unemployed",
@@ -80,7 +85,7 @@ def setup_applicants(applicant_service: ApplicantService, creator) -> List[int]:
             })
         if i % 3 == 0:
             household_members_data.append({
-                "name": f"Spouse",
+                "name": f"Spouse {uuid4()}",
                 "relation": "spouse",
                 "date_of_birth": datetime.now() - timedelta(days=365 * randint(35, 80)),  # Ages between 35 to 80 yo (similar to applicant)
                 "employment_status": "employed",
@@ -88,7 +93,7 @@ def setup_applicants(applicant_service: ApplicantService, creator) -> List[int]:
             })
         if i % 2 == 0:
             household_members_data.append({
-                "name": f"Parent",
+                "name": f"Parent {uuid4()}",
                 "relation": "parent",
                 "date_of_birth": datetime.now() - timedelta(days=365 * randint(55, 100)),  # Ages between 55 to 100 yo
                 "employment_status": "unemployed",
@@ -109,9 +114,8 @@ def setup_applicants(applicant_service: ApplicantService, creator) -> List[int]:
 if __name__ == "__main__":
     print("Creating Applicant Accounts...\n")
     AS = ApplicantService(crud_operations)
-    setup_applicants(AS, creator)
+    i = 20
+    setup_applicants(AS, creator, i)
     session.close()
     connection.close()
-    print("Applicant Accounts created successfully.")
-    print("This script is run only ONCE when the System is deployed to staging.")
-    print("This script is run to provision the test Applicant Accounts.")
+    print(f"{i}x Applicant Accounts created successfully.")

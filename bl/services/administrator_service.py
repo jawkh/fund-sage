@@ -136,7 +136,7 @@ class AdministratorService:
             if not admin.account_locked:
                 if self.__verify_password(admin.password_hash, password, admin.salt):
                     # Reset login failure counters on successful login
-                    self.reset_login_failure_counters(admin.id)
+                    self.__reset_login_failure_counters(admin.id)
                     return admin, f"Welcome [{admin.username}]!"
                 else:
                     # Increment login failure counters
@@ -189,7 +189,7 @@ class AdministratorService:
         return current_count
 
 
-    def reset_login_failure_counters(self, admin_id: int) -> None:
+    def __reset_login_failure_counters(self, admin_id: int) -> None:
         """
         Reset the consecutive_failed_logins counter and failed_login_starttime.
         """

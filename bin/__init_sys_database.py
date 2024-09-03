@@ -2,7 +2,10 @@
 # Copyright (c) 2024 by Jonathan AW
 
 # This script is run to provision the staging database with all the tables defined in the ORM Models used by this System. ORM Models are defined in dal/models.py file.
-# This script is run only ONCE when the application is deployed to staging.
+# Idempotent script: You can safely run this script multiple times without any side-effects.
+
+# Run this script from the root project folder
+# `poetry run python3 bin/__init_sys_database.py`:
 
 # Implicit Linkage via Inheritance: The linkage between the models and their schema is implicit via inheritance from Base.
 # The Base class is defined in the database.py file and is imported into the models.py file.

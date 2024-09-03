@@ -15,9 +15,9 @@ class Config:
     SECRET_KEY = Env().str('SECRET_KEY') # Secret key for the application
     JWT_SECRET_KEY = Env().str('JWT_SECRET_KEY') # Secret key for JWT
     JWT_ACCESS_TOKEN_EXPIRES = int(Env().str('JWT_ACCESS_TOKEN_EXPIRES', "3600"))  # Token expiration time (default: 1 hour)
-    SERVER_NAME = Env().str('SERVER_NAME', '127.0.0.1:5000')  # Configuring the server name
-    APPLICATION_ROOT = Env().str('APPLICATION_ROOT', '/')  # Setting the root path for the application
-    PREFERRED_URL_SCHEME = Env().str('PREFERRED_URL_SCHEME', 'http')  # Default URL scheme
+    SERVER_NAME = Env().str('SERVER_NAME')  
+    APPLICATION_ROOT = Env().str('APPLICATION_ROOT', '/')  
+    PREFERRED_URL_SCHEME = Env().str('PREFERRED_URL_SCHEME', 'http')  
 
 class DevelopmentConfig(Config):
     DEBUG = True
