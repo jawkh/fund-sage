@@ -58,6 +58,8 @@ The API design for **Fund Sage** was guided by specific functional and non-funct
    - Endpoints are designed to follow RESTful principles, ensuring consistency and predictability in API behavior.
 
 2. **Security Measures**:
+   - The /auth api endpoint, which performs the user authentications and issues out JWT token to authenticated users, will automatically lock the administrator account after more than 5 (configurable) consecutive failed login attempts within a 10 min timeframe (configurable). This mechanism protects the system against brute force attacks. Locked accounts can be unlocked by another administrator via the /auth/unlock api.
+   - The system stores the hash the user password before saving it into the database to protect against password theft.    
    - Utilizes JWT tokens for secure API access, protecting sensitive data and operations.
 
 ## API Endpoints and Usage
@@ -66,6 +68,9 @@ Below is a detailed breakdown of the API endpoints provided by **Fund Sage**:
 
 | Method | Endpoint                                | Purpose                                                                  | Example Request                      |
 | ------ | --------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------ |
+| POST   | `/api/auth`                             | User login endpoint. Requires JSON payload with 'username' and 'password'. Returns a JWT access token if authentication is successful. Automatically lock the administrator account after more than 5 (configurable) consecutive failed login attempts within a 10 min timeframe (configurable).|`POST /api/auth`|  
+| POST   | `/api/auth/unlock` *(coming soon...)*                     | Unlock a locked admin user account.|`POST /api/auth/unlock`|  
+| POST   | `/api/auth/changepassword *(coming soon...)*               | Allows administrator to change his/her current password. Needs to supply the existing password |`POST /api/auth/changepassword`|  
 | GET    | `/api/applicants`                       | Retrieve a list of all applicants.                                       | `GET /api/applicants`                |
 | POST   | `/api/applicants`                       | Create a new applicant.                                                  | `POST /api/applicants`               |
 | GET    | `/api/schemes`                          | Retrieve a list of all schemes.                                          | `GET /api/schemes`                   |
