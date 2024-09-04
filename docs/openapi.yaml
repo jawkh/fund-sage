@@ -1,0 +1,675 @@
+openapi: 3.0.0
+info:
+  title: FundSage API
+  description: API documentation for FundSage
+  version: 1.0.0
+paths:
+  /api/auth/login:
+    post:
+      summary: User login
+      description: Authenticate a user by username and password and return a JWT access token if authentication is successful.
+      requestBody:
+        description: JSON payload with username and password.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "admin-user"
+                password:
+                  type: string
+                  format: password
+                  example: "Pa$$w0rd"
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Successful authentication, returns a JWT access token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: JWT access token.
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '400':
+          description: Missing required parameters (username or password).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing required parameters [username / password]"
+        '401':
+          description: Unauthorized, invalid username or password.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid username or password"
+        '500':
+          description: Internal server error or database error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Database error occurred"
+                  details:
+                    type: string
+                    example: "SQLAlchemyError details"
+  /api/schemes:
+    get:
+      summary: Get all schemes
+      description: Retrieve a list of all schemes with optional filtering and pagination.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination.
+        - in: query
+          name: per_page
+          schema:
+            type: integer
+            default: 10
+          description: Number of schemes per page.
+        - in: query
+          name: fetch_valid_schemes
+          schema:
+            type: boolean
+            default: true
+          description: If true, only fetches valid schemes.
+        - in: query
+          name: validity_start_date
+          schema:
+            type: string
+            format: date-time
+          description: Filter schemes starting from a specific date.
+        - in: query
+          name: validity_end_date
+          schema:
+            type: string
+            format: date-time
+          description: Filter schemes ending before a specific date.
+      responses:
+        '200':
+          description: A JSON array of scheme objects.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Scheme'
+                  pagination:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                      per_page:
+                        type: integer
+                      total_schemes:
+                        type: integer
+                      total_pages:
+                        type: integer
+        '400':
+          description: Invalid input parameters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid pagination or sorting parameters"
+        '500':
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Database error occurred"
+                  details:
+                    type: string
+                    example: "SQLAlchemyError details"
+  /api/schemes/eligible:
+    get:
+      summary: Get eligible schemes for an applicant
+      description: Retrieve a list of schemes an applicant is eligible for.
+      parameters:
+        - in: query
+          name: applicant
+          schema:
+            type: integer
+          required: true
+          description: The ID of the applicant.
+      responses:
+        '200':
+          description: A JSON object containing eligible schemes and their eligibility results.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      eligible_schemes:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Scheme'
+                      eligibility_results:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/EligibilityResult'
+        '400':
+          description: Invalid applicant ID or missing parameter.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "applicant id is required or Invalid applicant id format"
+        '404':
+          description: Applicant not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Applicant not found"
+        '500':
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Database error occurred"
+                  details:
+                    type: string
+                    example: "SQLAlchemyError details"
+  /api/applicants:
+    get:
+      summary: Get all applicants
+      description: Retrieve a list of all applicants with pagination and sorting options.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination.
+        - in: query
+          name: page_size
+          schema:
+            type: integer
+            default: 10
+          description: Number of applicants per page.
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+            default: created_at
+          description: Field to sort by.
+        - in: query
+          name: sort_order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+          description: Sorting order.
+        - in: query
+          name: employment_status
+          schema:
+            type: string
+            description: Filter applicants by employment status.
+        - in: query
+          name: sex
+          schema:
+            type: string
+            description: Filter applicants by sex.
+        - in: query
+          name: marital_status
+          schema:
+            type: string
+            description: Filter applicants by marital status.
+      responses:
+        '200':
+          description: A JSON array of applicant objects.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Applicant'
+                  pagination:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                      page_size:
+                        type: integer
+                      total_pages:
+                        type: integer
+                      total_count:
+                        type: integer
+        '400':
+          description: Invalid input parameters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid pagination or sorting parameters"
+        '500':
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Database error occurred"
+                  details:
+                    type: string
+                    example: "SQLAlchemyError details"
+    post:
+      summary: Create a new applicant
+      description: Create a new applicant along with their household members.
+      requestBody:
+        description: JSON payload with applicant and household member details.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Applicant'
+      responses:
+        '201':
+          description: Applicant created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Applicant'
+        '400':
+          description: Validation error in the provided data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    description: Validation error messages.
+        '500':
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "An unexpected error occurred"
+                  details:
+                    type: string
+                    example: "Exception details"
+  /api/applications:
+    get:
+      summary: Get all applications
+      description: Retrieve a list of all applications with pagination and sorting options.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination.
+        - in: query
+          name: page_size
+          schema:
+            type: integer
+            default: 10
+          description: Number of applications per page.
+        - in: query
+          name: sort_order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+          description: Sorting order.
+      responses:
+        '200':
+          description: A JSON array of application objects.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Application'
+                  pagination:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                      page_size:
+                        type: integer
+                      total_pages:
+                        type: integer
+                      total_count:
+                        type: integer
+        '400':
+          description: Invalid input parameters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid pagination or sorting parameters"
+        '500':
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "An unexpected error occurred"
+    post:
+      summary: Create a new application
+      description: Create a new application for an applicant for a specific scheme.
+      requestBody:
+        description: JSON payload with application details including applicant_id and scheme_id.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                applicant_id:
+                  type: integer
+                  description: ID of the applicant applying for the scheme.
+                  example: 1
+                scheme_id:
+                  type: integer
+                  description: ID of the scheme the applicant is applying for.
+                  example: 1
+      responses:
+        '201':
+          description: Application created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Application'
+        '400':
+          description: Validation error in the provided data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Validation error messages."
+        '500':
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "An unexpected error occurred"
+components:
+  schemas:
+    Scheme:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The scheme identifier
+        name:
+          type: string
+          description: The name of the scheme
+        description:
+          type: string
+          description: The description of the scheme
+        eligibility_criteria:
+          type: object
+          description: JSON object containing the eligibility criteria of the scheme
+        benefits:
+          type: object
+          description: JSON object containing the benefits of the scheme
+        validity_start_date:
+          type: string
+          format: date-time
+          description: The start date of the scheme's validity
+        validity_end_date:
+          type: string
+          format: date-time
+          description: The end date of the scheme's validity
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the scheme was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the scheme was last updated
+    EligibilityResult:
+      type: object
+      properties:
+        scheme_id:
+          type: integer
+          description: The unique identifier for the scheme.
+        scheme_name:
+          type: string
+          description: The name of the scheme.
+        scheme_description:
+          type: string
+          description: A detailed description of the scheme.
+        scheme_start_date:
+          type: string
+          format: date-time
+          description: The start date of the scheme.
+        scheme_end_date:
+          type: string
+          format: date-time
+          description: The end date of the scheme.
+        is_eligible:
+          type: boolean
+          description: Indicates if the applicant is eligible for the scheme.
+        eligibility_message:
+          type: string
+          description: A message explaining the eligibility status of the applicant.
+        eligible_benefits:
+          type: object
+          description: A JSON object detailing the benefits for which the applicant is eligible.
+    Applicant:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The applicant identifier.
+        name:
+          type: string
+          description: The name of the applicant.
+        employment_status:
+          type: string
+          description: Employment status of the applicant.
+          enum:
+            - employed
+            - unemployed
+        sex:
+          type: string
+          description: Sex of the applicant.
+          enum:
+            - M
+            - F
+        date_of_birth:
+          type: string
+          format: date-time
+          description: Date of birth of the applicant.
+        marital_status:
+          type: string
+          description: Marital status of the applicant.
+          enum:
+            - single
+            - married
+            - divorced
+            - widowed
+        employment_status_change_date:
+          type: string
+          format: date-time
+          description: The date of the last employment status change.
+        created_by_admin_id:
+          type: integer
+          description: ID of the admin who created the applicant record.
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the applicant was created.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the applicant was last updated.
+        household_members:
+          type: array
+          items:
+            $ref: '#/components/schemas/HouseholdMember'
+          description: List of household members associated with the applicant.
+        applications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Application'
+          description: List of applications associated with the applicant.
+    HouseholdMember:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The household member identifier.
+        applicant_id:
+          type: integer
+          description: The ID of the associated applicant.
+        name:
+          type: string
+          description: The name of the household member.
+        relation:
+          type: string
+          description: The relation of the household member to the applicant.
+          enum:
+            - parent
+            - child
+            - spouse
+            - sibling
+            - other
+        date_of_birth:
+          type: string
+          format: date-time
+          description: Date of birth of the household member.
+        employment_status:
+          type: string
+          description: Employment status of the household member.
+          enum:
+            - employed
+            - unemployed
+        sex:
+          type: string
+          description: Sex of the household member.
+          enum:
+            - M
+            - F
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the household member was created.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the household member was last updated.
+    Application:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The application identifier.
+        applicant_id:
+          type: integer
+          description: ID of the applicant applying for the scheme.
+        scheme_id:
+          type: integer
+          description: ID of the scheme the applicant is applying for.
+        status:
+          type: string
+          description: The current status of the application.
+          enum:
+            - pending
+            - approved
+            - rejected
+        eligibility_verdict:
+          type: string
+          description: Verdict of eligibility assessment for the application.
+        awarded_benefits:
+          type: object
+          description: JSON object detailing the benefits awarded if the application is approved.
+        submission_date:
+          type: string
+          format: date-time
+          description: The date and time the application was submitted.
+        created_by_admin_id:
+          type: integer
+          description: ID of the admin who created the application.
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the application was created.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the application was last updated.
