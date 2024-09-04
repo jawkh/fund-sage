@@ -43,9 +43,9 @@ The API design for **Fund Sage** was guided by specific functional and non-funct
    - Although the **Schemes Eligibility Assessment Report** reports on all the existing active Schemes in the sytem, the API will only return the full details of the eligible Schemes that are related to the applicant, hence adhering to the original functional requirements.
 2. **Application Handling**:
    - The `POST /api/applications` endpoint allows for the creation of new applications:
-     - **Auto-approval** for applications to __eligible__ schemes, providing detailed information on the scheme, applicant, and awarded benefits.
-     - **Auto-rejection** for applications to __ineligible__ schemes, with full details and reasons for rejection.
-     - Ensures each applicant can __Successfully__ apply for each scheme __only once__, but allows __reapplication__ if previously __rejected__ due to changed financial conditions. The system will prevent an existing beneficiary from attempting to apply for the same scheme again.
+     - **Auto-approval** for an __eligible__ applicant of the scheme, providing detailed information on the scheme, applicant, and awarded benefits.
+     - **Auto-rejection** for __ineligible__ applicants, providing the full details and reasons for rejection.
+     - Ensures each applicant can __Successfully__ apply for each scheme __only once__, but allows __reapplication__ if the applicant was previously __rejected__. This caters to changes to the applicant's financial or health, etc conditions. The system will prevent an existing beneficiary from attempting to apply for the same scheme again.
 3. **Household Members**:
    - Whenever an Applicant record is being retrieved, the System will automatically retrieve the details of the Applicant's Household members too. The details of the applicant's household members are considered key data points for executing scheme eligibility decision and benefits computation logic.   
 
@@ -58,7 +58,7 @@ The API design for **Fund Sage** was guided by specific functional and non-funct
    - Endpoints are designed to follow RESTful principles, ensuring consistency and predictability in API behavior.
 
 2. **Security Measures**:
-   - The /auth api endpoint, which performs the user authentications and issues out JWT token to authenticated users, will automatically lock the administrator account after more than 5 (configurable) consecutive failed login attempts within a 10 min timeframe (configurable). This mechanism protects the system against brute force attacks. Locked accounts can be unlocked by another administrator via the /auth/unlock api.
+   - The /auth api endpoint, which performs the user authentications and issues out JWT token to authenticated users, will automatically lock the administrator account after more than 5 (configurable) consecutive failed login attempts within a 1 min timeframe (configurable). This mechanism protects the system against brute force attacks. Locked accounts can be unlocked by another administrator via the /auth/unlock api. (coming soon)
    - The system stores the hash the user password before saving it into the database to protect against password theft.    
    - Utilizes JWT tokens for secure API access, protecting sensitive data and operations.
 
@@ -68,7 +68,7 @@ Below is a detailed breakdown of the API endpoints provided by **Fund Sage**:
 
 | Method | Endpoint                                | Purpose                                                                  | Example Request                      |
 | ------ | --------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------ |
-| POST   | `/api/auth`                             | User login endpoint. Requires JSON payload with 'username' and 'password'. Returns a JWT access token if authentication is successful. Automatically lock the administrator account after more than 5 (configurable) consecutive failed login attempts within a 10 min timeframe (configurable).|`POST /api/auth`|  
+| POST   | `/api/auth`                             | User login endpoint. Requires JSON payload with 'username' and 'password'. Returns a JWT access token if authentication is successful. Automatically lock the administrator account after more than 5 (configurable) consecutive failed login attempts within a 1 min timeframe (configurable).|`POST /api/auth`|  
 | POST   | `/api/auth/unlock` *(coming soon...)*                     | Unlock a locked admin user account.|`POST /api/auth/unlock`|  
 | POST   | `/api/auth/changepassword *(coming soon...)*               | Allows administrator to change his/her current password. Needs to supply the existing password |`POST /api/auth/changepassword`|  
 | GET    | `/api/applicants`                       | Retrieve a list of all applicants.                                       | `GET /api/applicants`                |

@@ -1,19 +1,101 @@
-# API Testing with POST MAN (DRAFT)
+# 🛠️ API Testing Guide - POSTMAN or Swagger UI
 
-Apologies but the link below are not working. The images are all inside the imgs folder if you are interested. Thanks. (:
+## Subtitle:
+Get ready for hands-on testing! This guide provides step-by-step instructions for setting up API endpoints in VSCode or Docker and manually testing them with POSTMAN or Swagger UI.
 
-![APIs are protected and only accessible by authorized Administrators with a valid JWT Token](./imgs/Unauthorized_Access.png)
+---
 
-![Basic Authentication](imgs/Basic_auth.png)
+## Introduction
 
-![Get All Schemes. See the schemes that the system currently supports.](img/get_all_schemes.png)
+Welcome to the API Testing Guide for FundSage! In this guide, we'll walk through the process of manually testing the FundSage API using POSTMAN and Swagger UI. API testing is crucial for ensuring that your endpoints are working as expected, handling requests and responses correctly, and providing a smooth experience for users. Whether you're a developer, tester, or just getting started with APIs, this guide will help you understand how to test API endpoints effectively.
 
-![Get all Applicants. Tips on composing new Applicants' profiles](tips_crafting_create_applicant_request_payload.png)
+## Before You Begin
+Followed one of the relevant guides provided in our 📚 Documentation Hub to deploy FundSage into your environment. 
+- 🚀 [Quick Start - Minimal Setup Guide for FundSage](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/deployment_guide.md)
+- 💻 [Setup Guide for Developers](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/setup_guide_for_dev.md)
 
-![Get all Applications](get_all_applications.png)
+You are highly encouraged to read through 🌐 [API Design](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/api_design.md) beforehand to understand the business logic of the FundSage APIs that you are going to test to familiarize yourself with the business logic.   
 
-![Get all the eligible schemes for an Applicant. Additionally, the System also provides a full report of evaluating every eligible and in-eligible schemes for the Applicant for completeness and transparency.]()
+## Step-by-Step Guide
 
-![For developers: Stepping through the source code in VSCode Debug Mode](SteppingThroughAPICodes.png)
+### Testing the FundSage API with POSTMAN
 
-![Get all supported schemes in the System](get_all_schemes.png)
+POSTMAN is a powerful tool for testing APIs, allowing you to send requests and view responses. Follow these steps to set up and test the FundSage API with POSTMAN:
+
+1. **Install POSTMAN**:
+   - Download and install POSTMAN from the [official website](https://www.postman.com/downloads/).
+
+2. **Set Up Your Environment**:
+   - Open POSTMAN and create a new environment. You can name it `FundSage`.
+   - Add environment variables for `BASE_URL` (e.g., `http://localhost:5000`) and any other variables like `JWT_TOKEN`.
+
+3. **Import OpenAPI Specification**:
+   - Go to `File > Import`, then choose `Link`.
+   - Paste the URL of your `openapi.yaml` file (e.g., `http://localhost:5000/openapi.yaml`).
+   - Click `Import` to load all API endpoints into POSTMAN.
+
+4. **Testing an Endpoint**:
+   - Select an endpoint from the imported collection, such as `POST /api/auth/login`.
+   - Enter the necessary parameters and headers (like `Content-Type: application/json`).
+   - Click `Send` to make a request. 
+   - View the response in the `Response` tab. Check the status code, response body, and headers to verify the API's behavior.
+
+5. **Authentication Handling**:
+   - For endpoints requiring authentication, ensure you retrieve a JWT token first by hitting the `/api/auth/login` endpoint.
+   - Save the token in your environment variables (e.g., `JWT_TOKEN`).
+   - Use this token in the `Authorization` header for subsequent requests (e.g., `Bearer {{JWT_TOKEN}}`).
+
+### Setting Up Swagger UI for API Testing
+
+Swagger UI provides an interactive, browser-based interface for exploring and testing your API endpoints. Here's how to use Swagger UI for FundSage:
+
+1. **Access Swagger UI**:
+   - Start your Flask application with Docker or VSCode, then open your browser and navigate to `http://localhost:5000/swagger`.
+
+2. **Explore API Endpoints**:
+   - Swagger UI will display all available API endpoints from the `openapi.yaml` file.
+   - Click on any endpoint (e.g., `GET /api/applicants`) to expand its details, including parameters, responses, and a `Try it out` button.
+
+3. **Test Endpoints Directly**:
+   - Click `Try it out` for the endpoint you want to test.
+   - Enter any required parameters and click `Execute`.
+   - Swagger UI will display the request URL, response status, headers, and body. Review these to ensure the endpoint is functioning correctly.
+
+4. **Handling Authentication**:
+   - Use the `Authorize` button on the top right to input your JWT token. Swagger UI will handle adding the `Authorization` header to your requests automatically.
+
+## Comparison of POSTMAN and Swagger UI
+
+| Feature           | POSTMAN                                          | Swagger UI                                      |
+|-------------------|--------------------------------------------------|-------------------------------------------------|
+| **Ease of Use**   | Intuitive interface, supports collections.       | Straightforward, especially for testing directly from docs. |
+| **Setup Time**    | Requires installation and environment setup.     | Quick setup; just run in a browser.             |
+| **Features**      | Advanced features like scripting, automated tests, and monitors. | Basic testing features, best for interactive API exploration. |
+| **Integration**   | Integrates well with CI/CD tools and development environments. | Primarily used for API documentation and quick tests. |
+| **Pros**          | Great for complex testing, automation, and environment management. | Ideal for quickly testing and understanding API endpoints. |
+| **Cons**          | Can be overkill for simple tasks.                | Lacks advanced testing features.                |
+
+### Which One to Use?
+
+- **Use POSTMAN** if you need advanced testing features, automated test scripts, or want to integrate API testing into your CI/CD pipeline.
+- **Use Swagger UI** if you’re looking to quickly test endpoints directly from the API documentation, or if you want a straightforward tool for exploring API behavior without additional setup.
+
+## API Testing Tips
+
+1. **Handle Authentication**: Always ensure you have a valid token for endpoints requiring authentication. Update tokens regularly in your environment settings in POSTMAN or Swagger UI.
+   
+2. **Test Different Request Methods**: Use POSTMAN or Swagger UI to test all CRUD operations (GET, POST, PUT, DELETE) to ensure your API handles them correctly.
+
+3. **Validate Responses**: Always check the status codes, headers, and body of the responses. Ensure that error codes like 400, 401, and 500 are handled correctly by your application.
+
+4. **Automate Testing Scenarios**: Use POSTMAN’s scripting and automation features to create repeatable test scenarios. Automating these tests helps catch regressions quickly.
+
+5. **Use Environment Variables**: In POSTMAN, use environment variables to manage different configurations like API endpoints, tokens, and user credentials. This makes your tests more flexible and easier to manage.
+
+6. **Document Edge Cases**: Make sure to test and document how your API handles edge cases such as invalid data, unauthorized access, or unexpected input formats.
+
+## Conclusion
+
+Testing your API thoroughly is crucial for ensuring it performs as expected and handles all scenarios gracefully. Whether you choose POSTMAN or Swagger UI, both tools provide excellent features for manual API testing. Use the comparison and tips in this guide to decide which tool best suits your needs, and start testing your FundSage API today!
+
+Happy Testing! 🚀

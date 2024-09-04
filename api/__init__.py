@@ -16,6 +16,9 @@ from config import Config
 from dal.database import Base  # Import your Base model
 import logging
 
+# Import the Swagger setup function
+from api.swagger_setup import init_swagger_ui
+
 # Initialize extensions
 ma = Marshmallow()
 jwt = JWTManager()
@@ -60,6 +63,10 @@ def create_app(config_class=Config):
     
     # Initialize SQLAlchemy session handling
     setup_db_session(app)
+    
+    # Initialize Swagger UI
+    init_swagger_ui(app)
+
 
     # # Error handler for Marshmallow validation errors
     # @app.errorhandler(ValidationError)
