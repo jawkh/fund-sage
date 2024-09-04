@@ -1,18 +1,39 @@
-# Connection string for the ephemeral test database (for running pytest tests)
-TEST_DATABASE_URL=postgresql+psycopg2://postgres:Pa55w0rd@db:5432/test_financial_assistance_system 
+# Copyright (c) 2024 by Jonathan AW
 
-# Fund Sage Flask Application Configurations
+# Rename this file as .env. This is used to define environment variables for the fund-sage-app and the postgres database.
+# This file is used by docker-compose to set the environment variables for the containers.
+# This file will also be used if you want to run the py_test tests locally or debug any of the python scripts in the bin folder, or the api locally from within VSCode IDE.
+
+# This variable is to enable debugging of the fund-sage-app running within the deployed docker container. 
+# Only set this to 1 if you want to start the FundSage API in debug mode and wait for VSCode's debugger to attach to it before it can run.
+# If you are not debugging the API, set this to 0.
+# when set to 1, the API will not start until the debugger is attached to it. To attach the debugger, run the 'Python: Remote Attach' configuration in the VSCode debugger.
+# when set to 0, the API will start normally.
+FLASK_DEBUG=0
+
+# env for the pytest tests
+# Connection string for the ephemeral test database (for running pytest tests)
+# Important: Make sure the username and password used in the connection string matches the ones defined in POSTGRES_USER and POSTGRES_PASSWORD. The db name for this is fixed to 'fund_sage_db__ephemeral'.
+# Format: postgresql+psycopg2://[POSTGRES_USER]:[POSTGRES_PASSWORD]@db:5432/fund_sage_db__ephemeral
+DATABASE_EPHEMERAL_URL=postgresql+psycopg2://flask_user:flask_password@localhost:5432/fund_sage_db_ephemeral 
+DATABASE_URL=postgresql+psycopg2://flask_user:flask_password@localhost:5432/fund_sage_db
+
+# env variables for 'fund-sage-app' container
+# Important: Make sure the DB, username and password used in the connection string matches the ones defined in POSTGRES_USER and POSTGRES_PASSWORD
+# Format: postgresql+psycopg2://[POSTGRES_USER]:[POSTGRES_PASSWORD]@db:5432/[POSTGRES_DB]
+API_DATABASE_URL=postgresql+psycopg2://flask_user:flask_password@db:5432/fund_sage_db 
+FLASK_ENV=development
 SECRET_KEY=your-secret-key
 JWT_SECRET_KEY=your-jwt-secret-key
 JWT_ACCESS_TOKEN_EXPIRES=3600
-SERVER_NAME=127.0.0.1:5000
+SERVER_NAME=0.0.0.0:5000
 APPLICATION_ROOT=/
 PREFERRED_URL_SCHEME=http
 MAX_PASSWORD_RETRIES=5
 PASSWORD_RETRIES_TIME_WINDOW_MINUTES=1
-DATABASE_URL=postgresql+psycopg2://flask_user:flask_password@db:5432/fund_sage_db 
 
-# Fund Sage API Configurations
+
+# env variables for bin/__data_prep_administrators.py script. Specify the admin user names and passwords for the fund-sage-app API endpoints.
 ADMIN_USER_NAME=admin_user
 ADMIN_USER_PASSWORD=admin_password
 ADMIN_USER_NAME__2=admin_user2
@@ -20,7 +41,27 @@ ADMIN_USER_PASSWORD__2=admin_password2
 ADMIN_USER_NAME__3=admin_user3
 ADMIN_USER_PASSWORD__3=admin_password3
 
-# PostgreSQL Database Configurations for Administrator
-ADMIN_DB_USER=admin_user
-ADMIN_DB_PASSWORD=admin_password
+# env variable for database initation scripts
+# Essential Databaes Initialization
+# By default, the database will be initialized with the schema, the admin user accounts and all the system supported funding schemes. 
+# These are essential for the fund-sage-app to work.
+# Optional Data
+# We will optionally provision dummy data for the fund-sage-app for showcasing the features.
+# This will create dummy data for the following tables: applicants, applications
+# Set these to 0 to skip provisoning dummy data for the fund-sage-app. 
+PROVISION_DUMMY_APPLICANTS=1
+PROVISION_DUMMY_APPLICATIONS=1
+
+# env variables for 'db' admin user credentials. These will be used: 
+# 1. To configure the database connection string variables: DATABASE_URL & TEST_DATABASE_URL
+# 2. To create Server Connection in pgadmin
+# These define the initial database, admin username and password for the Postgresql database 
 POSTGRES_DB=fund_sage_db
+POSTGRES_USER=flask_user
+POSTGRES_PASSWORD=flask_password
+
+# env for 'pgadmin' Container
+# Use these credentials to login to pgadmi4 database client
+PGADMIN_DEFAULT_EMAIL=admin@admin.com
+PGADMIN_DEFAULT_PASSWORD=admin
+

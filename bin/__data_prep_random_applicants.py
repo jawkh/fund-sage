@@ -30,7 +30,10 @@ from uuid import uuid4
 # Load environment variables (e.g., API_BASE_URL)
 load_dotenv()
 ADMIN_USER_NAME = Env().str("ADMIN_USER_NAME", "ADMIN_USER_NAME is not set.")
-
+try: 
+    PROVISION_DUMMY_APPLICANTS = Env().bool("PROVISION_DUMMY_APPLICANTS", True)
+except:
+    PROVISION_DUMMY_APPLICANTS = True # Default to True if not set
 
 connection = engine.connect()
 session = SessionLocal(bind=connection)
@@ -112,6 +115,10 @@ def setup_applicants(applicant_service: ApplicantService, creator, totalcount) -
 
     
 if __name__ == "__main__":
+    if not PROVISION_DUMMY_APPLICANTS:
+        print("Skipping Applicant Account Creation.")
+        sys.exit(0)
+        
     print("Creating Applicant Accounts...\n")
     AS = ApplicantService(crud_operations)
     i = 20

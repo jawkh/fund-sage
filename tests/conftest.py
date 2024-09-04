@@ -48,7 +48,7 @@ from sqlalchemy.exc import SQLAlchemyError
 # Load environment variables
 load_dotenv()
 API_TEST_DATABASE_URL = Env().str("DATABASE_URL", "DATABASE_URL is not set.") # API Test DB - Used for both automated pytest and manual testings using PostMan
-TEST_DATABASE_URL = Env().str("TEST_DATABASE_URL", "TEST_DATABASE_URL is not set.") # For non-API automated pytest only. DB Tables will be provisioned and destroyed for each test session. 
+TEST_DATABASE_URL = Env().str("DATABASE_EPHEMERAL_URL", "DATABASE_EPHEMERAL_URL is not set.") # For non-API automated pytest only. DB Tables will be provisioned and destroyed for each test session. 
 
 # Create a new engine for the test database
 test_engine = create_engine(TEST_DATABASE_URL)

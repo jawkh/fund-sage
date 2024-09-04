@@ -31,7 +31,11 @@ from environs import Env
 load_dotenv()
 ADMIN_USER_NAME = Env().str("ADMIN_USER_NAME", "ADMIN_USER_NAME is not set.")
 ADMIN_USER_PASSWORD = Env().str("ADMIN_USER_PASSWORD", "ADMIN_USER_PASSWORD is not set.")
-
+try:
+    PROVISION_DUMMY_APPLICATIONS = Env().bool("PROVISION_DUMMY_APPLICATIONS", True)
+except:
+    PROVISION_DUMMY_APPLICATIONS = True # Default to True if not set
+    
 connection = engine.connect()
 session = SessionLocal(bind=connection)
     
@@ -78,10 +82,14 @@ def create_applications_api():
     """
     Create application records by making requests to the API endpoint.
     """
+    if not PROVISION_DUMMY_APPLICATIONS:
+        logging.info("Dummy applications provisioning is disabled.")
+        return
+    
     api_base_url = os.getenv('API_BASE_URL')
     app = create_app()
     test_client = app.test_client()
-    
+    app.root_path = "http://localhost:5000"
 
     # Establish an application context
     with app.app_context():

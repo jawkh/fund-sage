@@ -12,16 +12,18 @@ services:
       - ./init-db:/docker-entrypoint-initdb.d  # Mounts the initialization scripts directory
     networks:
       - fund_sage_network
+    ports:  
+    - "5432:5432"  
 
   fund-sage-app:
     build: .
     depends_on:
       - db
-    environment: # Runtime ebnvironment variables for the Docker container. These are set in the .env file of your project's root directory
+    environment: 
       FLASK_APP: api/__init__.py
       FLASK_RUN_HOST: 0.0.0.0  
       FLASK_RUN_PORT: 5000     
-      DATABASE_URL: ${DATABASE_URL} 
+      DATABASE_URL: ${API_DATABASE_URL} 
       FLASK_ENV: ${FLASK_ENV}
       SECRET_KEY: ${SECRET_KEY}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
@@ -32,6 +34,8 @@ services:
       MAX_PASSWORD_RETRIES: ${MAX_PASSWORD_RETRIES}
       PASSWORD_RETRIES_TIME_WINDOW_MINUTES: ${PASSWORD_RETRIES_TIME_WINDOW_MINUTES}
       FLASK_DEBUG: ${FLASK_DEBUG}  
+      PROVISION_DUMMY_APPLICATIONS: ${PROVISION_DUMMY_APPLICATIONS}
+      PROVISION_DUMMY_APPLICANTS: ${PROVISION_DUMMY_APPLICANTS}
     networks:
       - fund_sage_network
     ports: 

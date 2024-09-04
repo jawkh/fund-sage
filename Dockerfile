@@ -32,14 +32,6 @@ ENV PYTHONPATH="${PYTHONPATH}:/app"
 COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
-# Execute database initialization scripts and start the application using poetry run
-# CMD ["bash", "-c", "./wait-for-it.sh db:5432 -- poetry run python bin/__init_sys_database.py && \
-#                         poetry run python bin/__data_prep_administrators.py && \
-#                         poetry run python bin/__data_prep_supported_schemes.py && \
-#                         poetry run python bin/__data_prep_random_applicants.py && \
-#                         poetry run python bin/__data_prep_applications.py && \
-#                         poetry run flask run --host=$FLASK_RUN_HOST --port=$FLASK_RUN_PORT"]
-
 CMD ["bash", "-c", "./wait-for-it.sh db:5432 -- poetry run python bin/__init_sys_database.py && \
                         poetry run python bin/__data_prep_administrators.py && \
                         poetry run python bin/__data_prep_supported_schemes.py && \
