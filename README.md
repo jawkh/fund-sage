@@ -21,6 +21,53 @@ FundSage is a fictitious system crafted to manage various financial assistance s
 - **Quality Assurance with Pytest**: Comprehensive testing strategy covering unit, integration, and end-to-end tests to ensure code reliability and robustness.
 - **Container Packaging**: Simplified deployment using Docker to encapsulate the entire application environment, ensuring consistency across different stages of development and production.
 
+```
+MyProject
+├── api/                     # Presentation Layer (API frontend)
+│   ├── __init__.py          # Initialize Flask app and configure extensions
+│   ├── routes/
+│   │   ├── __init__.py      # Initialize routes
+│   │   ├── applicants.py    # Endpoint for applicant operations
+│   │   ├── schemes.py       # Endpoint for scheme operations
+│   │   ├── applications.py  # Endpoint for application operations
+│   │   └── auth.py          # Endpoint for authentication
+│   └── schemas/
+│       ├── __init__.py      # Initialize schemas (mostly deprecated - retained only for basic PL input validations)
+│       ├── applicant.py     # Marshmallow schema for Applicant
+│       ├── scheme.py        # Marshmallow schema for Scheme
+│       └── application.py   # Marshmallow schema for Application
+├── bl/                      # Business Layer
+│   ├──factories/            # BL Artefacts (Factory Pattern for contructing Schemes Strategy)
+│   ├──schemes/              # BL Artefacts (Strategy Pattern for custom Schemes Business Logic)
+│   ├──services/             # BL Artefacts (Business Services - 1-to-1 with DAL for encapsulation)
+│   └── ..
+├── dal/                     # Data Access Layer
+│   ├── crud_operations.py   # CRUD operations
+│   ├── models.py            # ORM models
+│   └── ..
+├── docs/                    # placeholders for all the project markdown documentations
+│   └── ..
+├── imgs/                    # placeholders for images used for project markdown documentations
+│   └── ..
+├── logs/                    # logs from executing the python database provisioning scripts ,pytests scripts or Flasks app
+│   ├── versions/            # Migration scripts
+│   └── env.py               # Migration environment setup
+├── tests/                   # Home of all the Test files
+│   ├── api_tests            # automated api tests  
+│   ├── bl_tests             # automated business layer tests
+│   ├── dal tests            # automated data access layer tests
+│   ├── util tests           # automated utilities tests
+│   └── conftest.py          # text fixtures
+├── utils/
+│   ├── ...                  # Utility functions and helpers
+├── .env copy                # Environment variables Templates
+├── config.py                # Flask's configurations
+├── poetry.lock              # Fuill Manifests of the Project's python dependencies
+├── pyproject.toml           # Explicitly declared project's python dependencies
+├── README.md                # This page itself (:
+└── ...
+```
+
 ## Getting Started ~ (*draft instructions*)
 
 ### Prerequisites
@@ -155,11 +202,13 @@ Run all tests using the bash shell scripts located in the `/bin` folder:
 
 For detailed information on the software engineering practices applied, please refer to the following documents in the `docs/` directory:
 
-- [**Software Engineering Principles**](sw__eng_principles.md): In-depth explanation of the principles and patterns applied in the project.
-- [**Database and Data Access Layer Design**](db_design.md): Overview of the database schema and decisions made in the design process.
-- [**API Design**](api_design.md): Details on the RESTful API design, including endpoints, request/response formats, and error handling strategies.
-- [**API Testing Guide - POSTMAN**](api_testing.md): Step-by-step instructions for setting up the API endpoints on your VSCode IDE or a Docker container and manual testing guide for POSTMAN  
-- [**Deployment Guide**](deployment_guide.md): Instructions on how to package and deploy the application using Docker.
+- [**Database and Data Access Layer Design**](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/db_design.md): Overview of the database schema and Object Relationship Model (ORM) decisions made in the design process. ~ AVAILABLE NOW!
+- [**Software Engineering Principles**](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/sw__eng_principles.md) Overview of the business layer design decisions made in the design process. ~ AVAILABLE NOW!
+- [**Business Layer Design**](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/bl_design.md): In-depth explanation of the principles and patterns applied in the project. ~ AVAILABLE NOW!
+- [**API Design**](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/api_design.md): Details on the RESTful API design, including endpoints, request/response formats, and error handling strategies. ~ AVAILABLE NOW! 
+- [**Robust Testing Strategy**](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/testing_strategy.md): I cannot overstate the importance of having a wide-coverage of automated regression testings. This saved my Ass many times! :p
+- [**API Testing Guide - POSTMAN**](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/api_testing.md): Step-by-step instructions for setting up the API endpoints on your VSCode IDE or a Docker container and manual testing guide for POSTMAN. ~ COMING SOON...  
+- [**Deployment Guide**](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/deployment_guide.md): Instructions on how to package and deploy the application using Docker. ~ COMING SOON...
 
 
 ## License

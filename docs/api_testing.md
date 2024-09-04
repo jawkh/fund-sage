@@ -1,5 +1,6 @@
-#API Testing with POST MAN (DRAFT)
+# API Testing with POST MAN (DRAFT)
 
+Apologies but the link below are not working. The images are all inside the imgs folder if you are interested. Thanks. (:
 
 ![APIs are protected and only accessible by authorized Administrators with a valid JWT Token](./imgs/Unauthorized_Access.png)
 
