@@ -15,7 +15,7 @@ class Config:
     SECRET_KEY = Env().str('SECRET_KEY') 
     JWT_SECRET_KEY = Env().str('JWT_SECRET_KEY') 
     JWT_ACCESS_TOKEN_EXPIRES = int(Env().str('JWT_ACCESS_TOKEN_EXPIRES', "3600"))  
-    SERVER_NAME = Env().str('SERVER_NAME')  
+    # SERVER_NAME = Env().str('SERVER_NAME')  
     APPLICATION_ROOT = Env().str('APPLICATION_ROOT', '/')  
     PREFERRED_URL_SCHEME = Env().str('PREFERRED_URL_SCHEME', 'http')  
 

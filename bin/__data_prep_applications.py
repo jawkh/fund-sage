@@ -152,4 +152,4 @@ if __name__ == "__main__":
     connection.close()
 
     # Generate the batch run report
-    generate_batch_run_report()
+    # generate_batch_run_report()
