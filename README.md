@@ -1,28 +1,36 @@
-# FundSage
+# 💰 FundSage
 
 > **TL;DR:**  
-> FundSage is a showcase project designed to demonstrate best practices in software engineering within a simulated Financial Assistance Scheme Management System. This project illustrates the application of SOLID design principles, robust testing strategies, and efficient deployment processes. Follow the steps below to get the project up and running on your local machine, and explore our documentation for a deeper understanding of the architecture and design decisions.
+> **FundSage** is a showcase project crafted to highlight best practices in software engineering within a simulated Financial Assistance Scheme Management System. 🚀 This project demonstrates the application of **SOLID design principles**, robust testing strategies, and streamlined deployment processes. Dive into our documentation to set up the project on your local machine or to explore the architecture and design decisions in depth! 📚
 
-## Overview
 
-FundSage is a fictitious system crafted to manage various financial assistance schemes, their eligibility criteria, applications, and benefit distribution. This project is built to highlight clean, maintainable, and scalable software engineering practices, making it an excellent resource for both novice and experienced developers.
+## 🌟 Overview
 
-## Key Features
+**FundSage** is a fictitious system designed to manage various financial assistance schemes, including their eligibility criteria, application processes, and benefit distribution. This project showcases clean, maintainable, and scalable software engineering practices, making it an invaluable learning resource for both novice and experienced developers. 🚀
 
-- **Adherence to Software Engineering Principles**: Implements SOLID principles, DRY (Don't Repeat Yourself), and KISS (Keep It Simple, Stupid) throughout the codebase.
-- **Extensibility with SOLID Design Principles**: Adheres to SOLID principles to ensure the system is easily extensible and maintainable:
-    - **Single Responsibility Principle (SRP)**: Each class or module has a single, well-defined responsibility, enhancing code clarity and reducing complexity.
-    - **Open/Closed Principle (OCP)**: The system is open for extension but closed for modification, allowing new schemes to be added without changing existing code.
-    - **Liskov Substitution Principle (LSP)**: Objects of a superclass can be replaced with objects of a subclass without affecting the application, ensuring robust inheritance hierarchies.
-    - **Interface Segregation Principle (ISP)**: Many client-specific interfaces are better than one general-purpose interface, preventing the implementation of unnecessary methods.
-    - **Dependency Inversion Principle (DIP)**: High-level modules are not dependent on low-level modules; both depend on abstractions, fostering a decoupled architecture.
-- **ORM for Data Persistence**: Efficient data management using SQLAlchemy, ensuring a clear separation between business logic and data access layers.
-- **Database Synchronization**: Automatic handling of database schema changes through migration scripts.
-- **Quality Assurance with Pytest**: Comprehensive testing strategy covering unit, integration, and end-to-end tests to ensure code reliability and robustness.
-- **Container Packaging**: Simplified deployment using Docker to encapsulate the entire application environment, ensuring consistency across different stages of development and production.
+## 🔑 Key Features
+
+- **🔧 Adherence to Software Engineering Principles**: The codebase strictly follows best practices like SOLID principles, well-architectured enterprise solution design, proper implementation of RESTful principles and good coding and extensive testing practices to ensure clean and effective code that has good quality, readabilty, maintainability and extensibility.
+
+- **🔍 Extensibility with SOLID Design Principles**: FundSage is built with SOLID principles at its core, allowing for easy extensibility and maintenance:
+  - **📝 Single Responsibility Principle (SRP)**: Each class or module is dedicated to a single responsibility, enhancing clarity and reducing complexity.
+  - **🚪 Open/Closed Principle (OCP)**: The system is designed to be open for extension but closed for modification, making it easy to add new schemes without altering existing code.
+  - **🔄 Liskov Substitution Principle (LSP)**: Ensures that objects of a superclass can be replaced with objects of a subclass without impacting the functionality, supporting a robust inheritance structure.
+  - **🔗 Interface Segregation Principle (ISP)**: Prefers multiple, client-specific interfaces over a single general-purpose interface, avoiding unnecessary methods and enhancing flexibility.
+  - **🔄 Dependency Inversion Principle (DIP)**: Promotes a decoupled architecture by ensuring high-level modules are not dependent on low-level modules; both rely on abstractions.
+
+- **🗄️ ORM for Data Persistence**: Utilizes SQLAlchemy for efficient data management, clearly separating business logic from data access layers.
+
+- **🔄 Database Synchronization**: Automatically handles database schema changes with migration scripts, keeping your data model in sync.
+
+- **✅ Quality Assurance with Pytest**: Implements a comprehensive testing strategy using Pytest to cover unit, integration, and end-to-end tests, ensuring code reliability and robustness.
+
+- **📦 Container Packaging**: Uses Docker for containerization to streamline deployment, encapsulating the entire application environment for consistent development and production stages.
+
+## 📂 Project Folder Structure at a Glance
 
 ```
-MyProject
+Project_Root
 ├── api/                     # Presentation Layer (API frontend)
 │   ├── __init__.py          # Initialize Flask app and configure extensions
 │   ├── routes/
@@ -36,6 +44,13 @@ MyProject
 │       ├── applicant.py     # Marshmallow schema for Applicant
 │       ├── scheme.py        # Marshmallow schema for Scheme
 │       └── application.py   # Marshmallow schema for Application
+├── bin/
+│       ├── __init_sys_database.py # database initialization scripts
+│       ├── ...
+│       ├── tests_all.sh # automated test scripts
+│       └── ...
+├── init-db
+│       └── create_db_ephemeral.sql # script for provisioning the ephemeral test database for automated test scripts. 
 ├── bl/                      # Business Layer
 │   ├──factories/            # BL Artefacts (Factory Pattern for contructing Schemes Strategy)
 │   ├──schemes/              # BL Artefacts (Strategy Pattern for custom Schemes Business Logic)
@@ -50,13 +65,11 @@ MyProject
 ├── imgs/                    # placeholders for images used for project markdown documentations
 │   └── ..
 ├── logs/                    # logs from executing the python database provisioning scripts ,pytests scripts or Flasks app
-│   ├── versions/            # Migration scripts
-│   └── env.py               # Migration environment setup
 ├── tests/                   # Home of all the Test files
-│   ├── api_tests            # automated api tests  
-│   ├── bl_tests             # automated business layer tests
-│   ├── dal tests            # automated data access layer tests
-│   ├── util tests           # automated utilities tests
+│   ├── api_tests/            # automated api tests  
+│   ├── bl_tests /           # automated business layer tests
+│   ├── dal tests/            # automated data access layer tests
+│   ├── util tests/           # automated utilities tests
 │   └── conftest.py          # text fixtures
 ├── utils/
 │   ├── ...                  # Utility functions and helpers
@@ -64,151 +77,41 @@ MyProject
 ├── config.py                # Flask's configurations
 ├── poetry.lock              # Fuill Manifests of the Project's python dependencies
 ├── pyproject.toml           # Explicitly declared project's python dependencies
-├── README.md                # This page itself (:
+├── Dockerfile     # Dockerfile for FundSage Container image
+├── docker-compose.yml # for packaging and deploying multi-containers solution
+├── wait-for-it.ini # util for deployment dependencies
+├── README.md                # This page itself 
 └── ...
 ```
 
-## Getting Started ~ (*draft instructions*)
+## 📚 Documentation Hub
 
-### Prerequisites
+Explore our comprehensive documentation to master the software engineering practices used in FundSage! All documents are available in the `docs/` directory:
 
-To set up the development environment for FundSage, you'll need the following (I use Windows WSL2 personally):
+### 🚀 [Quick Start - Minimal Setup Guide for FundSage](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/deployment_guide.md)
+Kick off your journey with FundSage! Follow this minimal setup guide to get up and running quickly.
 
-- **Operating System**: Ubuntu Linux Distro [or Windows WSL 2 with Ubuntu Distro]
-- **IDE**: Visual Studio Code
-- **Docker**: Docker [ or Docker Desktop for Windows] 
-- **Version Control**: Git Client
+### 🌐 [API Design](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/api_design.md) 
+Dive deep into the RESTful API design. Learn about endpoints, request/response formats, and error handling strategies to integrate smoothly with FundSage.
 
-### Platform & Tools Setup
+### 🛠️ [API Testing Guide - POSTMAN](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/api_testing.md) 
+Get ready for hands-on testing! This guide will soon provide step-by-step instructions for setting up API endpoints in VSCode or Docker and manually testing them with POSTMAN.
 
-#### 1. Python 3
+### 💻 [Setup Guide for Developers](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/setup_guide_for_dev.md)
+Set up your development environment like a pro! Follow these instructions to configure your tools and debug your code using Visual Studio Code.
 
-Ensure Python 3.10+ is installed on your machine. You can download the installer from the [official Python website](https://www.python.org/downloads/).
+### 🗄️ [Database and Data Access Layer Design](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/db_design.md) 
+Understand the foundations of FundSage's database schema and ORM choices. This document covers all the design decisions made for data management.
 
-#### 2. Poetry for Package and Dependency Management
+### 🛡️ [Software Engineering Principles](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/sw__eng_principles.md) 
+Discover the core principles and best practices that guide the development of FundSage. This document provides a comprehensive overview of our software engineering philosophy.
 
-Poetry simplifies dependency management and ensures the environment is consistent across different setups.
+### 🏗️ [Business Layer Design](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/bl_design.md) 
+Explore the design patterns and architectural principles used in the business layer of FundSage. Gain insights into how FundSage structure and manage business logic.
 
-- **Install Poetry**: Follow the instructions on the official Poetry website to install it.
-- **Install Dependencies**: Once Poetry is installed, navigate to the project directory and run:
-    
-    ```bash  
-    poetry install
-    ```
-    This will install all dependencies listed in the `pyproject.toml` and `poetry.lock` files, including `pytest` for testing, `SQLAlchemy` for ORM, and `Flask` for REST API development.
+### ✅ [Robust Testing Strategy](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/testing_strategy.md)
+Testing is key! Learn about FundSage's wide-coverage automated regression testing approach that has saved me countless times. 🛡️
 
-#### 3. PostgreSQL
-
-Set up PostgreSQL using Docker:
-
-- **Run PostgreSQL Docker Container**:
-    ```bash
-    docker run --name postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
-    ```
-    Replace `mysecretpassword` with a secure password of your choice.
-
-#### 4. pgAdmin4
-
-For managing the PostgreSQL database, you can either install pgAdmin4 on Windows or run it in Docker:
-
-- **Run pgAdmin4 Docker Container**: *single line command*
-    ```bash
-    docker run -p 80:80 --name pgadmin -e "PGADMIN_DEFAULT_EMAIL=user@domain.com" -e "PGADMIN_DEFAULT_PASSWORD=admin" -d dpage/pgadmin4
-    ```
-Replace the email and password with your credentials.
-
-#### 5. Postman for API Testing
-
-Download and install Postman for manual API testing.
-
-### Custom Setup Steps
-
-#### 1. Cloning the Git Repository
-
-Clone the FundSage repository from GitHub
-
-    ```bash 
-    git clone https://github.com/jawkh/gt_cdt_swe_test.git cd gt_cdt_swe_test
-    ```   
-
-#### 2. Setting Up VSCode for Debugging
-
-Configure VSCode for debugging by adding the following to your `.vscode/launch.json` file:
-
-    ```
-    {
-        "name": "Python: Flask",
-        "type": "debugpy",
-        "request": "launch",
-        "module": "flask",
-        "env": {
-            "FLASK_APP": "api",
-            "FLASK_ENV": "development",
-            "FLASK_DEBUG": "1"
-        },
-        "args": [
-            "run",
-            "--no-debugger",
-            "--no-reload"
-        ],
-        "jinja": true,
-        "justMyCode": false
-    }
-    ```
-
-#### 3. Running Database Setup Scripts on PostgreSQL
-
-Run the provided Python scripts in the `/bin` folder to set up the database and prepopulate it with test records, including: 
-
-- Administrators (for accessing the system)
-- Supported Schemes
-- Sample Applicants so that you can copy their profile for your own PostMan testing
-- Sample Applications for testing the Application queries in PostMan
-
-**Generate Database Schema**:
-
-    ```bash
-    poetry run python3 bin/__init_sys_database.py
-    ```    
-
-**Pre-populate Database with Sample Records**:
-    
-    ```bash
-    poetry run python bin/__data_prep_administrators.py
-    poetry run python bin/__data_prep_supported_schemes.py
-    poetry run python bin/__data_prep_random_applicants.py
-    poetry run python bin/__data_prep_applications.py
-    ```
-
-#### 4. Setting Up the .env File
-
-Create a `.env` file in the root directory of the project using the `env copy` template provided:
-
-    ```bash
-    cp .env.example .env
-    ```
-
-Edit the `.env` file to include your database credentials and any other necessary configuration.
-
-#### 5. Running Pytest Scripts
-
-Run all tests using the bash shell scripts located in the `/bin` folder:
-
-    ```bash
-    bash bin/tests_all.sh`
-    ```
-
-## Documentation
-
-For detailed information on the software engineering practices applied, please refer to the following documents in the `docs/` directory:
-
-- [**Database and Data Access Layer Design**](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/db_design.md): Overview of the database schema and Object Relationship Model (ORM) decisions made in the design process. ~ AVAILABLE NOW!
-- [**Software Engineering Principles**](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/sw__eng_principles.md) Overview of the business layer design decisions made in the design process. ~ AVAILABLE NOW!
-- [**Business Layer Design**](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/bl_design.md): In-depth explanation of the principles and patterns applied in the project. ~ AVAILABLE NOW!
-- [**API Design**](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/api_design.md): Details on the RESTful API design, including endpoints, request/response formats, and error handling strategies. ~ AVAILABLE NOW! 
-- [**Robust Testing Strategy**](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/testing_strategy.md): I cannot overstate the importance of having a wide-coverage of automated regression testings. This saved my Ass many times! :p
-- [**API Testing Guide - POSTMAN**](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/api_testing.md): Step-by-step instructions for setting up the API endpoints on your VSCode IDE or a Docker container and manual testing guide for POSTMAN. ~ COMING SOON...  
-- [**Deployment Guide**](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/deployment_guide.md): Instructions on how to package and deploy the application using Docker. ~ COMING SOON...
 
 
 ## License
