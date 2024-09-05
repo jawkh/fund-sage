@@ -9,6 +9,39 @@ Get ready for hands-on testing! This guide provides step-by-step instructions fo
 
 Welcome to the API Testing Guide for FundSage! In this guide, we'll walk through the process of manually testing the FundSage API using POSTMAN and Swagger UI. API testing is crucial for ensuring that your endpoints are working as expected, handling requests and responses correctly, and providing a smooth experience for users. Whether you're a developer, tester, or just getting started with APIs, this guide will help you understand how to test API endpoints effectively.
 
+## API Specifications
+FundSage's API Specifications are completely defined within an openapi.yaml file that is available at http://{fund-sage-baseurl}/openapi.yaml.
+
+The following best practices have been implemented to make it more user-friendly and provides clearer guidance for developers interacting with the API through Swagger UI or other tools.
+
+### Best Practices Incorporated:
+**Enum Definitions for Query Parameters:**
+- Added `enum` properties to query parameters to provide hints in Swagger UI, such as for `sort_order`, `employment_status`, `sex`, and `marital_status`.
+
+**Example Payloads for POST Requests:**
+- Provided detailed example payloads in the `requestBody` section of `POST` requests, guiding users on the expected format and structure.
+
+**Security Schemes:**
+- Added `bearerAuth` security scheme to specify that JWT tokens should be used for authentication, enhancing the understanding of authentication requirements.
+
+**Schema References and Descriptions:**
+- Defined and referenced schemas for request and response bodies, providing clarity and reducing redundancy.
+- Added comprehensive descriptions for each schema property to enhance understanding.
+- Use the required array to list all fields that are mandatory. Fields not listed are considered optional.
+- Use the required keyword within each parameter definition to indicate if it is mandatory (required: true) or optional (required: false).
+
+**Pagination and Sorting Parameters:**
+- Included pagination and sorting parameters in the `GET` endpoints to clarify their usage and enhance the user experience.
+
+**Use of `description` for Parameters and Properties:**
+- Added description fields to all parameters and schema properties to provide more context and clarity.
+
+**Error Handling and Responses:**
+- Defined error responses for various status codes (e.g., `400`, `401`, `500`) to guide users on how to handle different error scenarios.
+
+**JWT Authentication Indication:**
+- Added security schemes and applied them to endpoints requiring JWT authentication, ensuring users are aware of authentication needs.
+
 ## Before You Begin
 Followed one of the relevant guides provided in our 📚 Documentation Hub to deploy FundSage into your environment. 
 - 🚀 [Quick Start - Minimal Setup Guide for FundSage](https://github.com/jawkh/gt_cdt_swe_test/blob/main/docs/deployment_guide.md)

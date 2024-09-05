@@ -39,13 +39,13 @@ The API design for **Fund Sage** was guided by specific functional and non-funct
 ### Functional Features
 
 1. **Comprehensive Eligibility Assessment**:
-   - The `GET /api/schemes/eligible` endpoint returns a full **Schemes Eligibility Assessment Report** for an applicant across all available schemes, detailing both __eligible and ineligible__ schemes. This promotes transparency and helps testers verify thorough scheme evaluation, omitting expired or future schemes.
+   - The `GET /api/schemes/eligible` Retrieve a list of schemes an applicant is eligible for. This returns the full details of all the eligible Schemes that are related to the applicant. Additionally, it also provides a comprehensive **Schemes Eligibility Assessment Report** for the applicant. This report will show the __computed benefits__ for each __eligible schemes__, and explains the __reasons why the applicant is ineligible__ in the others. This provides transparency and makes it convenient for manual validations of the scheme evaluation. Expired or future schemes will be omitted from the Eligibility Report. 
    - Although the **Schemes Eligibility Assessment Report** reports on all the existing active Schemes in the sytem, the API will only return the full details of the eligible Schemes that are related to the applicant, hence adhering to the original functional requirements.
 2. **Application Handling**:
    - The `POST /api/applications` endpoint allows for the creation of new applications:
      - **Auto-approval** for an __eligible__ applicant of the scheme, providing detailed information on the scheme, applicant, and awarded benefits.
      - **Auto-rejection** for __ineligible__ applicants, providing the full details and reasons for rejection.
-     - Ensures each applicant can __Successfully__ apply for each scheme __only once__, but allows __reapplication__ if the applicant was previously __rejected__. This caters to changes to the applicant's financial or health, etc conditions. The system will prevent an existing beneficiary from attempting to apply for the same scheme again.
+     - Ensures each applicant can __Successfully__ apply for each scheme __only once__, but allows __reapplication__ if the applicant was previously __rejected__. This caters to changes in the applicant's financial or health, etc conditions. The system will prevent an existing beneficiary from attempting to apply for the same scheme again.
 3. **Household Members**:
    - Whenever an Applicant record is being retrieved, the System will automatically retrieve the details of the Applicant's Household members too. The details of the applicant's household members are considered key data points for executing scheme eligibility decision and benefits computation logic.   
 
