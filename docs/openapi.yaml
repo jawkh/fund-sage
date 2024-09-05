@@ -151,17 +151,68 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Scheme'
+                    example:  # Example payload for the response
+                      [
+                        {
+                          "benefits": {
+                            "cash_assistance": {
+                              "description": "Cash assistance provided to all eligible applicants.",
+                              "disbursment_amount": 1000,
+                              "disbursment_duration_months": null,
+                              "disbursment_frequency": "One-Off"
+                            },
+                            "extra_cdc_vouchers": {
+                              "amount_per_parent": 200,
+                              "description": "Extra CDC vouchers provided for each elderly parent above the age of 65.",
+                              "disbursment_duration_months": null,
+                              "disbursment_frequency": "One-Off",
+                              "eligibility": {
+                                "age_threshold": 65,
+                                "relation": "parent"
+                              }
+                            },
+                            "school_meal_vouchers": {
+                              "amount_per_child": 100,
+                              "description": "Meal vouchers provided for each child in the household within the primary school age range (6-11 years old).",
+                              "disbursment_duration_months": 12,
+                              "disbursment_frequency": "Monthly",
+                              "eligibility": {
+                                "age_range": {
+                                  "max": 11,
+                                  "min": 6
+                                },
+                                "relation": "child"
+                              }
+                            }
+                          },
+                          "created_at": "2024-09-05T06:02:03.002941+00:00",
+                          "description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs.",
+                          "eligibility_criteria": {
+                            "employment_status": "unemployed",
+                            "retrechment_period_months": 6
+                          },
+                          "id": 1,
+                          "name": "Retrenchment Assistance Scheme",
+                          "updated_at": null,
+                          "validity_end_date": null,
+                          "validity_start_date": "2024-01-01T00:00:00"
+                        }
+                      ]
                   pagination:
                     type: object
                     properties:
                       current_page:
                         type: integer
+                        example: 1
                       per_page:
                         type: integer
+                        example: 10
                       total_schemes:
                         type: integer
+                        example: 20
                       total_pages:
                         type: integer
+                        example: 2
         '400':
           description: Invalid input parameters.
           content:
@@ -214,10 +265,161 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/Scheme'
+                        example:  # Example payload for the response (only eligible schemes will be returned)
+                          [
+                            {
+                              "benefits": {
+                                "cash_assistance": {
+                                  "description": "Cash assistance provided to all eligible applicants.",
+                                  "disbursment_amount": 1000,
+                                  "disbursment_duration_months": null,
+                                  "disbursment_frequency": "One-Off"
+                                },
+                                "extra_cdc_vouchers": {
+                                  "amount_per_parent": 200,
+                                  "description": "Extra CDC vouchers provided for each elderly parent above the age of 65.",
+                                  "disbursment_duration_months": null,
+                                  "disbursment_frequency": "One-Off",
+                                  "eligibility": {
+                                    "age_threshold": 65,
+                                    "relation": "parent"
+                                  }
+                                },
+                                "school_meal_vouchers": {
+                                  "amount_per_child": 100,
+                                  "description": "Meal vouchers provided for each child in the household within the primary school age range (6-11 years old).",
+                                  "disbursment_duration_months": 12,
+                                  "disbursment_frequency": "Monthly",
+                                  "eligibility": {
+                                    "age_range": {
+                                      "max": 11,
+                                      "min": 6
+                                    },
+                                    "relation": "child"
+                                  }
+                                }
+                              },
+                              "created_at": "2024-09-05T06:02:03.002941+00:00",
+                              "description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs.",
+                              "eligibility_criteria": {
+                                "employment_status": "unemployed",
+                                "retrechment_period_months": 6
+                              },
+                              "id": 1,
+                              "name": "Retrenchment Assistance Scheme",
+                              "updated_at": null,
+                              "validity_end_date": null,
+                              "validity_start_date": "2024-01-01T00:00:00"
+                            },
+                            {
+                              "benefits": {
+                                "skillsfuture_credit_top_up": {
+                                  "description": "One-time Skillsfuture Credit top-up of $1000.",
+                                  "disbursment_amount": 1000,
+                                  "disbursment_duration_months": null,
+                                  "disbursment_frequency": "One-Off"
+                                },
+                                "study_allowance": {
+                                  "description": "Monthly study allowance of $5000 for up to 6 months.",
+                                  "disbursment_amount": 2000,
+                                  "disbursment_duration_months": 6,
+                                  "disbursment_frequency": "Monthly"
+                                }
+                              },
+                              "created_at": "2024-09-05T06:02:03.017777+00:00",
+                              "description": "A scheme to provide financial support and benefits to individuals aged 40 and above who are unemployed, encouraging reskilling and upskilling.",
+                              "eligibility_criteria": {
+                                "age_threshold": 40,
+                                "employment_status": "unemployed"
+                              },
+                              "id": 2,
+                              "name": "Middle-aged Reskilling Assistance Scheme",
+                              "updated_at": null,
+                              "validity_end_date": null,
+                              "validity_start_date": "2024-01-01T00:00:00"
+                            }
+                          ]
                       eligibility_results:
                         type: array
                         items:
                           $ref: '#/components/schemas/EligibilityResult'
+                        example:  # Example payload for the response (Will provide the eligibility assessment report for all schemes - eligible and ineligible)
+                          [
+                            {
+                              "eligibility_message": "Eligible for Retrenchment Assistance.",
+                              "eligible_benefits": [
+                                {
+                                  "beneficiary": "John Doe",
+                                  "benefit_name": "cash_assistance",
+                                  "description": "Cash assistance provided to all eligible applicants.",
+                                  "disbursment_amount": 1000,
+                                  "disbursment_duration_month": null,
+                                  "disbursment_frequency": "One-Off"
+                                },
+                                {
+                                  "beneficiary": "Mi Doe",
+                                  "benefit_name": "school_meal_vouchers",
+                                  "description": "Meal vouchers provided for each child in the household within the primary school age range (6-11 years old).",
+                                  "disbursment_amount": 100,
+                                  "disbursment_duration_month": 12,
+                                  "disbursment_frequency": "Monthly"
+                                }
+                              ],
+                              "is_eligible": true,
+                              "scheme_description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs.",
+                              "scheme_end_date": null,
+                              "scheme_id": 1,
+                              "scheme_name": "Retrenchment Assistance Scheme",
+                              "scheme_start_date": "Mon, 01 Jan 2024 00:00:00 GMT"
+                            },
+                            {
+                              "eligibility_message": "Eligible for Middle-aged Reskilling Assistance.",
+                              "eligible_benefits": [
+                                {
+                                  "beneficiary": "John Doe",
+                                  "benefit_name": "skillsfuture_credit_top_up",
+                                  "description": "One-time Skillsfuture Credit top-up of $1000.",
+                                  "disbursment_amount": 1000,
+                                  "disbursment_duration": null,
+                                  "disbursment_frequency": "One-Off"
+                                },
+                                {
+                                  "beneficiary": "John Doe",
+                                  "benefit_name": "study_allowance",
+                                  "description": "Monthly study allowance of $5000 for up to 6 months.",
+                                  "disbursment_amount": 2000,
+                                  "disbursment_duration": 6,
+                                  "disbursment_frequency": "Monthly"
+                                }
+                              ],
+                              "is_eligible": true,
+                              "scheme_description": "A scheme to provide financial support and benefits to individuals aged 40 and above who are unemployed, encouraging reskilling and upskilling.",
+                              "scheme_end_date": null,
+                              "scheme_id": 2,
+                              "scheme_name": "Middle-aged Reskilling Assistance Scheme",
+                              "scheme_start_date": "Mon, 01 Jan 2024 00:00:00 GMT"
+                            },
+                            {
+                              "eligibility_message": "Not eligible for Senior Citizen Assistance Scheme.",
+                              "eligible_benefits": [],
+                              "is_eligible": false,
+                              "scheme_description": "A scheme to provide financial support and benefits to individuals aged 65 and above.",
+                              "scheme_end_date": null,
+                              "scheme_id": 3,
+                              "scheme_name": "Senior Citizen Assistance Scheme",
+                              "scheme_start_date": "Mon, 01 Jan 2024 00:00:00 GMT"
+                            },
+                            {
+                              "eligibility_message": "Not eligible: Applicant is not female.",
+                              "eligible_benefits": [],
+                              "is_eligible": false,
+                              "scheme_description": "A scheme to provide financial support and benefits to single working mothers with young children (18 and below).",
+                              "scheme_end_date": null,
+                              "scheme_id": 4,
+                              "scheme_name": "Single Working Mothers Support Scheme",
+                              "scheme_start_date": "Mon, 01 Jan 2024 00:00:00 GMT"
+                            }
+                          ]
         '400':
           description: Invalid applicant ID or missing parameter.
           content:
@@ -322,6 +524,67 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Applicant'
+                    example:
+                      [
+                        {
+                          "created_at": "2024-09-05T09:06:07.448650+00:00",
+                          "created_by_admin_id": 1,
+                          "date_of_birth": "1985-01-01T00:00:00",
+                          "employment_status": "employed",
+                          "employment_status_change_date": "2023-01-01T00:00:00",
+                          "household_members": [
+                            {
+                              "applicant_id": 63,
+                              "created_at": "2024-09-05T09:06:07.448650+00:00",
+                              "date_of_birth": "1987-02-01T00:00:00",
+                              "employment_status": "employed",
+                              "id": 115,
+                              "name": "Jane Doe",
+                              "relation": "spouse",
+                              "sex": "F",
+                              "updated_at": null
+                            },
+                            {
+                              "applicant_id": 63,
+                              "created_at": "2024-09-05T09:06:07.448650+00:00",
+                              "date_of_birth": "2013-09-08T06:02:04.898553",
+                              "employment_status": "unemployed",
+                              "id": 116,
+                              "name": "Mi Doe",
+                              "relation": "child",
+                              "sex": "F",
+                              "updated_at": null
+                            },
+                            {
+                              "applicant_id": 63,
+                              "created_at": "2024-09-05T09:06:07.448650+00:00",
+                              "date_of_birth": "2006-09-10T06:02:04.898558",
+                              "employment_status": "unemployed",
+                              "id": 117,
+                              "name": "Ray Doe",
+                              "relation": "child",
+                              "sex": "F",
+                              "updated_at": null
+                            },
+                            {
+                              "applicant_id": 63,
+                              "created_at": "2024-09-05T09:06:07.448650+00:00",
+                              "date_of_birth": "1968-09-19T06:02:04.898567",
+                              "employment_status": "unemployed",
+                              "id": 118,
+                              "name": "Mike Doe",
+                              "relation": "parent",
+                              "sex": "F",
+                              "updated_at": null
+                            }
+                          ],
+                          "id": 63,
+                          "marital_status": "married",
+                          "name": "John Doe",
+                          "sex": "M",
+                          "updated_at": null
+                        }
+                      ]
                   pagination:
                     type: object
                     properties:
@@ -371,17 +634,38 @@ paths:
             example:  # Example payload for the request
               {
                 "name": "John Doe",
-                "employment_status": "employed",
+                "employment_status": "unemployed",
                 "sex": "M",
-                "date_of_birth": "1985-01-01T00:00:00Z",
+                "date_of_birth": "1975-01-01T00:00:00Z",
                 "marital_status": "married",
-                "employment_status_change_date": "2023-01-01T00:00:00Z",
+                "employment_status_change_date": "2024-08-01T00:00:00Z",
                 "household_members": [
                   {
                     "name": "Jane Doe",
                     "relation": "spouse",
                     "date_of_birth": "1987-02-01T00:00:00Z",
                     "employment_status": "employed",
+                    "sex": "F"
+                  },
+                  {
+                    "date_of_birth": "2013-09-08T06:02:04.898553",
+                    "employment_status": "unemployed",
+                    "name": "Mi Doe",
+                    "relation": "child",
+                    "sex": "F"
+                    },
+                  {
+                    "date_of_birth": "2006-09-10T06:02:04.898558",
+                    "employment_status": "unemployed",
+                    "name": "Ray Doe",
+                    "relation": "child",
+                    "sex": "F"
+                  },
+                  {
+                    "date_of_birth": "1958-09-19T06:02:04.898567",
+                    "employment_status": "unemployed",
+                    "name": "Mike Doe",
+                    "relation": "parent",
                     "sex": "F"
                   }
                 ]
@@ -396,6 +680,65 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Applicant'
+                  example:
+                    {
+                      "created_at": "2024-09-05T09:18:54.278407+00:00",
+                      "created_by_admin_id": 1,
+                      "date_of_birth": "1975-01-01T00:00:00",
+                      "employment_status": "unemployed",
+                      "employment_status_change_date": "2024-08-01T00:00:00",
+                      "household_members": [
+                        {
+                          "applicant_id": 64,
+                          "created_at": "2024-09-05T09:18:54.278407+00:00",
+                          "date_of_birth": "1987-02-01T00:00:00",
+                          "employment_status": "employed",
+                          "id": 119,
+                          "name": "Jane Doe",
+                          "relation": "spouse",
+                          "sex": "F",
+                          "updated_at": null
+                        },
+                        {
+                          "applicant_id": 64,
+                          "created_at": "2024-09-05T09:18:54.278407+00:00",
+                          "date_of_birth": "2013-09-08T06:02:04.898553",
+                          "employment_status": "unemployed",
+                          "id": 120,
+                          "name": "Mi Doe",
+                          "relation": "child",
+                          "sex": "F",
+                          "updated_at": null
+                        },
+                        {
+                          "applicant_id": 64,
+                          "created_at": "2024-09-05T09:18:54.278407+00:00",
+                          "date_of_birth": "2006-09-10T06:02:04.898558",
+                          "employment_status": "unemployed",
+                          "id": 121,
+                          "name": "Ray Doe",
+                          "relation": "child",
+                          "sex": "F",
+                          "updated_at": null
+                        },
+                        {
+                          "applicant_id": 64,
+                          "created_at": "2024-09-05T09:18:54.278407+00:00",
+                          "date_of_birth": "1958-09-19T06:02:04.898567",
+                          "employment_status": "unemployed",
+                          "id": 122,
+                          "name": "Mike Doe",
+                          "relation": "parent",
+                          "sex": "F",
+                          "updated_at": null
+                        }
+                      ],
+                      "id": 64,
+                      "marital_status": "married",
+                      "name": "John Doe",
+                      "sex": "M",
+                      "updated_at": null
+                    }
         '400':
           description: Validation error in the provided data.
           content:
@@ -461,6 +804,78 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Application'
+                    example:
+                      [
+                        {
+                          "applicant": {
+                            "created_at": "2024-09-05T06:02:05.026973+00:00",
+                            "created_by_admin_id": 1,
+                            "date_of_birth": "1977-09-17T06:02:04.898797",
+                            "employment_status": "employed",
+                            "employment_status_change_date": "2024-03-09T06:02:04.898795",
+                            "household_members": null,
+                            "id": 15,
+                            "marital_status": "married",
+                            "name": "Applicant 1063087c-c155-4c11-8e0b-6f7b92b6b684",
+                            "sex": "M",
+                            "updated_at": null
+                          },
+                          "applicant_id": 15,
+                          "awarded_benefits": [],
+                          "created_at": "2024-09-05T06:02:06.980526+00:00",
+                          "created_by_admin_id": 1,
+                          "eligibility_verdict": "Not eligible for Retrenchment Assistance.",
+                          "id": 1,
+                          "scheme": {
+                            "benefits": {
+                              "cash_assistance": {
+                                "description": "Cash assistance provided to all eligible applicants.",
+                                "disbursment_amount": 1000,
+                                "disbursment_duration_months": null,
+                                "disbursment_frequency": "One-Off"
+                              },
+                              "extra_cdc_vouchers": {
+                                "amount_per_parent": 200,
+                                "description": "Extra CDC vouchers provided for each elderly parent above the age of 65.",
+                                "disbursment_duration_months": null,
+                                "disbursment_frequency": "One-Off",
+                                "eligibility": {
+                                  "age_threshold": 65,
+                                  "relation": "parent"
+                                }
+                              },
+                              "school_meal_vouchers": {
+                                "amount_per_child": 100,
+                                "description": "Meal vouchers provided for each child in the household within the primary school age range (6-11 years old).",
+                                "disbursment_duration_months": 12,
+                                "disbursment_frequency": "Monthly",
+                                "eligibility": {
+                                  "age_range": {
+                                    "max": 11,
+                                    "min": 6
+                                  },
+                                  "relation": "child"
+                                }
+                              }
+                            },
+                            "created_at": "2024-09-05T06:02:03.002941+00:00",
+                            "description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs.",
+                            "eligibility_criteria": {
+                              "employment_status": "unemployed",
+                              "retrechment_period_months": 6
+                            },
+                            "id": 1,
+                            "name": "Retrenchment Assistance Scheme",
+                            "updated_at": null,
+                            "validity_end_date": null,
+                            "validity_start_date": "2024-01-01T00:00:00"
+                          },
+                          "scheme_id": 1,
+                          "status": "rejected",
+                          "submission_date": "2024-09-05T06:02:06.980526+00:00",
+                          "updated_at": null
+                        }
+                      ]
                   pagination:
                     type: object
                     properties:
@@ -526,6 +941,93 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Application'
+                  example:
+                    {
+                      "applicant": {
+                        "created_at": "2024-09-05T09:18:54.278407+00:00",
+                        "created_by_admin_id": 1,
+                        "date_of_birth": "1975-01-01T00:00:00",
+                        "employment_status": "unemployed",
+                        "employment_status_change_date": "2024-08-01T00:00:00",
+                        "household_members": null,
+                        "id": 64,
+                        "marital_status": "married",
+                        "name": "John Doe",
+                        "sex": "M",
+                        "updated_at": null
+                      },
+                      "applicant_id": 64,
+                      "awarded_benefits": [
+                        {
+                          "beneficiary": "John Doe",
+                          "benefit_name": "cash_assistance",
+                          "description": "Cash assistance provided to all eligible applicants.",
+                          "disbursment_amount": 1000,
+                          "disbursment_duration_month": null,
+                          "disbursment_frequency": "One-Off"
+                        },
+                        {
+                          "beneficiary": "Mi Doe",
+                          "benefit_name": "school_meal_vouchers",
+                          "description": "Meal vouchers provided for each child in the household within the primary school age range (6-11 years old).",
+                          "disbursment_amount": 100,
+                          "disbursment_duration_month": 12,
+                          "disbursment_frequency": "Monthly"
+                        }
+                      ],
+                      "created_at": "2024-09-05T09:26:10.051566+00:00",
+                      "created_by_admin_id": 1,
+                      "eligibility_verdict": "Eligible for Retrenchment Assistance.",
+                      "id": 426,
+                      "scheme": {
+                        "benefits": {
+                          "cash_assistance": {
+                            "description": "Cash assistance provided to all eligible applicants.",
+                            "disbursment_amount": 1000,
+                            "disbursment_duration_months": null,
+                            "disbursment_frequency": "One-Off"
+                          },
+                          "extra_cdc_vouchers": {
+                            "amount_per_parent": 200,
+                            "description": "Extra CDC vouchers provided for each elderly parent above the age of 65.",
+                            "disbursment_duration_months": null,
+                            "disbursment_frequency": "One-Off",
+                            "eligibility": {
+                              "age_threshold": 65,
+                              "relation": "parent"
+                            }
+                          },
+                          "school_meal_vouchers": {
+                            "amount_per_child": 100,
+                            "description": "Meal vouchers provided for each child in the household within the primary school age range (6-11 years old).",
+                            "disbursment_duration_months": 12,
+                            "disbursment_frequency": "Monthly",
+                            "eligibility": {
+                              "age_range": {
+                                "max": 11,
+                                "min": 6
+                              },
+                              "relation": "child"
+                            }
+                          }
+                        },
+                        "created_at": "2024-09-05T06:02:03.002941+00:00",
+                        "description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs.",
+                        "eligibility_criteria": {
+                          "employment_status": "unemployed",
+                          "retrechment_period_months": 6
+                        },
+                        "id": 1,
+                        "name": "Retrenchment Assistance Scheme",
+                        "updated_at": null,
+                        "validity_end_date": null,
+                        "validity_start_date": "2024-01-01T00:00:00"
+                      },
+                      "scheme_id": 1,
+                      "status": "approved",
+                      "submission_date": "2024-09-05T09:26:10.051566+00:00",
+                      "updated_at": null
+                    }
         '400':
           description: Validation error in the provided data.
           content:
@@ -595,6 +1097,51 @@ components:
         - eligibility_criteria
         - benefits
         - validity_start_date
+      example:
+        {
+          "benefits": {
+            "cash_assistance": {
+              "description": "Cash assistance provided to all eligible applicants.",
+              "disbursment_amount": 1000,
+              "disbursment_duration_months": null,
+              "disbursment_frequency": "One-Off"
+            },
+            "extra_cdc_vouchers": {
+              "amount_per_parent": 200,
+              "description": "Extra CDC vouchers provided for each elderly parent above the age of 65.",
+              "disbursment_duration_months": null,
+              "disbursment_frequency": "One-Off",
+              "eligibility": {
+                "age_threshold": 65,
+                "relation": "parent"
+              }
+            },
+            "school_meal_vouchers": {
+              "amount_per_child": 100,
+              "description": "Meal vouchers provided for each child in the household within the primary school age range (6-11 years old).",
+              "disbursment_duration_months": 12,
+              "disbursment_frequency": "Monthly",
+              "eligibility": {
+                "age_range": {
+                  "max": 11,
+                  "min": 6
+                },
+                "relation": "child"
+              }
+            }
+          },
+          "created_at": "2024-09-05T06:02:03.002941+00:00",
+          "description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs.",
+          "eligibility_criteria": {
+            "employment_status": "unemployed",
+            "retrechment_period_months": 6
+          },
+          "id": 1,
+          "name": "Retrenchment Assistance Scheme",
+          "updated_at": null,
+          "validity_end_date": null,
+          "validity_start_date": "2024-01-01T00:00:00"
+        }
     EligibilityResult:
       type: object
       properties:
@@ -632,6 +1179,34 @@ components:
         - is_eligible
         - eligibility_message
         - eligible_benefits
+      example:
+        {
+          "eligibility_message": "Eligible for Retrenchment Assistance.",
+          "eligible_benefits": [
+            {
+              "beneficiary": "John Doe",
+              "benefit_name": "cash_assistance",
+              "description": "Cash assistance provided to all eligible applicants.",
+              "disbursment_amount": 1000,
+              "disbursment_duration_month": null,
+              "disbursment_frequency": "One-Off"
+            },
+            {
+              "beneficiary": "Mi Doe",
+              "benefit_name": "school_meal_vouchers",
+              "description": "Meal vouchers provided for each child in the household within the primary school age range (6-11 years old).",
+              "disbursment_amount": 100,
+              "disbursment_duration_month": 12,
+              "disbursment_frequency": "Monthly"
+            }
+          ],
+          "is_eligible": true,
+          "scheme_description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs.",
+          "scheme_end_date": null,
+          "scheme_id": 1,
+          "scheme_name": "Retrenchment Assistance Scheme",
+          "scheme_start_date": "Mon, 01 Jan 2024 00:00:00 GMT"
+        }
     Applicant:
       type: object
       properties:
@@ -692,6 +1267,65 @@ components:
         - date_of_birth
         - marital_status
         - household_members
+      example:
+        {
+          "created_at": "2024-09-05T09:06:07.448650+00:00",
+          "created_by_admin_id": 1,
+          "date_of_birth": "1985-01-01T00:00:00",
+          "employment_status": "employed",
+          "employment_status_change_date": "2023-01-01T00:00:00",
+          "household_members": [
+            {
+              "applicant_id": 63,
+              "created_at": "2024-09-05T09:06:07.448650+00:00",
+              "date_of_birth": "1987-02-01T00:00:00",
+              "employment_status": "employed",
+              "id": 115,
+              "name": "Jane Doe",
+              "relation": "spouse",
+              "sex": "F",
+              "updated_at": null
+            },
+            {
+              "applicant_id": 63,
+              "created_at": "2024-09-05T09:06:07.448650+00:00",
+              "date_of_birth": "2013-09-08T06:02:04.898553",
+              "employment_status": "unemployed",
+              "id": 116,
+              "name": "Mi Doe",
+              "relation": "child",
+              "sex": "F",
+              "updated_at": null
+            },
+            {
+              "applicant_id": 63,
+              "created_at": "2024-09-05T09:06:07.448650+00:00",
+              "date_of_birth": "2006-09-10T06:02:04.898558",
+              "employment_status": "unemployed",
+              "id": 117,
+              "name": "Ray Doe",
+              "relation": "child",
+              "sex": "F",
+              "updated_at": null
+            },
+            {
+              "applicant_id": 63,
+              "created_at": "2024-09-05T09:06:07.448650+00:00",
+              "date_of_birth": "1968-09-19T06:02:04.898567",
+              "employment_status": "unemployed",
+              "id": 118,
+              "name": "Mike Doe",
+              "relation": "parent",
+              "sex": "F",
+              "updated_at": null
+            }
+          ],
+          "id": 63,
+          "marital_status": "married",
+          "name": "John Doe",
+          "sex": "M",
+          "updated_at": null
+        }
     HouseholdMember:
       type: object
       properties:
@@ -743,6 +1377,18 @@ components:
         - date_of_birth
         - employment_status
         - sex
+      example:
+        {
+          "applicant_id": 63,
+          "created_at": "2024-09-05T09:06:07.448650+00:00",
+          "date_of_birth": "1987-02-01T00:00:00",
+          "employment_status": "employed",
+          "id": 115,
+          "name": "Jane Doe",
+          "relation": "spouse",
+          "sex": "F",
+          "updated_at": null
+        }
     Application:
       type: object
       properties:
@@ -790,4 +1436,17 @@ components:
         - eligibility_verdict
         - awarded_benefits
         - submission_date
+      example:
+        {
+          "applicant_id": 15,
+          "awarded_benefits": [],
+          "created_at": "2024-09-05T06:02:06.980526+00:00",
+          "created_by_admin_id": 1,
+          "eligibility_verdict": "Not eligible for Retrenchment Assistance.",
+          "id": 1,
+          "scheme_id": 1,
+          "status": "rejected",
+          "submission_date": "2024-09-05T06:02:06.980526+00:00",
+          "updated_at": null
+        }
 
