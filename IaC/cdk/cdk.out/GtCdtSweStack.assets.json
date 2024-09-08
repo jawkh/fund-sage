@@ -1,0 +1,20 @@
+{
+  "version": "36.0.24",
+  "files": {
+    "031c96116fcd7f3a89b34af1d00d5f401eabe383888fb52749c612c7ca1fc56c": {
+      "source": {
+        "path": "GtCdtSweStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "272147878669-ap-southeast-1": {
+          "bucketName": "cdk-hnb659fds-assets-272147878669-ap-southeast-1",
+          "objectKey": "031c96116fcd7f3a89b34af1d00d5f401eabe383888fb52749c612c7ca1fc56c.json",
+          "region": "ap-southeast-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::272147878669:role/cdk-hnb659fds-file-publishing-role-272147878669-ap-southeast-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

@@ -1,0 +1,151 @@
+# GT CDT SWE Test - AWS CDK Deployment
+
+This directory contains the AWS CDK implementation for deploying the GT CDT SWE Test application to AWS.
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- [AWS CLI](https://aws.amazon.com/cli/) installed and configured with appropriate credentials
+- [Docker](https://www.docker.com/get-started) installed
+- [nvm (Node Version Manager)](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating) installed
+
+## Node.js Setup
+
+This project requires Node.js version 18. Follow these steps to set up the correct Node.js version:
+
+1. Open a terminal and navigate to the project directory.
+
+2. Install Node.js version 18 using nvm:
+   ```
+   nvm install 18
+   ```
+
+3. Set Node.js version 18 as the active version for this project:
+   ```
+   nvm use 18
+   ```
+
+4. Verify that you're using the correct Node.js version:
+   ```
+   node --version
+   ```
+   You should see output indicating version 18.x.x.
+
+5. Install the AWS CDK CLI globally:
+   ```
+   npm install -g aws-cdk
+   ```
+
+## Configuration
+
+The deployment can be customized by modifying the `config.ts` file. This file contains settings for:
+
+- VPC CIDR range and configuration
+- Aurora Serverless v2 capacity units and auto-pause settings
+- API Gateway rate limiting and throttling settings
+- ECS Fargate task CPU, memory, and desired count
+- Application environment variables
+### Environment Variables
+
+The following environment variables are set in the ECS task definition:
+
+- FLASK_APP
+- FLASK_RUN_HOST
+- FLASK_RUN_PORT
+- FLASK_ENV
+- SECRET_KEY
+- JWT_SECRET_KEY
+- JWT_ACCESS_TOKEN_EXPIRES
+- SERVER_NAME
+- APPLICATION_ROOT
+- PREFERRED_URL_SCHEME
+- MAX_PASSWORD_RETRIES
+- PASSWORD_RETRIES_TIME_WINDOW_MINUTES
+- FLASK_DEBUG
+- PROVISION_DUMMY_APPLICATIONS
+- PROVISION_DUMMY_APPLICANTS
+
+You can customize these values in the `config.ts` file under the `app` section.
+Adjust these values as needed before deployment.
+
+## Deployment Steps
+
+1. Ensure you're in the `IaC/cdk` directory:
+   ```
+   cd IaC/cdk
+   ```
+
+2. Install project dependencies:
+   ```
+   npm install
+   ```
+
+3. Build and push the Docker image to ECR:
+   ```
+   chmod +x build-and-push-image.sh
+   ./build-and-push-image.sh
+   ```
+
+4. Deploy the CDK stack:
+   ```
+   cdk deploy
+   ```
+
+   Note: You may need to bootstrap your AWS environment if you haven't used CDK before:
+   ```
+   cdk bootstrap aws://ACCOUNT-NUMBER/REGION
+   ```
+
+5. After the deployment is complete, the CDK will output the API Gateway URL and other important information. Make note of these outputs for future use.
+
+## Stack Overview
+
+The CDK stack (`GtCdtSweStack`) creates the following resources:
+
+- VPC with public and private subnets
+- Aurora Serverless v2 database
+- ECS Fargate cluster and service with auto-scaling
+- ECR repository for the Docker image
+- Application Load Balancer
+- API Gateway with rate limiting and API key authorization
+- Systems Manager Parameter Store for secrets management
+- CloudWatch logs and alarms
+## Secrets Management
+
+The CDK stack automatically creates a Parameter Store entry for the database password:
+
+- Parameter name: `/gt-cdt-swe/db-password`
+- Description: Database password for GT CDT SWE application
+
+This parameter is securely passed to the ECS task as an environment variable.
+
+The database connection URL is stored in AWS Secrets Manager and is also securely passed to the ECS task.
+
+To add or modify Parameter Store entries, you can use the AWS Management Console or the AWS CLI:
+
+```
+aws ssm put-parameter --name "/gt-cdt-swe/your-parameter-name" --value "your-value" --type SecureString
+```
+
+Remember to update the CDK stack if you add new parameters that need to be passed to the ECS task.
+
+## Cleaning Up
+
+To remove all resources created by the CDK stack, run:
+
+```
+cdk destroy
+```
+
+Note: This will delete all resources, including the database. Make sure to backup any important data before destroying the stack.
+
+## Troubleshooting
+
+- If you encounter issues with Node.js versions, make sure you've followed the Node.js setup instructions in this README.
+- If you encounter issues with the ECS service not starting, check the CloudWatch logs for the ECS service and task.
+- Ensure that the Docker image is successfully built and pushed to ECR before deploying the CDK stack.
+- Verify that the AWS CLI is properly configured with the correct credentials and region.
+- If you need to modify environment variables or secrets, update the `config.ts` file and redeploy the stack.
+
+For more information on AWS CDK, refer to the [official documentation](https://docs.aws.amazon.com/cdk/latest/guide/home.html).

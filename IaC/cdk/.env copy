@@ -1,0 +1,9 @@
+AWS_ACCESS_KEY_ID="<YOUR_ACCESS_KEY_ID>"
+AWS_SECRET_ACCESS_KEY="<YOUR_SECRET_ACCESS_KEY>"
+AWS_DEFAULT_REGION="<YOUR_REGION>"
+AWS_DEFAULT_OUTPUT="json"  # Optional: set to 'json', 'text', or 'table'
+
+# Role to Assume
+ROLE_ARN="arn:aws:iam::637423296778:role/iamrole-moh-gcciac-nonprod-terraform"
+SESSION_NAME="MySession"
+EXTERNAL_ID="7978"

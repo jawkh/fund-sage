@@ -1,0 +1,2518 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "GtCdtSweStack": {
+        "id": "GtCdtSweStack",
+        "path": "GtCdtSweStack",
+        "children": {
+          "GtCdtSweVpc": {
+            "id": "GtCdtSweVpc",
+            "path": "GtCdtSweStack/GtCdtSweVpc",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/GtCdtSweVpc/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::VPC",
+                  "aws:cdk:cloudformation:props": {
+                    "cidrBlock": "172.16.0.0/24",
+                    "enableDnsHostnames": true,
+                    "enableDnsSupport": true,
+                    "instanceTenancy": "default",
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "GtCdtSweStack/GtCdtSweVpc"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnVPC",
+                  "version": "2.156.0"
+                }
+              },
+              "PublicSubnet1": {
+                "id": "PublicSubnet1",
+                "path": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet1",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet1/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "availabilityZone": "ap-southeast-1a",
+                        "cidrBlock": "172.16.0.0/26",
+                        "mapPublicIpOnLaunch": true,
+                        "tags": [
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "Public"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Public"
+                          },
+                          {
+                            "key": "Name",
+                            "value": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet1"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "GtCdtSweVpcBA6BF201"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnet",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet1/Acl",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet1/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet1"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "GtCdtSweVpcBA6BF201"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRouteTable",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet1/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "GtCdtSweVpcPublicSubnet1RouteTable012B349A"
+                        },
+                        "subnetId": {
+                          "Ref": "GtCdtSweVpcPublicSubnet1Subnet53D956DB"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnetRouteTableAssociation",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "DefaultRoute": {
+                    "id": "DefaultRoute",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet1/DefaultRoute",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                      "aws:cdk:cloudformation:props": {
+                        "destinationCidrBlock": "0.0.0.0/0",
+                        "gatewayId": {
+                          "Ref": "GtCdtSweVpcIGW4E305021"
+                        },
+                        "routeTableId": {
+                          "Ref": "GtCdtSweVpcPublicSubnet1RouteTable012B349A"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRoute",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "EIP": {
+                    "id": "EIP",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet1/EIP",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::EIP",
+                      "aws:cdk:cloudformation:props": {
+                        "domain": "vpc",
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet1"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnEIP",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "NATGateway": {
+                    "id": "NATGateway",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet1/NATGateway",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::NatGateway",
+                      "aws:cdk:cloudformation:props": {
+                        "allocationId": {
+                          "Fn::GetAtt": [
+                            "GtCdtSweVpcPublicSubnet1EIPF299E749",
+                            "AllocationId"
+                          ]
+                        },
+                        "subnetId": {
+                          "Ref": "GtCdtSweVpcPublicSubnet1Subnet53D956DB"
+                        },
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet1"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnNatGateway",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.PublicSubnet",
+                  "version": "2.156.0"
+                }
+              },
+              "PublicSubnet2": {
+                "id": "PublicSubnet2",
+                "path": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet2",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet2/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "availabilityZone": "ap-southeast-1b",
+                        "cidrBlock": "172.16.0.64/26",
+                        "mapPublicIpOnLaunch": true,
+                        "tags": [
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "Public"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Public"
+                          },
+                          {
+                            "key": "Name",
+                            "value": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet2"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "GtCdtSweVpcBA6BF201"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnet",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet2/Acl",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet2/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet2"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "GtCdtSweVpcBA6BF201"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRouteTable",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet2/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "GtCdtSweVpcPublicSubnet2RouteTable86830209"
+                        },
+                        "subnetId": {
+                          "Ref": "GtCdtSweVpcPublicSubnet2SubnetF8FBA8DF"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnetRouteTableAssociation",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "DefaultRoute": {
+                    "id": "DefaultRoute",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PublicSubnet2/DefaultRoute",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                      "aws:cdk:cloudformation:props": {
+                        "destinationCidrBlock": "0.0.0.0/0",
+                        "gatewayId": {
+                          "Ref": "GtCdtSweVpcIGW4E305021"
+                        },
+                        "routeTableId": {
+                          "Ref": "GtCdtSweVpcPublicSubnet2RouteTable86830209"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRoute",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.PublicSubnet",
+                  "version": "2.156.0"
+                }
+              },
+              "PrivateSubnet1": {
+                "id": "PrivateSubnet1",
+                "path": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet1",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet1/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "availabilityZone": "ap-southeast-1a",
+                        "cidrBlock": "172.16.0.128/26",
+                        "mapPublicIpOnLaunch": false,
+                        "tags": [
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "Private"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Private"
+                          },
+                          {
+                            "key": "Name",
+                            "value": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet1"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "GtCdtSweVpcBA6BF201"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnet",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet1/Acl",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet1/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet1"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "GtCdtSweVpcBA6BF201"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRouteTable",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet1/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "GtCdtSweVpcPrivateSubnet1RouteTable9C949174"
+                        },
+                        "subnetId": {
+                          "Ref": "GtCdtSweVpcPrivateSubnet1SubnetB12C4110"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnetRouteTableAssociation",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "DefaultRoute": {
+                    "id": "DefaultRoute",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet1/DefaultRoute",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                      "aws:cdk:cloudformation:props": {
+                        "destinationCidrBlock": "0.0.0.0/0",
+                        "natGatewayId": {
+                          "Ref": "GtCdtSweVpcPublicSubnet1NATGateway5BAEF9E3"
+                        },
+                        "routeTableId": {
+                          "Ref": "GtCdtSweVpcPrivateSubnet1RouteTable9C949174"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRoute",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.PrivateSubnet",
+                  "version": "2.156.0"
+                }
+              },
+              "PrivateSubnet2": {
+                "id": "PrivateSubnet2",
+                "path": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet2",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet2/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "availabilityZone": "ap-southeast-1b",
+                        "cidrBlock": "172.16.0.192/26",
+                        "mapPublicIpOnLaunch": false,
+                        "tags": [
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "Private"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Private"
+                          },
+                          {
+                            "key": "Name",
+                            "value": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet2"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "GtCdtSweVpcBA6BF201"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnet",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet2/Acl",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet2/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet2"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "GtCdtSweVpcBA6BF201"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRouteTable",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet2/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "GtCdtSweVpcPrivateSubnet2RouteTable49953A1E"
+                        },
+                        "subnetId": {
+                          "Ref": "GtCdtSweVpcPrivateSubnet2SubnetF23B6E02"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnetRouteTableAssociation",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "DefaultRoute": {
+                    "id": "DefaultRoute",
+                    "path": "GtCdtSweStack/GtCdtSweVpc/PrivateSubnet2/DefaultRoute",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                      "aws:cdk:cloudformation:props": {
+                        "destinationCidrBlock": "0.0.0.0/0",
+                        "natGatewayId": {
+                          "Ref": "GtCdtSweVpcPublicSubnet1NATGateway5BAEF9E3"
+                        },
+                        "routeTableId": {
+                          "Ref": "GtCdtSweVpcPrivateSubnet2RouteTable49953A1E"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRoute",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.PrivateSubnet",
+                  "version": "2.156.0"
+                }
+              },
+              "IGW": {
+                "id": "IGW",
+                "path": "GtCdtSweStack/GtCdtSweVpc/IGW",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::InternetGateway",
+                  "aws:cdk:cloudformation:props": {
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "GtCdtSweStack/GtCdtSweVpc"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnInternetGateway",
+                  "version": "2.156.0"
+                }
+              },
+              "VPCGW": {
+                "id": "VPCGW",
+                "path": "GtCdtSweStack/GtCdtSweVpc/VPCGW",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::VPCGatewayAttachment",
+                  "aws:cdk:cloudformation:props": {
+                    "internetGatewayId": {
+                      "Ref": "GtCdtSweVpcIGW4E305021"
+                    },
+                    "vpcId": {
+                      "Ref": "GtCdtSweVpcBA6BF201"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnVPCGatewayAttachment",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.Vpc",
+              "version": "2.156.0"
+            }
+          },
+          "ParameterGroup": {
+            "id": "ParameterGroup",
+            "path": "GtCdtSweStack/ParameterGroup",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.Resource",
+              "version": "2.156.0"
+            }
+          },
+          "GtCdtSweDatabase": {
+            "id": "GtCdtSweDatabase",
+            "path": "GtCdtSweStack/GtCdtSweDatabase",
+            "children": {
+              "Subnets": {
+                "id": "Subnets",
+                "path": "GtCdtSweStack/GtCdtSweDatabase/Subnets",
+                "children": {
+                  "Default": {
+                    "id": "Default",
+                    "path": "GtCdtSweStack/GtCdtSweDatabase/Subnets/Default",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::RDS::DBSubnetGroup",
+                      "aws:cdk:cloudformation:props": {
+                        "dbSubnetGroupDescription": "Subnets for GtCdtSweDatabase database",
+                        "subnetIds": [
+                          {
+                            "Ref": "GtCdtSweVpcPrivateSubnet1SubnetB12C4110"
+                          },
+                          {
+                            "Ref": "GtCdtSweVpcPrivateSubnet2SubnetF23B6E02"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_rds.CfnDBSubnetGroup",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_rds.SubnetGroup",
+                  "version": "2.156.0"
+                }
+              },
+              "SecurityGroup": {
+                "id": "SecurityGroup",
+                "path": "GtCdtSweStack/GtCdtSweDatabase/SecurityGroup",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "GtCdtSweStack/GtCdtSweDatabase/SecurityGroup/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                      "aws:cdk:cloudformation:props": {
+                        "groupDescription": "RDS security group",
+                        "securityGroupEgress": [
+                          {
+                            "cidrIp": "0.0.0.0/0",
+                            "description": "Allow all outbound traffic by default",
+                            "ipProtocol": "-1"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "GtCdtSweVpcBA6BF201"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+                  "version": "2.156.0"
+                }
+              },
+              "Secret": {
+                "id": "Secret",
+                "path": "GtCdtSweStack/GtCdtSweDatabase/Secret",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "GtCdtSweStack/GtCdtSweDatabase/Secret/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
+                      "aws:cdk:cloudformation:props": {
+                        "description": {
+                          "Fn::Join": [
+                            "",
+                            [
+                              "Generated by the CDK for stack: ",
+                              {
+                                "Ref": "AWS::StackName"
+                              }
+                            ]
+                          ]
+                        },
+                        "generateSecretString": {
+                          "passwordLength": 30,
+                          "secretStringTemplate": "{\"username\":\"postgres\"}",
+                          "generateStringKey": "password",
+                          "excludeCharacters": " %+~`#$&*()|[]{}:;<>?!'/@\"\\"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecret",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "Attachment": {
+                    "id": "Attachment",
+                    "path": "GtCdtSweStack/GtCdtSweDatabase/Secret/Attachment",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "GtCdtSweStack/GtCdtSweDatabase/Secret/Attachment/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::SecretsManager::SecretTargetAttachment",
+                          "aws:cdk:cloudformation:props": {
+                            "secretId": {
+                              "Ref": "GtCdtSweDatabaseSecret927C3A25"
+                            },
+                            "targetId": {
+                              "Ref": "GtCdtSweDatabase78F59F6C"
+                            },
+                            "targetType": "AWS::RDS::DBCluster"
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecretTargetAttachment",
+                          "version": "2.156.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_secretsmanager.SecretTargetAttachment",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_rds.DatabaseSecret",
+                  "version": "2.156.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/GtCdtSweDatabase/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::RDS::DBCluster",
+                  "aws:cdk:cloudformation:props": {
+                    "copyTagsToSnapshot": true,
+                    "databaseName": "fund_sage_db",
+                    "dbClusterParameterGroupName": "default.aurora-postgresql13",
+                    "dbSubnetGroupName": {
+                      "Ref": "GtCdtSweDatabaseSubnets5968CC8C"
+                    },
+                    "engine": "aurora-postgresql",
+                    "engineMode": "serverless",
+                    "masterUsername": {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "{{resolve:secretsmanager:",
+                          {
+                            "Ref": "GtCdtSweDatabaseSecret927C3A25"
+                          },
+                          ":SecretString:username::}}"
+                        ]
+                      ]
+                    },
+                    "masterUserPassword": {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "{{resolve:secretsmanager:",
+                          {
+                            "Ref": "GtCdtSweDatabaseSecret927C3A25"
+                          },
+                          ":SecretString:password::}}"
+                        ]
+                      ]
+                    },
+                    "scalingConfiguration": {
+                      "autoPause": true,
+                      "minCapacity": 1,
+                      "maxCapacity": 2,
+                      "secondsUntilAutoPause": 300
+                    },
+                    "storageEncrypted": true,
+                    "vpcSecurityGroupIds": [
+                      {
+                        "Fn::GetAtt": [
+                          "GtCdtSweDatabaseSecurityGroupBF860065",
+                          "GroupId"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_rds.CfnDBCluster",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_rds.ServerlessCluster",
+              "version": "2.156.0"
+            }
+          },
+          "GtCdtSweCluster": {
+            "id": "GtCdtSweCluster",
+            "path": "GtCdtSweStack/GtCdtSweCluster",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/GtCdtSweCluster/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ECS::Cluster",
+                  "aws:cdk:cloudformation:props": {}
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ecs.CfnCluster",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ecs.Cluster",
+              "version": "2.156.0"
+            }
+          },
+          "GtCdtSweTaskDef": {
+            "id": "GtCdtSweTaskDef",
+            "path": "GtCdtSweStack/GtCdtSweTaskDef",
+            "children": {
+              "TaskRole": {
+                "id": "TaskRole",
+                "path": "GtCdtSweStack/GtCdtSweTaskDef/TaskRole",
+                "children": {
+                  "ImportTaskRole": {
+                    "id": "ImportTaskRole",
+                    "path": "GtCdtSweStack/GtCdtSweTaskDef/TaskRole/ImportTaskRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "GtCdtSweStack/GtCdtSweTaskDef/TaskRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "ecs-tasks.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.156.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/GtCdtSweTaskDef/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ECS::TaskDefinition",
+                  "aws:cdk:cloudformation:props": {
+                    "containerDefinitions": [
+                      {
+                        "essential": true,
+                        "image": {
+                          "Fn::Join": [
+                            "",
+                            [
+                              "272147878669.dkr.ecr.ap-southeast-1.",
+                              {
+                                "Ref": "AWS::URLSuffix"
+                              },
+                              "/gt-cdt-swe-app:fundsage-latest"
+                            ]
+                          ]
+                        },
+                        "name": "GtCdtSweContainer",
+                        "portMappings": [
+                          {
+                            "containerPort": 5000,
+                            "protocol": "tcp"
+                          }
+                        ],
+                        "logConfiguration": {
+                          "logDriver": "awslogs",
+                          "options": {
+                            "awslogs-group": {
+                              "Ref": "GtCdtSweTaskDefGtCdtSweContainerLogGroup28F04600"
+                            },
+                            "awslogs-stream-prefix": "GtCdtSweApp",
+                            "awslogs-region": "ap-southeast-1"
+                          }
+                        },
+                        "environment": [
+                          {
+                            "name": "FLASK_APP",
+                            "value": "api/__init__.py"
+                          },
+                          {
+                            "name": "FLASK_RUN_HOST",
+                            "value": "0.0.0.0"
+                          },
+                          {
+                            "name": "FLASK_RUN_PORT",
+                            "value": "5000"
+                          },
+                          {
+                            "name": "FLASK_ENV",
+                            "value": "development"
+                          },
+                          {
+                            "name": "SECRET_KEY",
+                            "value": "change-this-in-production"
+                          },
+                          {
+                            "name": "JWT_SECRET_KEY",
+                            "value": "change-this-in-production"
+                          },
+                          {
+                            "name": "JWT_ACCESS_TOKEN_EXPIRES",
+                            "value": "3600"
+                          },
+                          {
+                            "name": "SERVER_NAME",
+                            "value": "your-server-name"
+                          },
+                          {
+                            "name": "APPLICATION_ROOT",
+                            "value": "/"
+                          },
+                          {
+                            "name": "PREFERRED_URL_SCHEME",
+                            "value": "https"
+                          },
+                          {
+                            "name": "MAX_PASSWORD_RETRIES",
+                            "value": "5"
+                          },
+                          {
+                            "name": "PASSWORD_RETRIES_TIME_WINDOW_MINUTES",
+                            "value": "15"
+                          },
+                          {
+                            "name": "FLASK_DEBUG",
+                            "value": "false"
+                          },
+                          {
+                            "name": "PROVISION_DUMMY_APPLICATIONS",
+                            "value": "true"
+                          },
+                          {
+                            "name": "PROVISION_DUMMY_APPLICANTS",
+                            "value": "true"
+                          }
+                        ],
+                        "secrets": [
+                          {
+                            "name": "DATABASE_URL",
+                            "valueFrom": {
+                              "Fn::Join": [
+                                "",
+                                [
+                                  {
+                                    "Ref": "GtCdtSweDatabaseSecretAttachmentAF048064"
+                                  },
+                                  ":connectionString::"
+                                ]
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "cpu": "256",
+                    "executionRoleArn": {
+                      "Fn::GetAtt": [
+                        "GtCdtSweTaskDefExecutionRole060D6B09",
+                        "Arn"
+                      ]
+                    },
+                    "family": "GtCdtSweStackGtCdtSweTaskDefB8075426",
+                    "memory": "512",
+                    "networkMode": "awsvpc",
+                    "requiresCompatibilities": [
+                      "FARGATE"
+                    ],
+                    "taskRoleArn": {
+                      "Fn::GetAtt": [
+                        "GtCdtSweTaskDefTaskRole1CCECC09",
+                        "Arn"
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ecs.CfnTaskDefinition",
+                  "version": "2.156.0"
+                }
+              },
+              "GtCdtSweContainer": {
+                "id": "GtCdtSweContainer",
+                "path": "GtCdtSweStack/GtCdtSweTaskDef/GtCdtSweContainer",
+                "children": {
+                  "LogGroup": {
+                    "id": "LogGroup",
+                    "path": "GtCdtSweStack/GtCdtSweTaskDef/GtCdtSweContainer/LogGroup",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "GtCdtSweStack/GtCdtSweTaskDef/GtCdtSweContainer/LogGroup/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::Logs::LogGroup",
+                          "aws:cdk:cloudformation:props": {}
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_logs.CfnLogGroup",
+                          "version": "2.156.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_logs.LogGroup",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ecs.ContainerDefinition",
+                  "version": "2.156.0"
+                }
+              },
+              "ExecutionRole": {
+                "id": "ExecutionRole",
+                "path": "GtCdtSweStack/GtCdtSweTaskDef/ExecutionRole",
+                "children": {
+                  "ImportExecutionRole": {
+                    "id": "ImportExecutionRole",
+                    "path": "GtCdtSweStack/GtCdtSweTaskDef/ExecutionRole/ImportExecutionRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "GtCdtSweStack/GtCdtSweTaskDef/ExecutionRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "ecs-tasks.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "GtCdtSweStack/GtCdtSweTaskDef/ExecutionRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "GtCdtSweStack/GtCdtSweTaskDef/ExecutionRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "ecr:BatchCheckLayerAvailability",
+                                    "ecr:GetDownloadUrlForLayer",
+                                    "ecr:BatchGetImage"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:",
+                                        {
+                                          "Ref": "AWS::Partition"
+                                        },
+                                        ":ecr:ap-southeast-1:272147878669:repository/gt-cdt-swe-app"
+                                      ]
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Action": "ecr:GetAuthorizationToken",
+                                  "Effect": "Allow",
+                                  "Resource": "*"
+                                },
+                                {
+                                  "Action": [
+                                    "logs:CreateLogStream",
+                                    "logs:PutLogEvents"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Fn::GetAtt": [
+                                      "GtCdtSweTaskDefGtCdtSweContainerLogGroup28F04600",
+                                      "Arn"
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Action": [
+                                    "secretsmanager:GetSecretValue",
+                                    "secretsmanager:DescribeSecret"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Ref": "GtCdtSweDatabaseSecretAttachmentAF048064"
+                                  }
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "GtCdtSweTaskDefExecutionRoleDefaultPolicyAD9E69D1",
+                            "roles": [
+                              {
+                                "Ref": "GtCdtSweTaskDefExecutionRole060D6B09"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.156.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ecs.FargateTaskDefinition",
+              "version": "2.156.0"
+            }
+          },
+          "GtCdtSweEcrRepo": {
+            "id": "GtCdtSweEcrRepo",
+            "path": "GtCdtSweStack/GtCdtSweEcrRepo",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ecr.RepositoryBase",
+              "version": "2.156.0"
+            }
+          },
+          "GtCdtSweNLB": {
+            "id": "GtCdtSweNLB",
+            "path": "GtCdtSweStack/GtCdtSweNLB",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/GtCdtSweNLB/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+                  "aws:cdk:cloudformation:props": {
+                    "loadBalancerAttributes": [
+                      {
+                        "key": "deletion_protection.enabled",
+                        "value": "false"
+                      }
+                    ],
+                    "scheme": "internal",
+                    "subnets": [
+                      {
+                        "Ref": "GtCdtSweVpcPrivateSubnet1SubnetB12C4110"
+                      },
+                      {
+                        "Ref": "GtCdtSweVpcPrivateSubnet2SubnetF23B6E02"
+                      }
+                    ],
+                    "type": "network"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.CfnLoadBalancer",
+                  "version": "2.156.0"
+                }
+              },
+              "GtCdtSweListener": {
+                "id": "GtCdtSweListener",
+                "path": "GtCdtSweStack/GtCdtSweNLB/GtCdtSweListener",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "GtCdtSweStack/GtCdtSweNLB/GtCdtSweListener/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ElasticLoadBalancingV2::Listener",
+                      "aws:cdk:cloudformation:props": {
+                        "defaultActions": [
+                          {
+                            "type": "forward",
+                            "targetGroupArn": {
+                              "Ref": "GtCdtSweNLBGtCdtSweListenerECSGroup61733034"
+                            }
+                          }
+                        ],
+                        "loadBalancerArn": {
+                          "Ref": "GtCdtSweNLBA0E95C6B"
+                        },
+                        "port": 5000,
+                        "protocol": "TCP"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.CfnListener",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "ECSGroup": {
+                    "id": "ECSGroup",
+                    "path": "GtCdtSweStack/GtCdtSweNLB/GtCdtSweListener/ECSGroup",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "GtCdtSweStack/GtCdtSweNLB/GtCdtSweListener/ECSGroup/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+                          "aws:cdk:cloudformation:props": {
+                            "healthCheckIntervalSeconds": 60,
+                            "healthCheckPath": "/openapi.yaml",
+                            "healthCheckTimeoutSeconds": 5,
+                            "port": 5000,
+                            "protocol": "TCP",
+                            "targetType": "ip",
+                            "vpcId": {
+                              "Ref": "GtCdtSweVpcBA6BF201"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.CfnTargetGroup",
+                          "version": "2.156.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.NetworkTargetGroup",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.NetworkListener",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.NetworkLoadBalancer",
+              "version": "2.156.0"
+            }
+          },
+          "GtCdtSweService": {
+            "id": "GtCdtSweService",
+            "path": "GtCdtSweStack/GtCdtSweService",
+            "children": {
+              "Service": {
+                "id": "Service",
+                "path": "GtCdtSweStack/GtCdtSweService/Service",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ECS::Service",
+                  "aws:cdk:cloudformation:props": {
+                    "cluster": {
+                      "Ref": "GtCdtSweClusterBAD2B1F0"
+                    },
+                    "deploymentConfiguration": {
+                      "maximumPercent": 200,
+                      "minimumHealthyPercent": 50,
+                      "alarms": {
+                        "alarmNames": [],
+                        "enable": false,
+                        "rollback": false
+                      }
+                    },
+                    "desiredCount": 1,
+                    "enableEcsManagedTags": false,
+                    "healthCheckGracePeriodSeconds": 60,
+                    "launchType": "FARGATE",
+                    "loadBalancers": [
+                      {
+                        "targetGroupArn": {
+                          "Ref": "GtCdtSweNLBGtCdtSweListenerECSGroup61733034"
+                        },
+                        "containerName": "GtCdtSweContainer",
+                        "containerPort": 5000
+                      }
+                    ],
+                    "networkConfiguration": {
+                      "awsvpcConfiguration": {
+                        "assignPublicIp": "DISABLED",
+                        "subnets": [
+                          {
+                            "Ref": "GtCdtSweVpcPrivateSubnet1SubnetB12C4110"
+                          },
+                          {
+                            "Ref": "GtCdtSweVpcPrivateSubnet2SubnetF23B6E02"
+                          }
+                        ],
+                        "securityGroups": [
+                          {
+                            "Fn::GetAtt": [
+                              "GtCdtSweServiceSecurityGroup5BEF7875",
+                              "GroupId"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "taskDefinition": {
+                      "Ref": "GtCdtSweTaskDef3B8AC173"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ecs.CfnService",
+                  "version": "2.156.0"
+                }
+              },
+              "SecurityGroup": {
+                "id": "SecurityGroup",
+                "path": "GtCdtSweStack/GtCdtSweService/SecurityGroup",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "GtCdtSweStack/GtCdtSweService/SecurityGroup/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                      "aws:cdk:cloudformation:props": {
+                        "groupDescription": "GtCdtSweStack/GtCdtSweService/SecurityGroup",
+                        "securityGroupEgress": [
+                          {
+                            "cidrIp": "0.0.0.0/0",
+                            "description": "Allow all outbound traffic by default",
+                            "ipProtocol": "-1"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "GtCdtSweVpcBA6BF201"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+                  "version": "2.156.0"
+                }
+              },
+              "ScalingRole": {
+                "id": "ScalingRole",
+                "path": "GtCdtSweStack/GtCdtSweService/ScalingRole",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.156.0"
+                }
+              },
+              "TaskCount": {
+                "id": "TaskCount",
+                "path": "GtCdtSweStack/GtCdtSweService/TaskCount",
+                "children": {
+                  "Target": {
+                    "id": "Target",
+                    "path": "GtCdtSweStack/GtCdtSweService/TaskCount/Target",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "GtCdtSweStack/GtCdtSweService/TaskCount/Target/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApplicationAutoScaling::ScalableTarget",
+                          "aws:cdk:cloudformation:props": {
+                            "maxCapacity": 2,
+                            "minCapacity": 1,
+                            "resourceId": {
+                              "Fn::Join": [
+                                "",
+                                [
+                                  "service/",
+                                  {
+                                    "Ref": "GtCdtSweClusterBAD2B1F0"
+                                  },
+                                  "/",
+                                  {
+                                    "Fn::GetAtt": [
+                                      "GtCdtSweServiceD20D49A0",
+                                      "Name"
+                                    ]
+                                  }
+                                ]
+                              ]
+                            },
+                            "roleArn": {
+                              "Fn::Join": [
+                                "",
+                                [
+                                  "arn:",
+                                  {
+                                    "Ref": "AWS::Partition"
+                                  },
+                                  ":iam::272147878669:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService"
+                                ]
+                              ]
+                            },
+                            "scalableDimension": "ecs:service:DesiredCount",
+                            "serviceNamespace": "ecs"
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_applicationautoscaling.CfnScalableTarget",
+                          "version": "2.156.0"
+                        }
+                      },
+                      "CpuScaling": {
+                        "id": "CpuScaling",
+                        "path": "GtCdtSweStack/GtCdtSweService/TaskCount/Target/CpuScaling",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "GtCdtSweStack/GtCdtSweService/TaskCount/Target/CpuScaling/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+                              "aws:cdk:cloudformation:props": {
+                                "policyName": "GtCdtSweStackGtCdtSweServiceTaskCountTargetCpuScaling6DAF03C8",
+                                "policyType": "TargetTrackingScaling",
+                                "scalingTargetId": {
+                                  "Ref": "GtCdtSweServiceTaskCountTargetB483066D"
+                                },
+                                "targetTrackingScalingPolicyConfiguration": {
+                                  "predefinedMetricSpecification": {
+                                    "predefinedMetricType": "ECSServiceAverageCPUUtilization"
+                                  },
+                                  "scaleInCooldown": 60,
+                                  "scaleOutCooldown": 60,
+                                  "targetValue": 70
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_applicationautoscaling.CfnScalingPolicy",
+                              "version": "2.156.0"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_applicationautoscaling.TargetTrackingScalingPolicy",
+                          "version": "2.156.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_applicationautoscaling.ScalableTarget",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ecs.ScalableTaskCount",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ecs.FargateService",
+              "version": "2.156.0"
+            }
+          },
+          "GtCdtSweVpcLink": {
+            "id": "GtCdtSweVpcLink",
+            "path": "GtCdtSweStack/GtCdtSweVpcLink",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/GtCdtSweVpcLink/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::VpcLink",
+                  "aws:cdk:cloudformation:props": {
+                    "name": "GtCdtSweVpcLink",
+                    "targetArns": [
+                      {
+                        "Ref": "GtCdtSweNLBA0E95C6B"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.CfnVpcLink",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_apigateway.VpcLink",
+              "version": "2.156.0"
+            }
+          },
+          "GtCdtSweApi": {
+            "id": "GtCdtSweApi",
+            "path": "GtCdtSweStack/GtCdtSweApi",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/GtCdtSweApi/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::RestApi",
+                  "aws:cdk:cloudformation:props": {
+                    "description": "FundSage API",
+                    "name": "FundSage API"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.CfnRestApi",
+                  "version": "2.156.0"
+                }
+              },
+              "CloudWatchRole": {
+                "id": "CloudWatchRole",
+                "path": "GtCdtSweStack/GtCdtSweApi/CloudWatchRole",
+                "children": {
+                  "ImportCloudWatchRole": {
+                    "id": "ImportCloudWatchRole",
+                    "path": "GtCdtSweStack/GtCdtSweApi/CloudWatchRole/ImportCloudWatchRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "GtCdtSweStack/GtCdtSweApi/CloudWatchRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "apigateway.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.156.0"
+                }
+              },
+              "Account": {
+                "id": "Account",
+                "path": "GtCdtSweStack/GtCdtSweApi/Account",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Account",
+                  "aws:cdk:cloudformation:props": {
+                    "cloudWatchRoleArn": {
+                      "Fn::GetAtt": [
+                        "GtCdtSweApiCloudWatchRole4D45A657",
+                        "Arn"
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.CfnAccount",
+                  "version": "2.156.0"
+                }
+              },
+              "Deployment": {
+                "id": "Deployment",
+                "path": "GtCdtSweStack/GtCdtSweApi/Deployment",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "GtCdtSweStack/GtCdtSweApi/Deployment/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Deployment",
+                      "aws:cdk:cloudformation:props": {
+                        "description": "FundSage API",
+                        "restApiId": {
+                          "Ref": "GtCdtSweApiB6C504D1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnDeployment",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.Deployment",
+                  "version": "2.156.0"
+                }
+              },
+              "DeploymentStage.test": {
+                "id": "DeploymentStage.test",
+                "path": "GtCdtSweStack/GtCdtSweApi/DeploymentStage.test",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "GtCdtSweStack/GtCdtSweApi/DeploymentStage.test/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Stage",
+                      "aws:cdk:cloudformation:props": {
+                        "deploymentId": {
+                          "Ref": "GtCdtSweApiDeployment7699DA798d81a96348192decb880c371c181aab8"
+                        },
+                        "methodSettings": [
+                          {
+                            "httpMethod": "*",
+                            "resourcePath": "/*",
+                            "dataTraceEnabled": false,
+                            "throttlingBurstLimit": 500,
+                            "throttlingRateLimit": 1000
+                          }
+                        ],
+                        "restApiId": {
+                          "Ref": "GtCdtSweApiB6C504D1"
+                        },
+                        "stageName": "test"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnStage",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.Stage",
+                  "version": "2.156.0"
+                }
+              },
+              "Endpoint": {
+                "id": "Endpoint",
+                "path": "GtCdtSweStack/GtCdtSweApi/Endpoint",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.156.0"
+                }
+              },
+              "Default": {
+                "id": "Default",
+                "path": "GtCdtSweStack/GtCdtSweApi/Default",
+                "children": {
+                  "applicants": {
+                    "id": "applicants",
+                    "path": "GtCdtSweStack/GtCdtSweApi/Default/applicants",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/applicants/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                          "aws:cdk:cloudformation:props": {
+                            "parentId": {
+                              "Fn::GetAtt": [
+                                "GtCdtSweApiB6C504D1",
+                                "RootResourceId"
+                              ]
+                            },
+                            "pathPart": "applicants",
+                            "restApiId": {
+                              "Ref": "GtCdtSweApiB6C504D1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                          "version": "2.156.0"
+                        }
+                      },
+                      "GET": {
+                        "id": "GET",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/applicants/GET",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/applicants/GET/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "apiKeyRequired": true,
+                                "authorizationType": "NONE",
+                                "httpMethod": "GET",
+                                "integration": {
+                                  "type": "HTTP_PROXY",
+                                  "uri": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "http://",
+                                        {
+                                          "Fn::GetAtt": [
+                                            "GtCdtSweNLBA0E95C6B",
+                                            "DNSName"
+                                          ]
+                                        },
+                                        "/applicants"
+                                      ]
+                                    ]
+                                  },
+                                  "integrationHttpMethod": "GET",
+                                  "connectionType": "VPC_LINK",
+                                  "connectionId": {
+                                    "Ref": "GtCdtSweVpcLinkFD1C9668"
+                                  }
+                                },
+                                "resourceId": {
+                                  "Ref": "GtCdtSweApiapplicantsD7856425"
+                                },
+                                "restApiId": {
+                                  "Ref": "GtCdtSweApiB6C504D1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.156.0"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.156.0"
+                        }
+                      },
+                      "POST": {
+                        "id": "POST",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/applicants/POST",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/applicants/POST/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "apiKeyRequired": true,
+                                "authorizationType": "NONE",
+                                "httpMethod": "POST",
+                                "integration": {
+                                  "type": "HTTP_PROXY",
+                                  "uri": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "http://",
+                                        {
+                                          "Fn::GetAtt": [
+                                            "GtCdtSweNLBA0E95C6B",
+                                            "DNSName"
+                                          ]
+                                        },
+                                        "/applicants"
+                                      ]
+                                    ]
+                                  },
+                                  "integrationHttpMethod": "GET",
+                                  "connectionType": "VPC_LINK",
+                                  "connectionId": {
+                                    "Ref": "GtCdtSweVpcLinkFD1C9668"
+                                  }
+                                },
+                                "resourceId": {
+                                  "Ref": "GtCdtSweApiapplicantsD7856425"
+                                },
+                                "restApiId": {
+                                  "Ref": "GtCdtSweApiB6C504D1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.156.0"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.156.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "schemes": {
+                    "id": "schemes",
+                    "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                          "aws:cdk:cloudformation:props": {
+                            "parentId": {
+                              "Fn::GetAtt": [
+                                "GtCdtSweApiB6C504D1",
+                                "RootResourceId"
+                              ]
+                            },
+                            "pathPart": "schemes",
+                            "restApiId": {
+                              "Ref": "GtCdtSweApiB6C504D1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                          "version": "2.156.0"
+                        }
+                      },
+                      "GET": {
+                        "id": "GET",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/GET",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/GET/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "apiKeyRequired": true,
+                                "authorizationType": "NONE",
+                                "httpMethod": "GET",
+                                "integration": {
+                                  "type": "HTTP_PROXY",
+                                  "uri": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "http://",
+                                        {
+                                          "Fn::GetAtt": [
+                                            "GtCdtSweNLBA0E95C6B",
+                                            "DNSName"
+                                          ]
+                                        },
+                                        "/schemes"
+                                      ]
+                                    ]
+                                  },
+                                  "integrationHttpMethod": "GET",
+                                  "connectionType": "VPC_LINK",
+                                  "connectionId": {
+                                    "Ref": "GtCdtSweVpcLinkFD1C9668"
+                                  }
+                                },
+                                "resourceId": {
+                                  "Ref": "GtCdtSweApischemesAD7CA4A7"
+                                },
+                                "restApiId": {
+                                  "Ref": "GtCdtSweApiB6C504D1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.156.0"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.156.0"
+                        }
+                      },
+                      "eligible": {
+                        "id": "eligible",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/eligible",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/eligible/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                              "aws:cdk:cloudformation:props": {
+                                "parentId": {
+                                  "Ref": "GtCdtSweApischemesAD7CA4A7"
+                                },
+                                "pathPart": "eligible",
+                                "restApiId": {
+                                  "Ref": "GtCdtSweApiB6C504D1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                              "version": "2.156.0"
+                            }
+                          },
+                          "GET": {
+                            "id": "GET",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/eligible/GET",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/eligible/GET/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                  "aws:cdk:cloudformation:props": {
+                                    "apiKeyRequired": true,
+                                    "authorizationType": "NONE",
+                                    "httpMethod": "GET",
+                                    "integration": {
+                                      "type": "HTTP_PROXY",
+                                      "uri": {
+                                        "Fn::Join": [
+                                          "",
+                                          [
+                                            "http://",
+                                            {
+                                              "Fn::GetAtt": [
+                                                "GtCdtSweNLBA0E95C6B",
+                                                "DNSName"
+                                              ]
+                                            },
+                                            "/eligible"
+                                          ]
+                                        ]
+                                      },
+                                      "integrationHttpMethod": "GET",
+                                      "connectionType": "VPC_LINK",
+                                      "connectionId": {
+                                        "Ref": "GtCdtSweVpcLinkFD1C9668"
+                                      }
+                                    },
+                                    "resourceId": {
+                                      "Ref": "GtCdtSweApischemeseligibleBC40F5BD"
+                                    },
+                                    "restApiId": {
+                                      "Ref": "GtCdtSweApiB6C504D1"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                  "version": "2.156.0"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                              "version": "2.156.0"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                          "version": "2.156.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "applications": {
+                    "id": "applications",
+                    "path": "GtCdtSweStack/GtCdtSweApi/Default/applications",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/applications/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                          "aws:cdk:cloudformation:props": {
+                            "parentId": {
+                              "Fn::GetAtt": [
+                                "GtCdtSweApiB6C504D1",
+                                "RootResourceId"
+                              ]
+                            },
+                            "pathPart": "applications",
+                            "restApiId": {
+                              "Ref": "GtCdtSweApiB6C504D1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                          "version": "2.156.0"
+                        }
+                      },
+                      "GET": {
+                        "id": "GET",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/applications/GET",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/applications/GET/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "apiKeyRequired": true,
+                                "authorizationType": "NONE",
+                                "httpMethod": "GET",
+                                "integration": {
+                                  "type": "HTTP_PROXY",
+                                  "uri": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "http://",
+                                        {
+                                          "Fn::GetAtt": [
+                                            "GtCdtSweNLBA0E95C6B",
+                                            "DNSName"
+                                          ]
+                                        },
+                                        "/applications"
+                                      ]
+                                    ]
+                                  },
+                                  "integrationHttpMethod": "GET",
+                                  "connectionType": "VPC_LINK",
+                                  "connectionId": {
+                                    "Ref": "GtCdtSweVpcLinkFD1C9668"
+                                  }
+                                },
+                                "resourceId": {
+                                  "Ref": "GtCdtSweApiapplications8BB08A1A"
+                                },
+                                "restApiId": {
+                                  "Ref": "GtCdtSweApiB6C504D1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.156.0"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.156.0"
+                        }
+                      },
+                      "POST": {
+                        "id": "POST",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/applications/POST",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/applications/POST/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "apiKeyRequired": true,
+                                "authorizationType": "NONE",
+                                "httpMethod": "POST",
+                                "integration": {
+                                  "type": "HTTP_PROXY",
+                                  "uri": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "http://",
+                                        {
+                                          "Fn::GetAtt": [
+                                            "GtCdtSweNLBA0E95C6B",
+                                            "DNSName"
+                                          ]
+                                        },
+                                        "/applications"
+                                      ]
+                                    ]
+                                  },
+                                  "integrationHttpMethod": "GET",
+                                  "connectionType": "VPC_LINK",
+                                  "connectionId": {
+                                    "Ref": "GtCdtSweVpcLinkFD1C9668"
+                                  }
+                                },
+                                "resourceId": {
+                                  "Ref": "GtCdtSweApiapplications8BB08A1A"
+                                },
+                                "restApiId": {
+                                  "Ref": "GtCdtSweApiB6C504D1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.156.0"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.156.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.ResourceBase",
+                  "version": "2.156.0"
+                }
+              },
+              "GtCdtSweApiKey": {
+                "id": "GtCdtSweApiKey",
+                "path": "GtCdtSweStack/GtCdtSweApi/GtCdtSweApiKey",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "GtCdtSweStack/GtCdtSweApi/GtCdtSweApiKey/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::ApiKey",
+                      "aws:cdk:cloudformation:props": {
+                        "enabled": true,
+                        "stageKeys": [
+                          {
+                            "restApiId": {
+                              "Ref": "GtCdtSweApiB6C504D1"
+                            },
+                            "stageName": {
+                              "Ref": "GtCdtSweApiDeploymentStagetest9BFFB33E"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnApiKey",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.ApiKey",
+                  "version": "2.156.0"
+                }
+              },
+              "GtCdtSweUsagePlan": {
+                "id": "GtCdtSweUsagePlan",
+                "path": "GtCdtSweStack/GtCdtSweApi/GtCdtSweUsagePlan",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "GtCdtSweStack/GtCdtSweApi/GtCdtSweUsagePlan/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::UsagePlan",
+                      "aws:cdk:cloudformation:props": {
+                        "apiStages": [
+                          {
+                            "apiId": {
+                              "Ref": "GtCdtSweApiB6C504D1"
+                            },
+                            "stage": {
+                              "Ref": "GtCdtSweApiDeploymentStagetest9BFFB33E"
+                            },
+                            "throttle": {}
+                          }
+                        ],
+                        "throttle": {
+                          "burstLimit": 200,
+                          "rateLimit": 100
+                        },
+                        "usagePlanName": "FundSage Usage Plan"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnUsagePlan",
+                      "version": "2.156.0"
+                    }
+                  },
+                  "UsagePlanKeyResource:GtCdtSweStackGtCdtSweApiGtCdtSweApiKeyF7345C60": {
+                    "id": "UsagePlanKeyResource:GtCdtSweStackGtCdtSweApiGtCdtSweApiKeyF7345C60",
+                    "path": "GtCdtSweStack/GtCdtSweApi/GtCdtSweUsagePlan/UsagePlanKeyResource:GtCdtSweStackGtCdtSweApiGtCdtSweApiKeyF7345C60",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::UsagePlanKey",
+                      "aws:cdk:cloudformation:props": {
+                        "keyId": {
+                          "Ref": "GtCdtSweApiGtCdtSweApiKey745DAA60"
+                        },
+                        "keyType": "API_KEY",
+                        "usagePlanId": {
+                          "Ref": "GtCdtSweApiGtCdtSweUsagePlan3B5C12E1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnUsagePlanKey",
+                      "version": "2.156.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.UsagePlan",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_apigateway.RestApi",
+              "version": "2.156.0"
+            }
+          },
+          "GtCdtSweApiLogs": {
+            "id": "GtCdtSweApiLogs",
+            "path": "GtCdtSweStack/GtCdtSweApiLogs",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/GtCdtSweApiLogs/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Logs::LogGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "logGroupName": "/aws/apigateway/GtCdtSweApi",
+                    "retentionInDays": 7
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_logs.CfnLogGroup",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_logs.LogGroup",
+              "version": "2.156.0"
+            }
+          },
+          "GtCdtSweEcsLogs": {
+            "id": "GtCdtSweEcsLogs",
+            "path": "GtCdtSweStack/GtCdtSweEcsLogs",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/GtCdtSweEcsLogs/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Logs::LogGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "logGroupName": "/aws/ecs/GtCdtSweService",
+                    "retentionInDays": 7
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_logs.CfnLogGroup",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_logs.LogGroup",
+              "version": "2.156.0"
+            }
+          },
+          "ApiGateway5xxErrorAlarm": {
+            "id": "ApiGateway5xxErrorAlarm",
+            "path": "GtCdtSweStack/ApiGateway5xxErrorAlarm",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/ApiGateway5xxErrorAlarm/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                  "aws:cdk:cloudformation:props": {
+                    "alarmDescription": "API Gateway 5xx Error Rate",
+                    "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                    "dimensions": [
+                      {
+                        "name": "ApiName",
+                        "value": "FundSage API"
+                      }
+                    ],
+                    "evaluationPeriods": 1,
+                    "metricName": "5XXError",
+                    "namespace": "AWS/ApiGateway",
+                    "period": 300,
+                    "statistic": "Sum",
+                    "threshold": 5
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+              "version": "2.156.0"
+            }
+          },
+          "EcsServiceCpuUtilizationAlarm": {
+            "id": "EcsServiceCpuUtilizationAlarm",
+            "path": "GtCdtSweStack/EcsServiceCpuUtilizationAlarm",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/EcsServiceCpuUtilizationAlarm/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                  "aws:cdk:cloudformation:props": {
+                    "alarmDescription": "ECS Service CPU Utilization",
+                    "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                    "dimensions": [
+                      {
+                        "name": "ClusterName",
+                        "value": {
+                          "Ref": "GtCdtSweClusterBAD2B1F0"
+                        }
+                      },
+                      {
+                        "name": "ServiceName",
+                        "value": {
+                          "Fn::GetAtt": [
+                            "GtCdtSweServiceD20D49A0",
+                            "Name"
+                          ]
+                        }
+                      }
+                    ],
+                    "evaluationPeriods": 3,
+                    "metricName": "CPUUtilization",
+                    "namespace": "AWS/ECS",
+                    "period": 300,
+                    "statistic": "Average",
+                    "threshold": 80
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+              "version": "2.156.0"
+            }
+          },
+          "DatabaseCapacityUtilizationAlarm": {
+            "id": "DatabaseCapacityUtilizationAlarm",
+            "path": "GtCdtSweStack/DatabaseCapacityUtilizationAlarm",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/DatabaseCapacityUtilizationAlarm/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                  "aws:cdk:cloudformation:props": {
+                    "alarmDescription": "Aurora Serverless Database Capacity Utilization",
+                    "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                    "dimensions": [
+                      {
+                        "name": "DBClusterIdentifier",
+                        "value": {
+                          "Ref": "GtCdtSweDatabase78F59F6C"
+                        }
+                      }
+                    ],
+                    "evaluationPeriods": 3,
+                    "metricName": "ServerlessDatabaseCapacity",
+                    "namespace": "AWS/RDS",
+                    "period": 300,
+                    "statistic": "Average",
+                    "threshold": 0.8
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudwatch.CfnAlarm",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cloudwatch.Alarm",
+              "version": "2.156.0"
+            }
+          },
+          "ApiUrl": {
+            "id": "ApiUrl",
+            "path": "GtCdtSweStack/ApiUrl",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.156.0"
+            }
+          },
+          "DatabaseEndpoint": {
+            "id": "DatabaseEndpoint",
+            "path": "GtCdtSweStack/DatabaseEndpoint",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.156.0"
+            }
+          },
+          "ApiKey": {
+            "id": "ApiKey",
+            "path": "GtCdtSweStack/ApiKey",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.156.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "GtCdtSweStack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "GtCdtSweStack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.3.0"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "GtCdtSweStack/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.156.0"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "GtCdtSweStack/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.156.0"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.156.0"
+        }
+      },
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.3.0"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.156.0"
+    }
+  }
+}

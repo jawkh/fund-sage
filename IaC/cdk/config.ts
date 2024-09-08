@@ -1,0 +1,42 @@
+export const config = {
+  vpc: {
+    cidr: '172.16.0.0/24',
+    maxAzs: 2,
+    natGateways: 1,
+  },
+  database: {
+    minCapacity: 1,
+    maxCapacity: 2,
+    autoPauseMinutes: 5,
+  },
+  apiGateway: {
+    throttlingRateLimit: 1000,
+    throttlingBurstLimit: 500,
+    usagePlanRateLimit: 100,
+    usagePlanBurstLimit: 200,
+  },
+  ecs: {
+    cpu: 256,
+    memoryLimitMiB: 512,
+    minCapacity: 1,
+    maxCapacity: 2,
+    targetCpuUtilization: 70,
+  },
+  app: {
+    flaskApp: 'api/__init__.py',
+    flaskRunHost: '0.0.0.0',
+    flaskRunPort: 5000,
+    flaskEnv: 'development',
+    secretKey: 'change-this-in-production',
+    jwtSecretKey: 'change-this-in-production',
+    jwtAccessTokenExpires: 3600,
+    serverName: 'your-server-name',
+    applicationRoot: '/',
+    preferredUrlScheme: 'https',
+    maxPasswordRetries: 5,
+    passwordRetriesTimeWindowMinutes: 15,
+    flaskDebug: false,
+    provisionDummyApplications: true,
+    provisionDummyApplicants: true,
+  },
+};

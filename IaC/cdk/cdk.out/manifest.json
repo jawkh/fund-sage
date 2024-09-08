@@ -1,0 +1,467 @@
+{
+  "version": "36.0.24",
+  "artifacts": {
+    "GtCdtSweStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "GtCdtSweStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "GtCdtSweStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://272147878669/ap-southeast-1",
+      "properties": {
+        "templateFile": "GtCdtSweStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::272147878669:role/cdk-hnb659fds-deploy-role-272147878669-ap-southeast-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::272147878669:role/cdk-hnb659fds-cfn-exec-role-272147878669-ap-southeast-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-272147878669-ap-southeast-1/031c96116fcd7f3a89b34af1d00d5f401eabe383888fb52749c612c7ca1fc56c.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "GtCdtSweStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::272147878669:role/cdk-hnb659fds-lookup-role-272147878669-ap-southeast-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "GtCdtSweStack.assets"
+      ],
+      "metadata": {
+        "/GtCdtSweStack/GtCdtSweVpc/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcBA6BF201"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PublicSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPublicSubnet1Subnet53D956DB"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PublicSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPublicSubnet1RouteTable012B349A"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PublicSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPublicSubnet1RouteTableAssociationFBA5E616"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PublicSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPublicSubnet1DefaultRoute4E10BB4A"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PublicSubnet1/EIP": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPublicSubnet1EIPF299E749"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PublicSubnet1/NATGateway": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPublicSubnet1NATGateway5BAEF9E3"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PublicSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPublicSubnet2SubnetF8FBA8DF"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PublicSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPublicSubnet2RouteTable86830209"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PublicSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPublicSubnet2RouteTableAssociation15830A21"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PublicSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPublicSubnet2DefaultRoute1B0C5517"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PrivateSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPrivateSubnet1SubnetB12C4110"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PrivateSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPrivateSubnet1RouteTable9C949174"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PrivateSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPrivateSubnet1RouteTableAssociation33E7A1C6"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PrivateSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPrivateSubnet1DefaultRouteC63CD8C9"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PrivateSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPrivateSubnet2SubnetF23B6E02"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PrivateSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPrivateSubnet2RouteTable49953A1E"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PrivateSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPrivateSubnet2RouteTableAssociationF77B38FA"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/PrivateSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcPrivateSubnet2DefaultRouteEEA9E341"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcIGW4E305021"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpc/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcVPCGWA6792732"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweDatabase/Subnets/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweDatabaseSubnets5968CC8C"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweDatabase/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweDatabaseSecurityGroupBF860065"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweDatabase/Secret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweDatabaseSecret927C3A25"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweDatabase/Secret/Attachment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweDatabaseSecretAttachmentAF048064"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweDatabase/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweDatabase78F59F6C"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweCluster/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweClusterBAD2B1F0"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweTaskDef/TaskRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweTaskDefTaskRole1CCECC09"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweTaskDef/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweTaskDef3B8AC173"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweTaskDef/GtCdtSweContainer/LogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweTaskDefGtCdtSweContainerLogGroup28F04600"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweTaskDef/ExecutionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweTaskDefExecutionRole060D6B09"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweTaskDef/ExecutionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweTaskDefExecutionRoleDefaultPolicyAD9E69D1"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweNLB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweNLBA0E95C6B"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweNLB/GtCdtSweListener/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweNLBGtCdtSweListener87D089E9"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweNLB/GtCdtSweListener/ECSGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweNLBGtCdtSweListenerECSGroup61733034"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweService/Service": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweServiceD20D49A0"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweService/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweServiceSecurityGroup5BEF7875"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweService/TaskCount/Target/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweServiceTaskCountTargetB483066D"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweService/TaskCount/Target/CpuScaling/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweServiceTaskCountTargetCpuScaling41AD9471"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweVpcLink/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweVpcLinkFD1C9668"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiB6C504D1"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/CloudWatchRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiCloudWatchRole4D45A657"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Account": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiAccountF15BC3FC"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiDeployment7699DA798d81a96348192decb880c371c181aab8"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/DeploymentStage.test/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiDeploymentStagetest9BFFB33E"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiEndpointF5AB87FA"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/applicants/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiapplicantsD7856425"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/applicants/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiapplicantsGET628F186B"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/applicants/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiapplicantsPOSTBC954E1A"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/schemes/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApischemesAD7CA4A7"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/schemes/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApischemesGET5D0DF25D"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/schemes/eligible/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApischemeseligibleBC40F5BD"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/schemes/eligible/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApischemeseligibleGET95B9928A"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/applications/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiapplications8BB08A1A"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/applications/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiapplicationsGETE43CA167"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/applications/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiapplicationsPOST73FF7E80"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/GtCdtSweApiKey/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiGtCdtSweApiKey745DAA60"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/GtCdtSweUsagePlan/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiGtCdtSweUsagePlan3B5C12E1"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/GtCdtSweUsagePlan/UsagePlanKeyResource:GtCdtSweStackGtCdtSweApiGtCdtSweApiKeyF7345C60": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiGtCdtSweUsagePlanUsagePlanKeyResourceGtCdtSweStackGtCdtSweApiGtCdtSweApiKeyF7345C60B73C9E27"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApiLogs/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiLogsFFF00470"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweEcsLogs/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweEcsLogs6103C071"
+          }
+        ],
+        "/GtCdtSweStack/ApiGateway5xxErrorAlarm/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiGateway5xxErrorAlarm2C646F8D"
+          }
+        ],
+        "/GtCdtSweStack/EcsServiceCpuUtilizationAlarm/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EcsServiceCpuUtilizationAlarmB371F2C2"
+          }
+        ],
+        "/GtCdtSweStack/DatabaseCapacityUtilizationAlarm/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseCapacityUtilizationAlarmC5E5F2D8"
+          }
+        ],
+        "/GtCdtSweStack/ApiUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiUrl"
+          }
+        ],
+        "/GtCdtSweStack/DatabaseEndpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseEndpoint"
+          }
+        ],
+        "/GtCdtSweStack/ApiKey": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiKey"
+          }
+        ],
+        "/GtCdtSweStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/GtCdtSweStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/GtCdtSweStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "GtCdtSweStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
