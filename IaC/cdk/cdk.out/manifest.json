@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::272147878669:role/cdk-hnb659fds-deploy-role-272147878669-ap-southeast-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::272147878669:role/cdk-hnb659fds-cfn-exec-role-272147878669-ap-southeast-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-272147878669-ap-southeast-1/031c96116fcd7f3a89b34af1d00d5f401eabe383888fb52749c612c7ca1fc56c.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-272147878669-ap-southeast-1/765fd87c01c850ce2ee211e9d279132f5a95cf35ec9cc9ab2546832ba25ede30.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -196,34 +196,34 @@
             "data": "GtCdtSweClusterBAD2B1F0"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweTaskDef/TaskRole/Resource": [
+        "/GtCdtSweStack/GtCdtSweAppTaskDef/TaskRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweTaskDefTaskRole1CCECC09"
+            "data": "GtCdtSweAppTaskDefTaskRole3D1A54C4"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweTaskDef/Resource": [
+        "/GtCdtSweStack/GtCdtSweAppTaskDef/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweTaskDef3B8AC173"
+            "data": "GtCdtSweAppTaskDef151D8F90"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweTaskDef/GtCdtSweContainer/LogGroup/Resource": [
+        "/GtCdtSweStack/GtCdtSweAppTaskDef/GtCdtSweContainer/LogGroup/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweTaskDefGtCdtSweContainerLogGroup28F04600"
+            "data": "GtCdtSweAppTaskDefGtCdtSweContainerLogGroup2B169396"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweTaskDef/ExecutionRole/Resource": [
+        "/GtCdtSweStack/GtCdtSweAppTaskDef/ExecutionRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweTaskDefExecutionRole060D6B09"
+            "data": "GtCdtSweAppTaskDefExecutionRoleD358D3E7"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweTaskDef/ExecutionRole/DefaultPolicy/Resource": [
+        "/GtCdtSweStack/GtCdtSweAppTaskDef/ExecutionRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweTaskDefExecutionRoleDefaultPolicyAD9E69D1"
+            "data": "GtCdtSweAppTaskDefExecutionRoleDefaultPolicy9637FE68"
           }
         ],
         "/GtCdtSweStack/GtCdtSweNLB/Resource": [
@@ -244,28 +244,28 @@
             "data": "GtCdtSweNLBGtCdtSweListenerECSGroup61733034"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweService/Service": [
+        "/GtCdtSweStack/GtCdtSweAppService/Service": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweServiceD20D49A0"
+            "data": "GtCdtSweAppService6F8B2FAD"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweService/SecurityGroup/Resource": [
+        "/GtCdtSweStack/GtCdtSweAppService/SecurityGroup/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweServiceSecurityGroup5BEF7875"
+            "data": "GtCdtSweAppServiceSecurityGroup5D231F11"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweService/TaskCount/Target/Resource": [
+        "/GtCdtSweStack/GtCdtSweAppService/TaskCount/Target/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweServiceTaskCountTargetB483066D"
+            "data": "GtCdtSweAppServiceTaskCountTarget2396D341"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweService/TaskCount/Target/CpuScaling/Resource": [
+        "/GtCdtSweStack/GtCdtSweAppService/TaskCount/Target/CpuScaling/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweServiceTaskCountTargetCpuScaling41AD9471"
+            "data": "GtCdtSweAppServiceTaskCountTargetCpuScalingB158457A"
           }
         ],
         "/GtCdtSweStack/GtCdtSweVpcLink/Resource": [
@@ -295,7 +295,7 @@
         "/GtCdtSweStack/GtCdtSweApi/Deployment/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweApiDeployment7699DA798d81a96348192decb880c371c181aab8"
+            "data": "GtCdtSweApiDeployment7699DA79d1b34f8ec7a663dea018fb99f3dcf8a4"
           }
         ],
         "/GtCdtSweStack/GtCdtSweApi/DeploymentStage.test/Resource": [
@@ -308,6 +308,18 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "GtCdtSweApiEndpointF5AB87FA"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/swagger/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiswagger1FC53ACC"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/swagger/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiswaggerGETC66E6F09"
           }
         ],
         "/GtCdtSweStack/GtCdtSweApi/Default/applicants/Resource": [
@@ -386,18 +398,6 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "GtCdtSweApiGtCdtSweUsagePlanUsagePlanKeyResourceGtCdtSweStackGtCdtSweApiGtCdtSweApiKeyF7345C60B73C9E27"
-          }
-        ],
-        "/GtCdtSweStack/GtCdtSweApiLogs/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweApiLogsFFF00470"
-          }
-        ],
-        "/GtCdtSweStack/GtCdtSweEcsLogs/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweEcsLogs6103C071"
           }
         ],
         "/GtCdtSweStack/ApiGateway5xxErrorAlarm/Resource": [

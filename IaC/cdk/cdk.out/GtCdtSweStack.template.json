@@ -14,6 +14,8 @@
      }
     ]
    },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweVpc/Resource"
    }
@@ -477,6 +479,7 @@
      "Ref": "GtCdtSweDatabaseSubnets5968CC8C"
     },
     "DatabaseName": "fund_sage_db",
+    "DeletionProtection": false,
     "Engine": "aurora-postgresql",
     "EngineMode": "serverless",
     "MasterUserPassword": {
@@ -505,8 +508,8 @@
     },
     "ScalingConfiguration": {
      "AutoPause": true,
-     "MaxCapacity": 2,
-     "MinCapacity": 1,
+     "MaxCapacity": 8,
+     "MinCapacity": 2,
      "SecondsUntilAutoPause": 300
     },
     "StorageEncrypted": true,
@@ -519,19 +522,21 @@
      }
     ]
    },
-   "UpdateReplacePolicy": "Snapshot",
-   "DeletionPolicy": "Snapshot",
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweDatabase/Resource"
    }
   },
   "GtCdtSweClusterBAD2B1F0": {
    "Type": "AWS::ECS::Cluster",
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweCluster/Resource"
    }
   },
-  "GtCdtSweTaskDefTaskRole1CCECC09": {
+  "GtCdtSweAppTaskDefTaskRole3D1A54C4": {
    "Type": "AWS::IAM::Role",
    "Properties": {
     "AssumeRolePolicyDocument": {
@@ -548,14 +553,47 @@
     }
    },
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweTaskDef/TaskRole/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweAppTaskDef/TaskRole/Resource"
    }
   },
-  "GtCdtSweTaskDef3B8AC173": {
+  "GtCdtSweAppTaskDef151D8F90": {
    "Type": "AWS::ECS::TaskDefinition",
    "Properties": {
     "ContainerDefinitions": [
      {
+      "Command": [
+       "poetry",
+       "run",
+       "python",
+       "bin/__init_sys_database.py",
+       "&&",
+       "poetry",
+       "run",
+       "python",
+       "bin/__data_prep_administrators.py",
+       "&&",
+       "poetry",
+       "run",
+       "python",
+       "bin/__data_prep_supported_schemes.py",
+       "&&",
+       "poetry",
+       "run",
+       "python",
+       "bin/__data_prep_random_applicants.py",
+       "&&",
+       "poetry",
+       "run",
+       "python",
+       "bin/__data_prep_applications.py",
+       "&&",
+       "poetry",
+       "run",
+       "flask",
+       "run",
+       "--host=0.0.0.0",
+       "--port=5000"
+      ],
       "Environment": [
        {
         "Name": "FLASK_APP",
@@ -635,7 +673,7 @@
        "LogDriver": "awslogs",
        "Options": {
         "awslogs-group": {
-         "Ref": "GtCdtSweTaskDefGtCdtSweContainerLogGroup28F04600"
+         "Ref": "GtCdtSweAppTaskDefGtCdtSweContainerLogGroup2B169396"
         },
         "awslogs-stream-prefix": "GtCdtSweApp",
         "awslogs-region": "ap-southeast-1"
@@ -669,11 +707,11 @@
     "Cpu": "256",
     "ExecutionRoleArn": {
      "Fn::GetAtt": [
-      "GtCdtSweTaskDefExecutionRole060D6B09",
+      "GtCdtSweAppTaskDefExecutionRoleD358D3E7",
       "Arn"
      ]
     },
-    "Family": "GtCdtSweStackGtCdtSweTaskDefB8075426",
+    "Family": "GtCdtSweStackGtCdtSweAppTaskDef0C7A4663",
     "Memory": "512",
     "NetworkMode": "awsvpc",
     "RequiresCompatibilities": [
@@ -681,24 +719,26 @@
     ],
     "TaskRoleArn": {
      "Fn::GetAtt": [
-      "GtCdtSweTaskDefTaskRole1CCECC09",
+      "GtCdtSweAppTaskDefTaskRole3D1A54C4",
       "Arn"
      ]
     }
    },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweTaskDef/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweAppTaskDef/Resource"
    }
   },
-  "GtCdtSweTaskDefGtCdtSweContainerLogGroup28F04600": {
+  "GtCdtSweAppTaskDefGtCdtSweContainerLogGroup2B169396": {
    "Type": "AWS::Logs::LogGroup",
    "UpdateReplacePolicy": "Retain",
    "DeletionPolicy": "Retain",
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweTaskDef/GtCdtSweContainer/LogGroup/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweAppTaskDef/GtCdtSweContainer/LogGroup/Resource"
    }
   },
-  "GtCdtSweTaskDefExecutionRole060D6B09": {
+  "GtCdtSweAppTaskDefExecutionRoleD358D3E7": {
    "Type": "AWS::IAM::Role",
    "Properties": {
     "AssumeRolePolicyDocument": {
@@ -715,10 +755,10 @@
     }
    },
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweTaskDef/ExecutionRole/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweAppTaskDef/ExecutionRole/Resource"
    }
   },
-  "GtCdtSweTaskDefExecutionRoleDefaultPolicyAD9E69D1": {
+  "GtCdtSweAppTaskDefExecutionRoleDefaultPolicy9637FE68": {
    "Type": "AWS::IAM::Policy",
    "Properties": {
     "PolicyDocument": {
@@ -756,7 +796,7 @@
        "Effect": "Allow",
        "Resource": {
         "Fn::GetAtt": [
-         "GtCdtSweTaskDefGtCdtSweContainerLogGroup28F04600",
+         "GtCdtSweAppTaskDefGtCdtSweContainerLogGroup2B169396",
          "Arn"
         ]
        }
@@ -774,15 +814,15 @@
      ],
      "Version": "2012-10-17"
     },
-    "PolicyName": "GtCdtSweTaskDefExecutionRoleDefaultPolicyAD9E69D1",
+    "PolicyName": "GtCdtSweAppTaskDefExecutionRoleDefaultPolicy9637FE68",
     "Roles": [
      {
-      "Ref": "GtCdtSweTaskDefExecutionRole060D6B09"
+      "Ref": "GtCdtSweAppTaskDefExecutionRoleD358D3E7"
      }
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweTaskDef/ExecutionRole/DefaultPolicy/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweAppTaskDef/ExecutionRole/DefaultPolicy/Resource"
    }
   },
   "GtCdtSweNLBA0E95C6B": {
@@ -805,6 +845,8 @@
     ],
     "Type": "network"
    },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweNLB/Resource"
    }
@@ -833,12 +875,13 @@
   "GtCdtSweNLBGtCdtSweListenerECSGroup61733034": {
    "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
    "Properties": {
-    "HealthCheckIntervalSeconds": 60,
-    "HealthCheckPath": "/openapi.yaml",
-    "HealthCheckTimeoutSeconds": 5,
+    "HealthCheckIntervalSeconds": 30,
+    "HealthCheckProtocol": "TCP",
+    "HealthyThresholdCount": 3,
     "Port": 5000,
     "Protocol": "TCP",
     "TargetType": "ip",
+    "UnhealthyThresholdCount": 3,
     "VpcId": {
      "Ref": "GtCdtSweVpcBA6BF201"
     }
@@ -847,7 +890,7 @@
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweNLB/GtCdtSweListener/ECSGroup/Resource"
    }
   },
-  "GtCdtSweServiceD20D49A0": {
+  "GtCdtSweAppService6F8B2FAD": {
    "Type": "AWS::ECS::Service",
    "Properties": {
     "Cluster": {
@@ -881,7 +924,7 @@
       "SecurityGroups": [
        {
         "Fn::GetAtt": [
-         "GtCdtSweServiceSecurityGroup5BEF7875",
+         "GtCdtSweAppServiceSecurityGroup5D231F11",
          "GroupId"
         ]
        }
@@ -897,22 +940,24 @@
      }
     },
     "TaskDefinition": {
-     "Ref": "GtCdtSweTaskDef3B8AC173"
+     "Ref": "GtCdtSweAppTaskDef151D8F90"
     }
    },
    "DependsOn": [
+    "GtCdtSweAppTaskDefTaskRole3D1A54C4",
     "GtCdtSweNLBGtCdtSweListenerECSGroup61733034",
-    "GtCdtSweNLBGtCdtSweListener87D089E9",
-    "GtCdtSweTaskDefTaskRole1CCECC09"
+    "GtCdtSweNLBGtCdtSweListener87D089E9"
    ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweService/Service"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweAppService/Service"
    }
   },
-  "GtCdtSweServiceSecurityGroup5BEF7875": {
+  "GtCdtSweAppServiceSecurityGroup5D231F11": {
    "Type": "AWS::EC2::SecurityGroup",
    "Properties": {
-    "GroupDescription": "GtCdtSweStack/GtCdtSweService/SecurityGroup",
+    "GroupDescription": "GtCdtSweStack/GtCdtSweAppService/SecurityGroup",
     "SecurityGroupEgress": [
      {
       "CidrIp": "0.0.0.0/0",
@@ -925,13 +970,13 @@
     }
    },
    "DependsOn": [
-    "GtCdtSweTaskDefTaskRole1CCECC09"
+    "GtCdtSweAppTaskDefTaskRole3D1A54C4"
    ],
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweService/SecurityGroup/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweAppService/SecurityGroup/Resource"
    }
   },
-  "GtCdtSweServiceTaskCountTargetB483066D": {
+  "GtCdtSweAppServiceTaskCountTarget2396D341": {
    "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
    "Properties": {
     "MaxCapacity": 2,
@@ -947,7 +992,7 @@
        "/",
        {
         "Fn::GetAtt": [
-         "GtCdtSweServiceD20D49A0",
+         "GtCdtSweAppService6F8B2FAD",
          "Name"
         ]
        }
@@ -970,19 +1015,19 @@
     "ServiceNamespace": "ecs"
    },
    "DependsOn": [
-    "GtCdtSweTaskDefTaskRole1CCECC09"
+    "GtCdtSweAppTaskDefTaskRole3D1A54C4"
    ],
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweService/TaskCount/Target/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweAppService/TaskCount/Target/Resource"
    }
   },
-  "GtCdtSweServiceTaskCountTargetCpuScaling41AD9471": {
+  "GtCdtSweAppServiceTaskCountTargetCpuScalingB158457A": {
    "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
    "Properties": {
-    "PolicyName": "GtCdtSweStackGtCdtSweServiceTaskCountTargetCpuScaling6DAF03C8",
+    "PolicyName": "GtCdtSweStackGtCdtSweAppServiceTaskCountTargetCpuScalingAB19D45E",
     "PolicyType": "TargetTrackingScaling",
     "ScalingTargetId": {
-     "Ref": "GtCdtSweServiceTaskCountTargetB483066D"
+     "Ref": "GtCdtSweAppServiceTaskCountTarget2396D341"
     },
     "TargetTrackingScalingPolicyConfiguration": {
      "PredefinedMetricSpecification": {
@@ -994,10 +1039,10 @@
     }
    },
    "DependsOn": [
-    "GtCdtSweTaskDefTaskRole1CCECC09"
+    "GtCdtSweAppTaskDefTaskRole3D1A54C4"
    ],
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweService/TaskCount/Target/CpuScaling/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweAppService/TaskCount/Target/CpuScaling/Resource"
    }
   },
   "GtCdtSweVpcLinkFD1C9668": {
@@ -1010,6 +1055,8 @@
      }
     ]
    },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweVpcLink/Resource"
    }
@@ -1020,6 +1067,8 @@
     "Description": "FundSage API",
     "Name": "FundSage API"
    },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Resource"
    }
@@ -1079,7 +1128,7 @@
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Account"
    }
   },
-  "GtCdtSweApiDeployment7699DA798d81a96348192decb880c371c181aab8": {
+  "GtCdtSweApiDeployment7699DA79d1b34f8ec7a663dea018fb99f3dcf8a4": {
    "Type": "AWS::ApiGateway::Deployment",
    "Properties": {
     "Description": "FundSage API",
@@ -1097,7 +1146,9 @@
     "GtCdtSweApischemeseligibleGET95B9928A",
     "GtCdtSweApischemeseligibleBC40F5BD",
     "GtCdtSweApischemesGET5D0DF25D",
-    "GtCdtSweApischemesAD7CA4A7"
+    "GtCdtSweApischemesAD7CA4A7",
+    "GtCdtSweApiswaggerGETC66E6F09",
+    "GtCdtSweApiswagger1FC53ACC"
    ],
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Deployment/Resource"
@@ -1107,7 +1158,7 @@
    "Type": "AWS::ApiGateway::Stage",
    "Properties": {
     "DeploymentId": {
-     "Ref": "GtCdtSweApiDeployment7699DA798d81a96348192decb880c371c181aab8"
+     "Ref": "GtCdtSweApiDeployment7699DA79d1b34f8ec7a663dea018fb99f3dcf8a4"
     },
     "MethodSettings": [
      {
@@ -1128,6 +1179,64 @@
    ],
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/DeploymentStage.test/Resource"
+   }
+  },
+  "GtCdtSweApiswagger1FC53ACC": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "GtCdtSweApiB6C504D1",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "swagger",
+    "RestApiId": {
+     "Ref": "GtCdtSweApiB6C504D1"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/swagger/Resource"
+   }
+  },
+  "GtCdtSweApiswaggerGETC66E6F09": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": true,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "ConnectionId": {
+      "Ref": "GtCdtSweVpcLinkFD1C9668"
+     },
+     "ConnectionType": "VPC_LINK",
+     "IntegrationHttpMethod": "GET",
+     "Type": "HTTP_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "http://",
+        {
+         "Fn::GetAtt": [
+          "GtCdtSweNLBA0E95C6B",
+          "DNSName"
+         ]
+        },
+        "/swagger"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "GtCdtSweApiswagger1FC53ACC"
+    },
+    "RestApiId": {
+     "Ref": "GtCdtSweApiB6C504D1"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/swagger/GET/Resource"
    }
   },
   "GtCdtSweApiapplicantsD7856425": {
@@ -1454,6 +1563,8 @@
      }
     ]
    },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/GtCdtSweApiKey/Resource"
    }
@@ -1478,6 +1589,8 @@
     },
     "UsagePlanName": "FundSage Usage Plan"
    },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/GtCdtSweUsagePlan/Resource"
    }
@@ -1495,30 +1608,6 @@
    },
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/GtCdtSweUsagePlan/UsagePlanKeyResource:GtCdtSweStackGtCdtSweApiGtCdtSweApiKeyF7345C60"
-   }
-  },
-  "GtCdtSweApiLogsFFF00470": {
-   "Type": "AWS::Logs::LogGroup",
-   "Properties": {
-    "LogGroupName": "/aws/apigateway/GtCdtSweApi",
-    "RetentionInDays": 7
-   },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
-   "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApiLogs/Resource"
-   }
-  },
-  "GtCdtSweEcsLogs6103C071": {
-   "Type": "AWS::Logs::LogGroup",
-   "Properties": {
-    "LogGroupName": "/aws/ecs/GtCdtSweService",
-    "RetentionInDays": 7
-   },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
-   "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweEcsLogs/Resource"
    }
   },
   "ApiGateway5xxErrorAlarm2C646F8D": {
@@ -1539,6 +1628,8 @@
     "Statistic": "Sum",
     "Threshold": 5
    },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/ApiGateway5xxErrorAlarm/Resource"
    }
@@ -1559,7 +1650,7 @@
       "Name": "ServiceName",
       "Value": {
        "Fn::GetAtt": [
-        "GtCdtSweServiceD20D49A0",
+        "GtCdtSweAppService6F8B2FAD",
         "Name"
        ]
       }
@@ -1572,6 +1663,8 @@
     "Statistic": "Average",
     "Threshold": 80
    },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/EcsServiceCpuUtilizationAlarm/Resource"
    }
@@ -1596,6 +1689,8 @@
     "Statistic": "Average",
     "Threshold": 0.8
    },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/DatabaseCapacityUtilizationAlarm/Resource"
    }
@@ -1603,7 +1698,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/21TXW/bMAz8LX1XtTTAtud8bEXRrAvirK8DIzMOG0UyJCpBYPi/D5Ls2Cn2xOOJok4naiqfvn6Tkwe4+EdVHh817WRTMKijgIv/26Cayua9VmKxN+/rhViHnSZVhJ1BjtyANjYwbmGnceAHbua9VQRM1tyKI/jxso7hDfgZGC9wFWtHZ2AcGr8YRmfwVpCVdNmMGdThhIZFgSo44uuzs6FOGsZEK1zpZVOgO6PT6P1CB8/oRD7otmk5HxNLYNiBxwKVy2qW825jK3wi/QkMVOhkk4+MdTlswVXII4W3gs8rrUDlZdNLWuxND3+CqyB66I9L3JOh3sHPjDUMZNCNuG5vvDKp/CodLBTo+CqxycKGKIDgJJuNza+X4tpqUsnujFqhbeVls7LVza0exws4ucHaemLrrnPwKFCDZ1LaQrkDDUaRqc5T2bwhX6w7riyU88TnK9/lfQ15RtOt97hbyybepIzSVkBda1Jp3CCw9Qo0mUo2w8VjcbLknslh60AdyVRF3jc4cUfEY6jKc5g+yYrMMY1nBzfoeVZTcnSAM6Wi5WKJtbbXfjBGWcFQ5edKYIPeBqcwedonXc+MfyEfbBmpDs1qesUkuEN/PFS41pBG5//JK15bobQN5QVYHWQz0+BOqUcEbXt39u/AdeCxilYYW6L88F/O04l8+i4nDx+e6NEFw3RCucnxH85IcvNxBAAA"
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/21T227bMAz9lr6rWhpg23MuW1E064I46+vAyIzDRpEMiUoQGP73QZIdO8WeeHjEO6mpfPr6TU4e4OIfVXl81LSTTcGgjgIu/m+Daiqb91qJxd68rxdiHXaaVBF2BjlyA9rYwLiFncaBH7iZ91YRMFlzM47gx8s6ijfgZ2C8wFWsHZ2BcQj8YhidwZtBrqTTZsygDic0LApUwRFfn50NdaphTLTClV42BbozOo3eL3TwjE7kRDen5XxMLIFhBx4LVC5Xs5x3jq3wifQnMFChk01OGe2y2IKrkEcV3gw+v7QClZdNX9Jib3r4E1wFcYb+uMQ9Geon+JmxhoEMuhHX+caWSeWtdLBQoONWYpCFDbkAJzdYW09s3XUOHgXBSTYbmxea5NpqUmkDGbVC28rLZmWr2wB73ArU4JmUtlDuQINRZKrzVDZvyBfrjisL5TzxueU7vbchz2i69x53b3mIt7wjtRVQ15pUOjcIbL0CTaaSzdB4NE4juWey2DpQRzJVkf2Gtu+ImIaqfIfpk6zIHNN5dnCDnmc1pfENcKZUHLlYYq3ttT+MkVYwVHldCWzQ2+AUpp30Shcz41/IB1tGqkOzml4xFdyhPx4qXGtIp/N/5RWvrVDahvICrA6ymWlwpxQjgra9y/07cB14XEUrjC1Rfvgv5+lEPn2Xk4cPT/TogmE6odxk+Q9ctFTmcQQAAA=="
    },
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/CDKMetadata/Default"

@@ -162,4 +162,4 @@ cython_debug/
 #.idea/
 
 # node.js
-*node_modules/*
+IaC/cdk/node_modules/*

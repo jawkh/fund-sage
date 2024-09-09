@@ -37,7 +37,50 @@ This project requires Node.js version 18. Follow these steps to set up the corre
    npm install -g aws-cdk
    ```
 
-## Configuration
+
+## Setting Up AWS IAM Programmatic User Account for IaC
+
+### Steps to Create an IAM Programmatic User for CDK:
+
+1. **Log in to AWS Management Console**:
+- Go to [AWS Management Console](https://aws.amazon.com/console/) and log in with your administrator credentials.
+
+2. **Create an IAM User**:
+- In the search bar, type **IAM** and select **IAM** from the services menu.
+- On the IAM dashboard, select **Users** from the left navigation panel.
+- Click **Add User**.
+
+3. **Configure User Details**:
+- Enter a **User name** (e.g., `cdk-deploy-user`).
+- Under **Select AWS access type**, check **Programmatic access**. This will generate an access key ID and secret access key for API access.
+- Click **Next: Permissions**.
+
+4. **Set Permissions**:
+- On the "Set permissions" page, choose **Attach existing policies directly**.
+- Select the **AdministratorAccess** managed policy. This will grant the user full access to manage AWS resources required for CDK.
+
+5. **Add Tags (Optional)**:
+- Add any tags if needed (e.g., `Purpose: CDKDeployment`).
+
+6. **Review and Create User**:
+- Review your user configuration and permissions.
+- Click **Create User**.
+
+7. **Download the Credentials**:
+- Once the user is created, you'll be shown the **Access Key ID** and **Secret Access Key**. **Download** or **copy** these credentials, as this is the only time you can see them.
+
+Create a .env file in the IaC/cdk directory using the .env copy file as a reference:
+
+
+
+```.env
+# Fill in the credentials of the Programmatic User
+AWS_ACCESS_KEY_ID="<YOUR_ACCESS_KEY_ID>"
+AWS_SECRET_ACCESS_KEY="<YOUR_SECRET_ACCESS_KEY>"
+AWS_DEFAULT_REGION="<YOUR_REGION>"
+```
+
+## IaC Configurations
 
 The deployment can be customized by modifying the `config.ts` file. This file contains settings for:
 
@@ -89,12 +132,12 @@ Adjust these values as needed before deployment.
 
 4. Deploy the CDK stack:
    ```
-   cdk deploy
+   ./cdk deploy
    ```
 
-   Note: You may need to bootstrap your AWS environment if you haven't used CDK before:
+   Note: You may run the following script to destroy all the resources provisioned by the CDK (WARNING - proceed with caution as you will lose the data in the AuroraDB)
    ```
-   cdk bootstrap aws://ACCOUNT-NUMBER/REGION
+   ./cdk destroy
    ```
 
 5. After the deployment is complete, the CDK will output the API Gateway URL and other important information. Make note of these outputs for future use.

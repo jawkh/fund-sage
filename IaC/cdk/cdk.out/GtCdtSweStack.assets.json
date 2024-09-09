@@ -1,7 +1,7 @@
 {
   "version": "36.0.24",
   "files": {
-    "031c96116fcd7f3a89b34af1d00d5f401eabe383888fb52749c612c7ca1fc56c": {
+    "765fd87c01c850ce2ee211e9d279132f5a95cf35ec9cc9ab2546832ba25ede30": {
       "source": {
         "path": "GtCdtSweStack.template.json",
         "packaging": "file"
@@ -9,7 +9,7 @@
       "destinations": {
         "272147878669-ap-southeast-1": {
           "bucketName": "cdk-hnb659fds-assets-272147878669-ap-southeast-1",
-          "objectKey": "031c96116fcd7f3a89b34af1d00d5f401eabe383888fb52749c612c7ca1fc56c.json",
+          "objectKey": "765fd87c01c850ce2ee211e9d279132f5a95cf35ec9cc9ab2546832ba25ede30.json",
           "region": "ap-southeast-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::272147878669:role/cdk-hnb659fds-file-publishing-role-272147878669-ap-southeast-1"
         }

@@ -3,7 +3,8 @@ AWS_SECRET_ACCESS_KEY="<YOUR_SECRET_ACCESS_KEY>"
 AWS_DEFAULT_REGION="<YOUR_REGION>"
 AWS_DEFAULT_OUTPUT="json"  # Optional: set to 'json', 'text', or 'table'
 
-# Role to Assume
-ROLE_ARN="arn:aws:iam::637423296778:role/iamrole-moh-gcciac-nonprod-terraform"
+# Role to Assume (Optional: only if ASSUME_ROLE = true)
+ASSUME_ROLE=false
+ROLE_ARN=<YOUR_ROLE_ARN>
 SESSION_NAME="MySession"
-EXTERNAL_ID="7978"
+EXTERNAL_ID=<YOUR_EXTERNAL_ID>

@@ -38,39 +38,61 @@ else
     exit 1
 fi
 
-# Assume the role using AWS CLI and extract the credentials
-ASSUME_ROLE_OUTPUT=$(aws sts assume-role \
-    --role-arn "$ROLE_ARN" \
-    --role-session-name "$SESSION_NAME" \
-    --external-id "$EXTERNAL_ID" \
-    --query "Credentials" \
-    --output json)
+# Check if role assumption is required
+if [ "$ASSUME_ROLE" = "true" ]; then
+    echo "Assuming role..."
 
-# Check if the assume-role command was successful
-if [ $? -ne 0 ]; then
-    echo "Failed to assume the role. Please check your configuration."
-    exit 1
+    # Assume the role using AWS CLI and extract the credentials
+    ASSUME_ROLE_OUTPUT=$(aws sts assume-role \
+        --role-arn "$ROLE_ARN" \
+        --role-session-name "$SESSION_NAME" \
+        --external-id "$EXTERNAL_ID" \
+        --query "Credentials" \
+        --output json)
+
+    # Check if the assume-role command was successful
+    if [ $? -ne 0 ]; then
+        echo "Failed to assume the role. Please check your configuration."
+        exit 1
+    fi
+
+    # Extract credentials from the assume-role output
+    AWS_ACCESS_KEY_ID=$(echo $ASSUME_ROLE_OUTPUT | jq -r '.AccessKeyId')
+    AWS_SECRET_ACCESS_KEY=$(echo $ASSUME_ROLE_OUTPUT | jq -r '.SecretAccessKey')
+    AWS_SESSION_TOKEN=$(echo $ASSUME_ROLE_OUTPUT | jq -r '.SessionToken')
+
+    # Export the temporary credentials to the current shell session
+    export AWS_ACCESS_KEY_ID
+    export AWS_SECRET_ACCESS_KEY
+    export AWS_SESSION_TOKEN
+
+    # Set default profile to use the assumed role credentials
+    aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile temp-role
+    aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile temp-role
+    aws configure set aws_session_token "$AWS_SESSION_TOKEN" --profile temp-role
+
+    # Set AWS CLI to use the temporary profile
+    export AWS_PROFILE=temp-role
+
+    echo "Role assumed successfully and temporary credentials set for this session."
+else
+    echo "Using AWS programmatic user's credentials from .env file."
+
+    # Use the credentials directly from the .env file
+    export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
+    export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
+    export AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION"
+    export AWS_DEFAULT_OUTPUT="$AWS_DEFAULT_OUTPUT"
+    
+    # Optional: set the AWS CLI to use the default profile
+    aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile default
+    aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile default
+    aws configure set region "$AWS_DEFAULT_REGION" --profile default
+    aws configure set output "$AWS_DEFAULT_OUTPUT" --profile default
+    export AWS_PROFILE=default
+
+    echo "Using programmatic user's credentials from the default profile."
 fi
 
-# Extract credentials from the assume-role output
-AWS_ACCESS_KEY_ID=$(echo $ASSUME_ROLE_OUTPUT | jq -r '.AccessKeyId')
-AWS_SECRET_ACCESS_KEY=$(echo $ASSUME_ROLE_OUTPUT | jq -r '.SecretAccessKey')
-AWS_SESSION_TOKEN=$(echo $ASSUME_ROLE_OUTPUT | jq -r '.SessionToken')
-
-# Export the temporary credentials to the current shell session
-export AWS_ACCESS_KEY_ID
-export AWS_SECRET_ACCESS_KEY
-export AWS_SESSION_TOKEN
-
-# Set default profile to use the assumed role credentials
-aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile temp-role
-aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile temp-role
-aws configure set aws_session_token "$AWS_SESSION_TOKEN" --profile temp-role
-
-# Set AWS CLI to use the temporary profile
-export AWS_PROFILE=temp-role
-
-echo "Role assumed successfully and temporary credentials set for this session."
-
-# Verify the assumed role by getting the caller identity
+# Verify the credentials by getting the caller identity
 aws sts get-caller-identity
