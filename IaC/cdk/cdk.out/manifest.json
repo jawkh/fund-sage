@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::272147878669:role/cdk-hnb659fds-deploy-role-272147878669-ap-southeast-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::272147878669:role/cdk-hnb659fds-cfn-exec-role-272147878669-ap-southeast-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-272147878669-ap-southeast-1/765fd87c01c850ce2ee211e9d279132f5a95cf35ec9cc9ab2546832ba25ede30.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-272147878669-ap-southeast-1/2128b49af99ca5cffe827b5fd788eda342a8a468e7424ab844e39de7570a051e.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -160,22 +160,76 @@
             "data": "GtCdtSweVpcVPCGWA6792732"
           }
         ],
+        "/GtCdtSweStack/NlbSecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NlbSecurityGroup08F7DC4B"
+          }
+        ],
+        "/GtCdtSweStack/EcsSecurityGroup": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "Ignoring Egress rule since 'allowAllOutbound' is set to true; To add customized rules, set allowAllOutbound=false on the SecurityGroup [ack: @aws-cdk/aws-ec2:ipv4IgnoreEgressRule]",
+            "trace": [
+              "Annotations.addMessage (/home/joncules/projects/gt_cdt_swe_test/IaC/cdk/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1608)",
+              "Annotations.addWarningV2 (/home/joncules/projects/gt_cdt_swe_test/IaC/cdk/node_modules/aws-cdk-lib/core/lib/annotations.js:1:825)",
+              "SecurityGroup.addEgressRule (/home/joncules/projects/gt_cdt_swe_test/IaC/cdk/node_modules/aws-cdk-lib/aws-ec2/lib/security-group.js:1:7618)",
+              "new GtCdtSweStack (/home/joncules/projects/gt_cdt_swe_test/IaC/cdk/lib/gt-cdt-swe-stack.ts:70:22)",
+              "Object.<anonymous> (/home/joncules/projects/gt_cdt_swe_test/IaC/cdk/bin/gt-cdt-swe-test.ts:10:1)",
+              "Module._compile (node:internal/modules/cjs/loader:1469:14)",
+              "Module.m._compile (/home/joncules/projects/gt_cdt_swe_test/IaC/cdk/node_modules/ts-node/src/index.ts:1618:23)",
+              "Module._extensions..js (node:internal/modules/cjs/loader:1548:10)",
+              "Object.require.extensions.<computed> [as .ts] (/home/joncules/projects/gt_cdt_swe_test/IaC/cdk/node_modules/ts-node/src/index.ts:1621:12)",
+              "Module.load (node:internal/modules/cjs/loader:1288:32)",
+              "Function.Module._load (node:internal/modules/cjs/loader:1104:12)",
+              "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)",
+              "phase4 (/home/joncules/projects/gt_cdt_swe_test/IaC/cdk/node_modules/ts-node/src/bin.ts:649:14)",
+              "bootstrap (/home/joncules/projects/gt_cdt_swe_test/IaC/cdk/node_modules/ts-node/src/bin.ts:95:10)",
+              "main (/home/joncules/projects/gt_cdt_swe_test/IaC/cdk/node_modules/ts-node/src/bin.ts:55:10)",
+              "Object.<anonymous> (/home/joncules/projects/gt_cdt_swe_test/IaC/cdk/node_modules/ts-node/src/bin.ts:800:3)",
+              "Module._compile (node:internal/modules/cjs/loader:1469:14)",
+              "Object.Module._extensions..js (node:internal/modules/cjs/loader:1548:10)",
+              "Module.load (node:internal/modules/cjs/loader:1288:32)",
+              "Function.Module._load (node:internal/modules/cjs/loader:1104:12)",
+              "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)",
+              "node:internal/main/run_main_module:28:49"
+            ]
+          }
+        ],
+        "/GtCdtSweStack/EcsSecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EcsSecurityGroup44008BF1"
+          }
+        ],
+        "/GtCdtSweStack/EcsSecurityGroup/from GtCdtSweStackNlbSecurityGroup1D1FD50F:5000": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EcsSecurityGroupfromGtCdtSweStackNlbSecurityGroup1D1FD50F50008ECAAA3C"
+          }
+        ],
+        "/GtCdtSweStack/DbSecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DbSecurityGroupE9D701AD"
+          }
+        ],
+        "/GtCdtSweStack/DbSecurityGroup/from GtCdtSweStackEcsSecurityGroup399CD1D9:5432": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DbSecurityGroupfromGtCdtSweStackEcsSecurityGroup399CD1D9543224D64DE1"
+          }
+        ],
         "/GtCdtSweStack/GtCdtSweDatabase/Subnets/Default": [
           {
             "type": "aws:cdk:logicalId",
             "data": "GtCdtSweDatabaseSubnets5968CC8C"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweDatabase/SecurityGroup/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweDatabaseSecurityGroupBF860065"
-          }
-        ],
         "/GtCdtSweStack/GtCdtSweDatabase/Secret/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweDatabaseSecret927C3A25"
+            "data": "GtCdtSweStackGtCdtSweDatabaseSecret2D753B483fdaad7efa858a3daf9490cf0a702aeb"
           }
         ],
         "/GtCdtSweStack/GtCdtSweDatabase/Secret/Attachment/Resource": [
@@ -190,6 +244,24 @@
             "data": "GtCdtSweDatabase78F59F6C"
           }
         ],
+        "/GtCdtSweStack/GtCdtSweDatabase/Instance1": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweDatabaseInstance104E685DB"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweDatabase/Instance2": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweDatabaseInstance2FDA98039"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweDatabaseUrlSecret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweDatabaseUrlSecret0CD68323"
+          }
+        ],
         "/GtCdtSweStack/GtCdtSweCluster/Resource": [
           {
             "type": "aws:cdk:logicalId",
@@ -200,6 +272,12 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "GtCdtSweAppTaskDefTaskRole3D1A54C4"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweAppTaskDef/TaskRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweAppTaskDefTaskRoleDefaultPolicyDA1A6410"
           }
         ],
         "/GtCdtSweStack/GtCdtSweAppTaskDef/Resource": [
@@ -250,12 +328,6 @@
             "data": "GtCdtSweAppService6F8B2FAD"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweAppService/SecurityGroup/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweAppServiceSecurityGroup5D231F11"
-          }
-        ],
         "/GtCdtSweStack/GtCdtSweAppService/TaskCount/Target/Resource": [
           {
             "type": "aws:cdk:logicalId",
@@ -295,7 +367,7 @@
         "/GtCdtSweStack/GtCdtSweApi/Deployment/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweApiDeployment7699DA79d1b34f8ec7a663dea018fb99f3dcf8a4"
+            "data": "GtCdtSweApiDeployment7699DA79ca310d9f45e016379dc8da5a7c1e1453"
           }
         ],
         "/GtCdtSweStack/GtCdtSweApi/DeploymentStage.test/Resource": [
@@ -322,64 +394,100 @@
             "data": "GtCdtSweApiswaggerGETC66E6F09"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweApi/Default/applicants/Resource": [
+        "/GtCdtSweStack/GtCdtSweApi/Default/openapi.yaml/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweApiapplicantsD7856425"
+            "data": "GtCdtSweApiopenapiyaml0D50A589"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweApi/Default/applicants/GET/Resource": [
+        "/GtCdtSweStack/GtCdtSweApi/Default/openapi.yaml/GET/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweApiapplicantsGET628F186B"
+            "data": "GtCdtSweApiopenapiyamlGET6C039801"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweApi/Default/applicants/POST/Resource": [
+        "/GtCdtSweStack/GtCdtSweApi/Default/api/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweApiapplicantsPOSTBC954E1A"
+            "data": "GtCdtSweApiapi37E301A9"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweApi/Default/schemes/Resource": [
+        "/GtCdtSweStack/GtCdtSweApi/Default/api/auth/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweApischemesAD7CA4A7"
+            "data": "GtCdtSweApiapiauth183DCB3B"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweApi/Default/schemes/GET/Resource": [
+        "/GtCdtSweStack/GtCdtSweApi/Default/api/auth/login/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweApischemesGET5D0DF25D"
+            "data": "GtCdtSweApiapiauthloginFE30C571"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweApi/Default/schemes/eligible/Resource": [
+        "/GtCdtSweStack/GtCdtSweApi/Default/api/auth/login/POST/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweApischemeseligibleBC40F5BD"
+            "data": "GtCdtSweApiapiauthloginPOST21E7CEF3"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweApi/Default/schemes/eligible/GET/Resource": [
+        "/GtCdtSweStack/GtCdtSweApi/Default/api/schemes/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweApischemeseligibleGET95B9928A"
+            "data": "GtCdtSweApiapischemesC90B653D"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweApi/Default/applications/Resource": [
+        "/GtCdtSweStack/GtCdtSweApi/Default/api/schemes/GET/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweApiapplications8BB08A1A"
+            "data": "GtCdtSweApiapischemesGETA5BBD9D2"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweApi/Default/applications/GET/Resource": [
+        "/GtCdtSweStack/GtCdtSweApi/Default/api/schemes/eligible/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweApiapplicationsGETE43CA167"
+            "data": "GtCdtSweApiapischemeseligibleF6B8C7F4"
           }
         ],
-        "/GtCdtSweStack/GtCdtSweApi/Default/applications/POST/Resource": [
+        "/GtCdtSweStack/GtCdtSweApi/Default/api/schemes/eligible/GET/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GtCdtSweApiapplicationsPOST73FF7E80"
+            "data": "GtCdtSweApiapischemeseligibleGET4D76B329"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/api/applicants/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiapiapplicants77E75A9B"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/api/applicants/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiapiapplicantsGET7356888E"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/api/applicants/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiapiapplicantsPOSTE9B118AF"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/api/applications/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiapiapplications2482D9E8"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/api/applications/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiapiapplicationsGETAF1D0C7D"
+          }
+        ],
+        "/GtCdtSweStack/GtCdtSweApi/Default/api/applications/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GtCdtSweApiapiapplicationsPOST9A3587E6"
           }
         ],
         "/GtCdtSweStack/GtCdtSweApi/GtCdtSweApiKey/Resource": [

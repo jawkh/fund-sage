@@ -1,3 +1,5 @@
+import { debug } from "console";
+
 export const config = {
   vpc: {
     cidr: '172.16.0.0/24', // CIDR block for the VPC
@@ -23,6 +25,9 @@ export const config = {
     targetCpuUtilization: 70, // Target CPU utilization percentage for scaling
   },
   app: {
+    flask_debug: false, // Enable or disable Flask debug mode
+    debugpy_host: '0.0.0.0', // Host for debugpy
+    debugpy_port: 5678, // Port for debugpy
     flaskApp: 'api/__init__.py', // Flask app entry point
     flaskRunHost: '0.0.0.0', // Host for running Flask app
     flaskRunPort: 5000, // Port for Flask app

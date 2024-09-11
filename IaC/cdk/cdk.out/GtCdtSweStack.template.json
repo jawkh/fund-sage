@@ -392,6 +392,125 @@
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweVpc/VPCGW"
    }
   },
+  "NlbSecurityGroup08F7DC4B": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Allow traffic to ECS tasks from NLB",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "Description": "Allow inbound traffic to ECS from NLB",
+      "FromPort": 5000,
+      "IpProtocol": "tcp",
+      "SourceSecurityGroupId": {
+       "Fn::GetAtt": [
+        "EcsSecurityGroup44008BF1",
+        "GroupId"
+       ]
+      },
+      "ToPort": 5000
+     }
+    ],
+    "VpcId": {
+     "Ref": "GtCdtSweVpcBA6BF201"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/NlbSecurityGroup/Resource"
+   }
+  },
+  "EcsSecurityGroup44008BF1": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Allow outbound traffic from ECS tasks",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "GtCdtSweVpcBA6BF201"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/EcsSecurityGroup/Resource"
+   }
+  },
+  "EcsSecurityGroupfromGtCdtSweStackNlbSecurityGroup1D1FD50F50008ECAAA3C": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Allow inbound traffic from NLB to ECS",
+    "FromPort": 5000,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "EcsSecurityGroup44008BF1",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "NlbSecurityGroup08F7DC4B",
+      "GroupId"
+     ]
+    },
+    "ToPort": 5000
+   },
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/EcsSecurityGroup/from GtCdtSweStackNlbSecurityGroup1D1FD50F:5000"
+   }
+  },
+  "DbSecurityGroupE9D701AD": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Allow inbound traffic to Aurora DB",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "GtCdtSweVpcBA6BF201"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/DbSecurityGroup/Resource"
+   }
+  },
+  "DbSecurityGroupfromGtCdtSweStackEcsSecurityGroup399CD1D9543224D64DE1": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Allow ECS tasks to connect to Aurora DB",
+    "FromPort": 5432,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DbSecurityGroupE9D701AD",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "EcsSecurityGroup44008BF1",
+      "GroupId"
+     ]
+    },
+    "ToPort": 5432
+   },
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/DbSecurityGroup/from GtCdtSweStackEcsSecurityGroup399CD1D9:5432"
+   }
+  },
   "GtCdtSweDatabaseSubnets5968CC8C": {
    "Type": "AWS::RDS::DBSubnetGroup",
    "Properties": {
@@ -409,26 +528,7 @@
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweDatabase/Subnets/Default"
    }
   },
-  "GtCdtSweDatabaseSecurityGroupBF860065": {
-   "Type": "AWS::EC2::SecurityGroup",
-   "Properties": {
-    "GroupDescription": "RDS security group",
-    "SecurityGroupEgress": [
-     {
-      "CidrIp": "0.0.0.0/0",
-      "Description": "Allow all outbound traffic by default",
-      "IpProtocol": "-1"
-     }
-    ],
-    "VpcId": {
-     "Ref": "GtCdtSweVpcBA6BF201"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweDatabase/SecurityGroup/Resource"
-   }
-  },
-  "GtCdtSweDatabaseSecret927C3A25": {
+  "GtCdtSweStackGtCdtSweDatabaseSecret2D753B483fdaad7efa858a3daf9490cf0a702aeb": {
    "Type": "AWS::SecretsManager::Secret",
    "Properties": {
     "Description": {
@@ -459,7 +559,7 @@
    "Type": "AWS::SecretsManager::SecretTargetAttachment",
    "Properties": {
     "SecretId": {
-     "Ref": "GtCdtSweDatabaseSecret927C3A25"
+     "Ref": "GtCdtSweStackGtCdtSweDatabaseSecret2D753B483fdaad7efa858a3daf9490cf0a702aeb"
     },
     "TargetId": {
      "Ref": "GtCdtSweDatabase78F59F6C"
@@ -474,49 +574,31 @@
    "Type": "AWS::RDS::DBCluster",
    "Properties": {
     "CopyTagsToSnapshot": true,
-    "DBClusterParameterGroupName": "default.aurora-postgresql13",
+    "DBClusterParameterGroupName": "default.aurora-postgresql16",
     "DBSubnetGroupName": {
      "Ref": "GtCdtSweDatabaseSubnets5968CC8C"
     },
     "DatabaseName": "fund_sage_db",
-    "DeletionProtection": false,
     "Engine": "aurora-postgresql",
-    "EngineMode": "serverless",
+    "EngineVersion": "16.3",
     "MasterUserPassword": {
      "Fn::Join": [
       "",
       [
        "{{resolve:secretsmanager:",
        {
-        "Ref": "GtCdtSweDatabaseSecret927C3A25"
+        "Ref": "GtCdtSweStackGtCdtSweDatabaseSecret2D753B483fdaad7efa858a3daf9490cf0a702aeb"
        },
        ":SecretString:password::}}"
       ]
      ]
     },
-    "MasterUsername": {
-     "Fn::Join": [
-      "",
-      [
-       "{{resolve:secretsmanager:",
-       {
-        "Ref": "GtCdtSweDatabaseSecret927C3A25"
-       },
-       ":SecretString:username::}}"
-      ]
-     ]
-    },
-    "ScalingConfiguration": {
-     "AutoPause": true,
-     "MaxCapacity": 8,
-     "MinCapacity": 2,
-     "SecondsUntilAutoPause": 300
-    },
-    "StorageEncrypted": true,
+    "MasterUsername": "postgres",
+    "Port": 5432,
     "VpcSecurityGroupIds": [
      {
       "Fn::GetAtt": [
-       "GtCdtSweDatabaseSecurityGroupBF860065",
+       "DbSecurityGroupE9D701AD",
        "GroupId"
       ]
      }
@@ -526,6 +608,97 @@
    "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweDatabase/Resource"
+   }
+  },
+  "GtCdtSweDatabaseInstance104E685DB": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "DBClusterIdentifier": {
+     "Ref": "GtCdtSweDatabase78F59F6C"
+    },
+    "DBInstanceClass": "db.t3.medium",
+    "DBSubnetGroupName": {
+     "Ref": "GtCdtSweDatabaseSubnets5968CC8C"
+    },
+    "Engine": "aurora-postgresql",
+    "PubliclyAccessible": false
+   },
+   "DependsOn": [
+    "GtCdtSweVpcPrivateSubnet1DefaultRouteC63CD8C9",
+    "GtCdtSweVpcPrivateSubnet1RouteTableAssociation33E7A1C6",
+    "GtCdtSweVpcPrivateSubnet2DefaultRouteEEA9E341",
+    "GtCdtSweVpcPrivateSubnet2RouteTableAssociationF77B38FA"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweDatabase/Instance1"
+   }
+  },
+  "GtCdtSweDatabaseInstance2FDA98039": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "DBClusterIdentifier": {
+     "Ref": "GtCdtSweDatabase78F59F6C"
+    },
+    "DBInstanceClass": "db.t3.medium",
+    "DBSubnetGroupName": {
+     "Ref": "GtCdtSweDatabaseSubnets5968CC8C"
+    },
+    "Engine": "aurora-postgresql",
+    "PubliclyAccessible": false
+   },
+   "DependsOn": [
+    "GtCdtSweVpcPrivateSubnet1DefaultRouteC63CD8C9",
+    "GtCdtSweVpcPrivateSubnet1RouteTableAssociation33E7A1C6",
+    "GtCdtSweVpcPrivateSubnet2DefaultRouteEEA9E341",
+    "GtCdtSweVpcPrivateSubnet2RouteTableAssociationF77B38FA"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweDatabase/Instance2"
+   }
+  },
+  "GtCdtSweDatabaseUrlSecret0CD68323": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": "DATABASE_URL constructed from Aurora PostgreSQL cluster credentials",
+    "SecretString": {
+     "Fn::Join": [
+      "",
+      [
+       "postgresql+psycopg2://{{resolve:secretsmanager:",
+       {
+        "Ref": "GtCdtSweDatabaseSecretAttachmentAF048064"
+       },
+       ":SecretString:username::}}:{{resolve:secretsmanager:",
+       {
+        "Ref": "GtCdtSweDatabaseSecretAttachmentAF048064"
+       },
+       ":SecretString:password::}}@",
+       {
+        "Fn::GetAtt": [
+         "GtCdtSweDatabase78F59F6C",
+         "Endpoint.Address"
+        ]
+       },
+       ":",
+       {
+        "Fn::GetAtt": [
+         "GtCdtSweDatabase78F59F6C",
+         "Endpoint.Port"
+        ]
+       },
+       "/fund_sage_db"
+      ]
+     ]
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweDatabaseUrlSecret/Resource"
    }
   },
   "GtCdtSweClusterBAD2B1F0": {
@@ -556,43 +729,58 @@
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweAppTaskDef/TaskRole/Resource"
    }
   },
+  "GtCdtSweAppTaskDefTaskRoleDefaultPolicyDA1A6410": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "ssmmessages:CreateControlChannel",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:OpenDataChannel"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": "logs:DescribeLogGroups",
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:DescribeLogStreams",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GtCdtSweAppTaskDefTaskRoleDefaultPolicyDA1A6410",
+    "Roles": [
+     {
+      "Ref": "GtCdtSweAppTaskDefTaskRole3D1A54C4"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweAppTaskDef/TaskRole/DefaultPolicy/Resource"
+   }
+  },
   "GtCdtSweAppTaskDef151D8F90": {
    "Type": "AWS::ECS::TaskDefinition",
    "Properties": {
     "ContainerDefinitions": [
      {
       "Command": [
-       "poetry",
-       "run",
-       "python",
-       "bin/__init_sys_database.py",
-       "&&",
-       "poetry",
-       "run",
-       "python",
-       "bin/__data_prep_administrators.py",
-       "&&",
-       "poetry",
-       "run",
-       "python",
-       "bin/__data_prep_supported_schemes.py",
-       "&&",
-       "poetry",
-       "run",
-       "python",
-       "bin/__data_prep_random_applicants.py",
-       "&&",
-       "poetry",
-       "run",
-       "python",
-       "bin/__data_prep_applications.py",
-       "&&",
-       "poetry",
-       "run",
-       "flask",
-       "run",
-       "--host=0.0.0.0",
-       "--port=5000"
+       "/bin/bash",
+       "-c",
+       "./wait-for-it.sh ${DBHOST_PORT} --timeout=30 --strict -- echo 'Database is up' && poetry run python bin/__init_sys_database.py && poetry run python bin/__data_prep_administrators.py && poetry run python bin/__data_prep_supported_schemes.py && poetry run python bin/__data_prep_random_applicants.py && poetry run python bin/__data_prep_applications.py && if [ \"${FLASK_DEBUG}\" = \"1\" ]; then poetry run python -m debugpy --listen ${DEBUGYPY_HOST}:${DEBUGYPY_PORT} --wait-for-client -m flask run --no-reload --host=${FLASK_RUN_HOST} --port=${FLASK_RUN_PORT}; else poetry run flask run --host=${FLASK_RUN_HOST} --port=${FLASK_RUN_PORT}; fi"
       ],
       "Environment": [
        {
@@ -624,10 +812,6 @@
         "Value": "3600"
        },
        {
-        "Name": "SERVER_NAME",
-        "Value": "your-server-name"
-       },
-       {
         "Name": "APPLICATION_ROOT",
         "Value": "/"
        },
@@ -648,12 +832,43 @@
         "Value": "false"
        },
        {
+        "Name": "DEBUGYPY_HOST",
+        "Value": "0.0.0.0"
+       },
+       {
+        "Name": "DEBUGYPY_PORT",
+        "Value": "5678"
+       },
+       {
         "Name": "PROVISION_DUMMY_APPLICATIONS",
         "Value": "true"
        },
        {
         "Name": "PROVISION_DUMMY_APPLICANTS",
         "Value": "true"
+       },
+       {
+        "Name": "DBHOST_PORT",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "GtCdtSweDatabase78F59F6C",
+             "Endpoint.Address"
+            ]
+           },
+           ":",
+           {
+            "Fn::GetAtt": [
+             "GtCdtSweDatabase78F59F6C",
+             "Endpoint.Port"
+            ]
+           }
+          ]
+         ]
+        }
        }
       ],
       "Essential": true,
@@ -690,15 +905,7 @@
        {
         "Name": "DATABASE_URL",
         "ValueFrom": {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Ref": "GtCdtSweDatabaseSecretAttachmentAF048064"
-           },
-           ":connectionString::"
-          ]
-         ]
+         "Ref": "GtCdtSweDatabaseUrlSecret0CD68323"
         }
        }
       ]
@@ -808,7 +1015,7 @@
        ],
        "Effect": "Allow",
        "Resource": {
-        "Ref": "GtCdtSweDatabaseSecretAttachmentAF048064"
+        "Ref": "GtCdtSweDatabaseUrlSecret0CD68323"
        }
       }
      ],
@@ -835,6 +1042,14 @@
      }
     ],
     "Scheme": "internal",
+    "SecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "NlbSecurityGroup08F7DC4B",
+       "GroupId"
+      ]
+     }
+    ],
     "Subnets": [
      {
       "Ref": "GtCdtSweVpcPrivateSubnet1SubnetB12C4110"
@@ -876,7 +1091,8 @@
    "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
    "Properties": {
     "HealthCheckIntervalSeconds": 30,
-    "HealthCheckProtocol": "TCP",
+    "HealthCheckPath": "/swagger/",
+    "HealthCheckProtocol": "HTTP",
     "HealthyThresholdCount": 3,
     "Port": 5000,
     "Protocol": "TCP",
@@ -907,6 +1123,7 @@
     },
     "DesiredCount": 1,
     "EnableECSManagedTags": false,
+    "EnableExecuteCommand": true,
     "HealthCheckGracePeriodSeconds": 60,
     "LaunchType": "FARGATE",
     "LoadBalancers": [
@@ -924,7 +1141,7 @@
       "SecurityGroups": [
        {
         "Fn::GetAtt": [
-         "GtCdtSweAppServiceSecurityGroup5D231F11",
+         "EcsSecurityGroup44008BF1",
          "GroupId"
         ]
        }
@@ -944,6 +1161,7 @@
     }
    },
    "DependsOn": [
+    "GtCdtSweAppTaskDefTaskRoleDefaultPolicyDA1A6410",
     "GtCdtSweAppTaskDefTaskRole3D1A54C4",
     "GtCdtSweNLBGtCdtSweListenerECSGroup61733034",
     "GtCdtSweNLBGtCdtSweListener87D089E9"
@@ -952,28 +1170,6 @@
    "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweAppService/Service"
-   }
-  },
-  "GtCdtSweAppServiceSecurityGroup5D231F11": {
-   "Type": "AWS::EC2::SecurityGroup",
-   "Properties": {
-    "GroupDescription": "GtCdtSweStack/GtCdtSweAppService/SecurityGroup",
-    "SecurityGroupEgress": [
-     {
-      "CidrIp": "0.0.0.0/0",
-      "Description": "Allow all outbound traffic by default",
-      "IpProtocol": "-1"
-     }
-    ],
-    "VpcId": {
-     "Ref": "GtCdtSweVpcBA6BF201"
-    }
-   },
-   "DependsOn": [
-    "GtCdtSweAppTaskDefTaskRole3D1A54C4"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweAppService/SecurityGroup/Resource"
    }
   },
   "GtCdtSweAppServiceTaskCountTarget2396D341": {
@@ -1015,6 +1211,7 @@
     "ServiceNamespace": "ecs"
    },
    "DependsOn": [
+    "GtCdtSweAppTaskDefTaskRoleDefaultPolicyDA1A6410",
     "GtCdtSweAppTaskDefTaskRole3D1A54C4"
    ],
    "Metadata": {
@@ -1039,6 +1236,7 @@
     }
    },
    "DependsOn": [
+    "GtCdtSweAppTaskDefTaskRoleDefaultPolicyDA1A6410",
     "GtCdtSweAppTaskDefTaskRole3D1A54C4"
    ],
    "Metadata": {
@@ -1128,7 +1326,7 @@
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Account"
    }
   },
-  "GtCdtSweApiDeployment7699DA79d1b34f8ec7a663dea018fb99f3dcf8a4": {
+  "GtCdtSweApiDeployment7699DA79ca310d9f45e016379dc8da5a7c1e1453": {
    "Type": "AWS::ApiGateway::Deployment",
    "Properties": {
     "Description": "FundSage API",
@@ -1137,16 +1335,22 @@
     }
    },
    "DependsOn": [
-    "GtCdtSweApiapplicantsGET628F186B",
-    "GtCdtSweApiapplicantsPOSTBC954E1A",
-    "GtCdtSweApiapplicantsD7856425",
-    "GtCdtSweApiapplicationsGETE43CA167",
-    "GtCdtSweApiapplicationsPOST73FF7E80",
-    "GtCdtSweApiapplications8BB08A1A",
-    "GtCdtSweApischemeseligibleGET95B9928A",
-    "GtCdtSweApischemeseligibleBC40F5BD",
-    "GtCdtSweApischemesGET5D0DF25D",
-    "GtCdtSweApischemesAD7CA4A7",
+    "GtCdtSweApiapiapplicantsGET7356888E",
+    "GtCdtSweApiapiapplicantsPOSTE9B118AF",
+    "GtCdtSweApiapiapplicants77E75A9B",
+    "GtCdtSweApiapiapplicationsGETAF1D0C7D",
+    "GtCdtSweApiapiapplicationsPOST9A3587E6",
+    "GtCdtSweApiapiapplications2482D9E8",
+    "GtCdtSweApiapiauthloginPOST21E7CEF3",
+    "GtCdtSweApiapiauthloginFE30C571",
+    "GtCdtSweApiapiauth183DCB3B",
+    "GtCdtSweApiapi37E301A9",
+    "GtCdtSweApiapischemeseligibleGET4D76B329",
+    "GtCdtSweApiapischemeseligibleF6B8C7F4",
+    "GtCdtSweApiapischemesGETA5BBD9D2",
+    "GtCdtSweApiapischemesC90B653D",
+    "GtCdtSweApiopenapiyamlGET6C039801",
+    "GtCdtSweApiopenapiyaml0D50A589",
     "GtCdtSweApiswaggerGETC66E6F09",
     "GtCdtSweApiswagger1FC53ACC"
    ],
@@ -1158,7 +1362,7 @@
    "Type": "AWS::ApiGateway::Stage",
    "Properties": {
     "DeploymentId": {
-     "Ref": "GtCdtSweApiDeployment7699DA79d1b34f8ec7a663dea018fb99f3dcf8a4"
+     "Ref": "GtCdtSweApiDeployment7699DA79ca310d9f45e016379dc8da5a7c1e1453"
     },
     "MethodSettings": [
      {
@@ -1202,32 +1406,28 @@
   "GtCdtSweApiswaggerGETC66E6F09": {
    "Type": "AWS::ApiGateway::Method",
    "Properties": {
-    "ApiKeyRequired": true,
     "AuthorizationType": "NONE",
     "HttpMethod": "GET",
     "Integration": {
-     "ConnectionId": {
-      "Ref": "GtCdtSweVpcLinkFD1C9668"
+     "IntegrationResponses": [
+      {
+       "ResponseTemplates": {
+        "application/json": "{ \"message\": \"Documentation endpoint\" }"
+       },
+       "StatusCode": "200"
+      }
+     ],
+     "PassthroughBehavior": "NEVER",
+     "RequestTemplates": {
+      "application/json": "{ \"statusCode\": 200 }"
      },
-     "ConnectionType": "VPC_LINK",
-     "IntegrationHttpMethod": "GET",
-     "Type": "HTTP_PROXY",
-     "Uri": {
-      "Fn::Join": [
-       "",
-       [
-        "http://",
-        {
-         "Fn::GetAtt": [
-          "GtCdtSweNLBA0E95C6B",
-          "DNSName"
-         ]
-        },
-        "/swagger"
-       ]
-      ]
-     }
+     "Type": "MOCK"
     },
+    "MethodResponses": [
+     {
+      "StatusCode": "200"
+     }
+    ],
     "ResourceId": {
      "Ref": "GtCdtSweApiswagger1FC53ACC"
     },
@@ -1239,7 +1439,7 @@
     "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/swagger/GET/Resource"
    }
   },
-  "GtCdtSweApiapplicantsD7856425": {
+  "GtCdtSweApiopenapiyaml0D50A589": {
    "Type": "AWS::ApiGateway::Resource",
    "Properties": {
     "ParentId": {
@@ -1248,56 +1448,100 @@
       "RootResourceId"
      ]
     },
-    "PathPart": "applicants",
+    "PathPart": "openapi.yaml",
     "RestApiId": {
      "Ref": "GtCdtSweApiB6C504D1"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/applicants/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/openapi.yaml/Resource"
    }
   },
-  "GtCdtSweApiapplicantsGET628F186B": {
+  "GtCdtSweApiopenapiyamlGET6C039801": {
    "Type": "AWS::ApiGateway::Method",
    "Properties": {
-    "ApiKeyRequired": true,
     "AuthorizationType": "NONE",
     "HttpMethod": "GET",
     "Integration": {
-     "ConnectionId": {
-      "Ref": "GtCdtSweVpcLinkFD1C9668"
+     "IntegrationResponses": [
+      {
+       "ResponseTemplates": {
+        "application/json": "{ \"message\": \"Documentation endpoint\" }"
+       },
+       "StatusCode": "200"
+      }
+     ],
+     "PassthroughBehavior": "NEVER",
+     "RequestTemplates": {
+      "application/json": "{ \"statusCode\": 200 }"
      },
-     "ConnectionType": "VPC_LINK",
-     "IntegrationHttpMethod": "GET",
-     "Type": "HTTP_PROXY",
-     "Uri": {
-      "Fn::Join": [
-       "",
-       [
-        "http://",
-        {
-         "Fn::GetAtt": [
-          "GtCdtSweNLBA0E95C6B",
-          "DNSName"
-         ]
-        },
-        "/applicants"
-       ]
-      ]
-     }
+     "Type": "MOCK"
     },
+    "MethodResponses": [
+     {
+      "StatusCode": "200"
+     }
+    ],
     "ResourceId": {
-     "Ref": "GtCdtSweApiapplicantsD7856425"
+     "Ref": "GtCdtSweApiopenapiyaml0D50A589"
     },
     "RestApiId": {
      "Ref": "GtCdtSweApiB6C504D1"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/applicants/GET/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/openapi.yaml/GET/Resource"
    }
   },
-  "GtCdtSweApiapplicantsPOSTBC954E1A": {
+  "GtCdtSweApiapi37E301A9": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "GtCdtSweApiB6C504D1",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "api",
+    "RestApiId": {
+     "Ref": "GtCdtSweApiB6C504D1"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/api/Resource"
+   }
+  },
+  "GtCdtSweApiapiauth183DCB3B": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "GtCdtSweApiapi37E301A9"
+    },
+    "PathPart": "auth",
+    "RestApiId": {
+     "Ref": "GtCdtSweApiB6C504D1"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/api/auth/Resource"
+   }
+  },
+  "GtCdtSweApiapiauthloginFE30C571": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "GtCdtSweApiapiauth183DCB3B"
+    },
+    "PathPart": "login",
+    "RestApiId": {
+     "Ref": "GtCdtSweApiB6C504D1"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/api/auth/login/Resource"
+   }
+  },
+  "GtCdtSweApiapiauthloginPOST21E7CEF3": {
    "Type": "AWS::ApiGateway::Method",
    "Properties": {
     "ApiKeyRequired": true,
@@ -1321,30 +1565,27 @@
           "DNSName"
          ]
         },
-        "/applicants"
+        "/api/auth/login"
        ]
       ]
      }
     },
     "ResourceId": {
-     "Ref": "GtCdtSweApiapplicantsD7856425"
+     "Ref": "GtCdtSweApiapiauthloginFE30C571"
     },
     "RestApiId": {
      "Ref": "GtCdtSweApiB6C504D1"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/applicants/POST/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/api/auth/login/POST/Resource"
    }
   },
-  "GtCdtSweApischemesAD7CA4A7": {
+  "GtCdtSweApiapischemesC90B653D": {
    "Type": "AWS::ApiGateway::Resource",
    "Properties": {
     "ParentId": {
-     "Fn::GetAtt": [
-      "GtCdtSweApiB6C504D1",
-      "RootResourceId"
-     ]
+     "Ref": "GtCdtSweApiapi37E301A9"
     },
     "PathPart": "schemes",
     "RestApiId": {
@@ -1352,10 +1593,10 @@
     }
    },
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/api/schemes/Resource"
    }
   },
-  "GtCdtSweApischemesGET5D0DF25D": {
+  "GtCdtSweApiapischemesGETA5BBD9D2": {
    "Type": "AWS::ApiGateway::Method",
    "Properties": {
     "ApiKeyRequired": true,
@@ -1379,27 +1620,27 @@
           "DNSName"
          ]
         },
-        "/schemes"
+        "/api/schemes"
        ]
       ]
      }
     },
     "ResourceId": {
-     "Ref": "GtCdtSweApischemesAD7CA4A7"
+     "Ref": "GtCdtSweApiapischemesC90B653D"
     },
     "RestApiId": {
      "Ref": "GtCdtSweApiB6C504D1"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/GET/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/api/schemes/GET/Resource"
    }
   },
-  "GtCdtSweApischemeseligibleBC40F5BD": {
+  "GtCdtSweApiapischemeseligibleF6B8C7F4": {
    "Type": "AWS::ApiGateway::Resource",
    "Properties": {
     "ParentId": {
-     "Ref": "GtCdtSweApischemesAD7CA4A7"
+     "Ref": "GtCdtSweApiapischemesC90B653D"
     },
     "PathPart": "eligible",
     "RestApiId": {
@@ -1407,10 +1648,10 @@
     }
    },
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/eligible/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/api/schemes/eligible/Resource"
    }
   },
-  "GtCdtSweApischemeseligibleGET95B9928A": {
+  "GtCdtSweApiapischemeseligibleGET4D76B329": {
    "Type": "AWS::ApiGateway::Method",
    "Properties": {
     "ApiKeyRequired": true,
@@ -1434,41 +1675,38 @@
           "DNSName"
          ]
         },
-        "/eligible"
+        "/api/schemes/eligible"
        ]
       ]
      }
     },
     "ResourceId": {
-     "Ref": "GtCdtSweApischemeseligibleBC40F5BD"
+     "Ref": "GtCdtSweApiapischemeseligibleF6B8C7F4"
     },
     "RestApiId": {
      "Ref": "GtCdtSweApiB6C504D1"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/eligible/GET/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/api/schemes/eligible/GET/Resource"
    }
   },
-  "GtCdtSweApiapplications8BB08A1A": {
+  "GtCdtSweApiapiapplicants77E75A9B": {
    "Type": "AWS::ApiGateway::Resource",
    "Properties": {
     "ParentId": {
-     "Fn::GetAtt": [
-      "GtCdtSweApiB6C504D1",
-      "RootResourceId"
-     ]
+     "Ref": "GtCdtSweApiapi37E301A9"
     },
-    "PathPart": "applications",
+    "PathPart": "applicants",
     "RestApiId": {
      "Ref": "GtCdtSweApiB6C504D1"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/applications/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/api/applicants/Resource"
    }
   },
-  "GtCdtSweApiapplicationsGETE43CA167": {
+  "GtCdtSweApiapiapplicantsGET7356888E": {
    "Type": "AWS::ApiGateway::Method",
    "Properties": {
     "ApiKeyRequired": true,
@@ -1492,23 +1730,23 @@
           "DNSName"
          ]
         },
-        "/applications"
+        "/api/applicants"
        ]
       ]
      }
     },
     "ResourceId": {
-     "Ref": "GtCdtSweApiapplications8BB08A1A"
+     "Ref": "GtCdtSweApiapiapplicants77E75A9B"
     },
     "RestApiId": {
      "Ref": "GtCdtSweApiB6C504D1"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/applications/GET/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/api/applicants/GET/Resource"
    }
   },
-  "GtCdtSweApiapplicationsPOST73FF7E80": {
+  "GtCdtSweApiapiapplicantsPOSTE9B118AF": {
    "Type": "AWS::ApiGateway::Method",
    "Properties": {
     "ApiKeyRequired": true,
@@ -1532,20 +1770,115 @@
           "DNSName"
          ]
         },
-        "/applications"
+        "/api/applicants"
        ]
       ]
      }
     },
     "ResourceId": {
-     "Ref": "GtCdtSweApiapplications8BB08A1A"
+     "Ref": "GtCdtSweApiapiapplicants77E75A9B"
     },
     "RestApiId": {
      "Ref": "GtCdtSweApiB6C504D1"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/applications/POST/Resource"
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/api/applicants/POST/Resource"
+   }
+  },
+  "GtCdtSweApiapiapplications2482D9E8": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "GtCdtSweApiapi37E301A9"
+    },
+    "PathPart": "applications",
+    "RestApiId": {
+     "Ref": "GtCdtSweApiB6C504D1"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/api/applications/Resource"
+   }
+  },
+  "GtCdtSweApiapiapplicationsGETAF1D0C7D": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": true,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "ConnectionId": {
+      "Ref": "GtCdtSweVpcLinkFD1C9668"
+     },
+     "ConnectionType": "VPC_LINK",
+     "IntegrationHttpMethod": "GET",
+     "Type": "HTTP_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "http://",
+        {
+         "Fn::GetAtt": [
+          "GtCdtSweNLBA0E95C6B",
+          "DNSName"
+         ]
+        },
+        "/api/applications"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "GtCdtSweApiapiapplications2482D9E8"
+    },
+    "RestApiId": {
+     "Ref": "GtCdtSweApiB6C504D1"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/api/applications/GET/Resource"
+   }
+  },
+  "GtCdtSweApiapiapplicationsPOST9A3587E6": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": true,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "ConnectionId": {
+      "Ref": "GtCdtSweVpcLinkFD1C9668"
+     },
+     "ConnectionType": "VPC_LINK",
+     "IntegrationHttpMethod": "GET",
+     "Type": "HTTP_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "http://",
+        {
+         "Fn::GetAtt": [
+          "GtCdtSweNLBA0E95C6B",
+          "DNSName"
+         ]
+        },
+        "/api/applications"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "GtCdtSweApiapiapplications2482D9E8"
+    },
+    "RestApiId": {
+     "Ref": "GtCdtSweApiB6C504D1"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "GtCdtSweStack/GtCdtSweApi/Default/api/applications/POST/Resource"
    }
   },
   "GtCdtSweApiGtCdtSweApiKey745DAA60": {
@@ -1698,7 +2031,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/21T227bMAz9lr6rWhpg23MuW1E064I46+vAyIzDRpEMiUoQGP73QZIdO8WeeHjEO6mpfPr6TU4e4OIfVXl81LSTTcGgjgIu/m+Daiqb91qJxd68rxdiHXaaVBF2BjlyA9rYwLiFncaBH7iZ91YRMFlzM47gx8s6ijfgZ2C8wFWsHZ2BcQj8YhidwZtBrqTTZsygDic0LApUwRFfn50NdaphTLTClV42BbozOo3eL3TwjE7kRDen5XxMLIFhBx4LVC5Xs5x3jq3wifQnMFChk01OGe2y2IKrkEcV3gw+v7QClZdNX9Jib3r4E1wFcYb+uMQ9Geon+JmxhoEMuhHX+caWSeWtdLBQoONWYpCFDbkAJzdYW09s3XUOHgXBSTYbmxea5NpqUmkDGbVC28rLZmWr2wB73ArU4JmUtlDuQINRZKrzVDZvyBfrjisL5TzxueU7vbchz2i69x53b3mIt7wjtRVQ15pUOjcIbL0CTaaSzdB4NE4juWey2DpQRzJVkf2Gtu+ImIaqfIfpk6zIHNN5dnCDnmc1pfENcKZUHLlYYq3ttT+MkVYwVHldCWzQ2+AUpp30Shcz41/IB1tGqkOzml4xFdyhPx4qXGtIp/N/5RWvrVDahvICrA6ymWlwpxQjgra9y/07cB14XEUrjC1Rfvgv5+lEPn2Xk4cPT/TogmE6odxk+Q9ctFTmcQQAAA=="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/31T227bMAz9lr6rWhdg23MuWxG064K46+vAyKzLRpEMkUoQGP73wZIdO9uwJx4e8U5qpj9++qzvbuDEt6bc31ra6aYQMHsFJ/7VoJnp5qU2avnqXjZLtYk7S6aIO4fScSPa+ij4DDuLIz9yc2ZvCIS8uxh34Ot604knkHsQPMFZbQIdQXAMvHaCweHFIFfSa3MRMG8HdKIKNDGQnO+Dj3Wq4b/E2lUBmVsVStbNCgR2wLi0kQWDyukvnqvFlBiMCzQh17haDI5JWTsWcAZbxcmED+CgwqCbXEXnlcUzhApl0sXF4K+XTLcKDetmkm6A3yBU0I2b9yt8JUfDsP9kvBMgh2HC9b4FhiOZvMAeFgZst8AuyNJHlwoIeou1ZxIfzgtgVAQH3Wx93n2SG2/JpGVl1CrrK9bNo68uUx1wq9ACCxnrodyBBWfIVceZbp5QTj7sHz2Ui8Tnlq/0wYZY0PXvA+7f8iwveSdqq6CuLZl0mRDFswFLrtLN2HhnnEZyzWTxHMDsyVVF9hvbviK6NFTlk03/6ZHcPl1yD7fIMq8pjW+Ec2O6kasV1tafh/uYaIVAldeVwBbZx2Aw7WRQ+pgZf0d582VH9Whe0wOmgnv0k6HCjYV0Ov9WHvDcKmN9LE8g5k03cwvhkGJ0oG2vcv+IUkeZVtEq50vU7/zhOLvTH7/ou5t3JroN0QkdUG+z/A3tbZIWnAQAAA=="
    },
    "Metadata": {
     "aws:cdk:path": "GtCdtSweStack/CDKMetadata/Default"

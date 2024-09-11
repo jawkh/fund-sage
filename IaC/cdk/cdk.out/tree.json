@@ -575,11 +575,177 @@
               "version": "2.156.0"
             }
           },
-          "ParameterGroup": {
-            "id": "ParameterGroup",
-            "path": "GtCdtSweStack/ParameterGroup",
+          "NlbSecurityGroup": {
+            "id": "NlbSecurityGroup",
+            "path": "GtCdtSweStack/NlbSecurityGroup",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/NlbSecurityGroup/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "groupDescription": "Allow traffic to ECS tasks from NLB",
+                    "securityGroupEgress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "description": "Allow all outbound traffic by default",
+                        "ipProtocol": "-1"
+                      }
+                    ],
+                    "securityGroupIngress": [
+                      {
+                        "sourceSecurityGroupId": {
+                          "Fn::GetAtt": [
+                            "EcsSecurityGroup44008BF1",
+                            "GroupId"
+                          ]
+                        },
+                        "ipProtocol": "tcp",
+                        "fromPort": 5000,
+                        "toPort": 5000,
+                        "description": "Allow inbound traffic to ECS from NLB"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "GtCdtSweVpcBA6BF201"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                  "version": "2.156.0"
+                }
+              }
+            },
             "constructInfo": {
-              "fqn": "aws-cdk-lib.Resource",
+              "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+              "version": "2.156.0"
+            }
+          },
+          "EcsSecurityGroup": {
+            "id": "EcsSecurityGroup",
+            "path": "GtCdtSweStack/EcsSecurityGroup",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/EcsSecurityGroup/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "groupDescription": "Allow outbound traffic from ECS tasks",
+                    "securityGroupEgress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "description": "Allow all outbound traffic by default",
+                        "ipProtocol": "-1"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "GtCdtSweVpcBA6BF201"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                  "version": "2.156.0"
+                }
+              },
+              "from GtCdtSweStackNlbSecurityGroup1D1FD50F:5000": {
+                "id": "from GtCdtSweStackNlbSecurityGroup1D1FD50F:5000",
+                "path": "GtCdtSweStack/EcsSecurityGroup/from GtCdtSweStackNlbSecurityGroup1D1FD50F:5000",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroupIngress",
+                  "aws:cdk:cloudformation:props": {
+                    "description": "Allow inbound traffic from NLB to ECS",
+                    "fromPort": 5000,
+                    "groupId": {
+                      "Fn::GetAtt": [
+                        "EcsSecurityGroup44008BF1",
+                        "GroupId"
+                      ]
+                    },
+                    "ipProtocol": "tcp",
+                    "sourceSecurityGroupId": {
+                      "Fn::GetAtt": [
+                        "NlbSecurityGroup08F7DC4B",
+                        "GroupId"
+                      ]
+                    },
+                    "toPort": 5000
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroupIngress",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+              "version": "2.156.0"
+            }
+          },
+          "DbSecurityGroup": {
+            "id": "DbSecurityGroup",
+            "path": "GtCdtSweStack/DbSecurityGroup",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/DbSecurityGroup/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "groupDescription": "Allow inbound traffic to Aurora DB",
+                    "securityGroupEgress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "description": "Allow all outbound traffic by default",
+                        "ipProtocol": "-1"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "GtCdtSweVpcBA6BF201"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                  "version": "2.156.0"
+                }
+              },
+              "from GtCdtSweStackEcsSecurityGroup399CD1D9:5432": {
+                "id": "from GtCdtSweStackEcsSecurityGroup399CD1D9:5432",
+                "path": "GtCdtSweStack/DbSecurityGroup/from GtCdtSweStackEcsSecurityGroup399CD1D9:5432",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroupIngress",
+                  "aws:cdk:cloudformation:props": {
+                    "description": "Allow ECS tasks to connect to Aurora DB",
+                    "fromPort": 5432,
+                    "groupId": {
+                      "Fn::GetAtt": [
+                        "DbSecurityGroupE9D701AD",
+                        "GroupId"
+                      ]
+                    },
+                    "ipProtocol": "tcp",
+                    "sourceSecurityGroupId": {
+                      "Fn::GetAtt": [
+                        "EcsSecurityGroup44008BF1",
+                        "GroupId"
+                      ]
+                    },
+                    "toPort": 5432
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroupIngress",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
               "version": "2.156.0"
             }
           },
@@ -619,37 +785,11 @@
                   "version": "2.156.0"
                 }
               },
-              "SecurityGroup": {
-                "id": "SecurityGroup",
-                "path": "GtCdtSweStack/GtCdtSweDatabase/SecurityGroup",
-                "children": {
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "GtCdtSweStack/GtCdtSweDatabase/SecurityGroup/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
-                      "aws:cdk:cloudformation:props": {
-                        "groupDescription": "RDS security group",
-                        "securityGroupEgress": [
-                          {
-                            "cidrIp": "0.0.0.0/0",
-                            "description": "Allow all outbound traffic by default",
-                            "ipProtocol": "-1"
-                          }
-                        ],
-                        "vpcId": {
-                          "Ref": "GtCdtSweVpcBA6BF201"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
-                      "version": "2.156.0"
-                    }
-                  }
-                },
+              "AuroraPostgreSqlDatabaseClusterEngineDefaultParameterGroup": {
+                "id": "AuroraPostgreSqlDatabaseClusterEngineDefaultParameterGroup",
+                "path": "GtCdtSweStack/GtCdtSweDatabase/AuroraPostgreSqlDatabaseClusterEngineDefaultParameterGroup",
                 "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+                  "fqn": "aws-cdk-lib.Resource",
                   "version": "2.156.0"
                 }
               },
@@ -698,7 +838,7 @@
                           "aws:cdk:cloudformation:type": "AWS::SecretsManager::SecretTargetAttachment",
                           "aws:cdk:cloudformation:props": {
                             "secretId": {
-                              "Ref": "GtCdtSweDatabaseSecret927C3A25"
+                              "Ref": "GtCdtSweStackGtCdtSweDatabaseSecret2D753B483fdaad7efa858a3daf9490cf0a702aeb"
                             },
                             "targetId": {
                               "Ref": "GtCdtSweDatabase78F59F6C"
@@ -731,48 +871,30 @@
                   "aws:cdk:cloudformation:props": {
                     "copyTagsToSnapshot": true,
                     "databaseName": "fund_sage_db",
-                    "dbClusterParameterGroupName": "default.aurora-postgresql13",
+                    "dbClusterParameterGroupName": "default.aurora-postgresql16",
                     "dbSubnetGroupName": {
                       "Ref": "GtCdtSweDatabaseSubnets5968CC8C"
                     },
-                    "deletionProtection": false,
                     "engine": "aurora-postgresql",
-                    "engineMode": "serverless",
-                    "masterUsername": {
-                      "Fn::Join": [
-                        "",
-                        [
-                          "{{resolve:secretsmanager:",
-                          {
-                            "Ref": "GtCdtSweDatabaseSecret927C3A25"
-                          },
-                          ":SecretString:username::}}"
-                        ]
-                      ]
-                    },
+                    "engineVersion": "16.3",
+                    "masterUsername": "postgres",
                     "masterUserPassword": {
                       "Fn::Join": [
                         "",
                         [
                           "{{resolve:secretsmanager:",
                           {
-                            "Ref": "GtCdtSweDatabaseSecret927C3A25"
+                            "Ref": "GtCdtSweStackGtCdtSweDatabaseSecret2D753B483fdaad7efa858a3daf9490cf0a702aeb"
                           },
                           ":SecretString:password::}}"
                         ]
                       ]
                     },
-                    "scalingConfiguration": {
-                      "autoPause": true,
-                      "minCapacity": 2,
-                      "maxCapacity": 8,
-                      "secondsUntilAutoPause": 300
-                    },
-                    "storageEncrypted": true,
+                    "port": 5432,
                     "vpcSecurityGroupIds": [
                       {
                         "Fn::GetAtt": [
-                          "GtCdtSweDatabaseSecurityGroupBF860065",
+                          "DbSecurityGroupE9D701AD",
                           "GroupId"
                         ]
                       }
@@ -783,10 +905,108 @@
                   "fqn": "aws-cdk-lib.aws_rds.CfnDBCluster",
                   "version": "2.156.0"
                 }
+              },
+              "Instance1": {
+                "id": "Instance1",
+                "path": "GtCdtSweStack/GtCdtSweDatabase/Instance1",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::RDS::DBInstance",
+                  "aws:cdk:cloudformation:props": {
+                    "dbClusterIdentifier": {
+                      "Ref": "GtCdtSweDatabase78F59F6C"
+                    },
+                    "dbInstanceClass": "db.t3.medium",
+                    "dbSubnetGroupName": {
+                      "Ref": "GtCdtSweDatabaseSubnets5968CC8C"
+                    },
+                    "engine": "aurora-postgresql",
+                    "publiclyAccessible": false
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_rds.CfnDBInstance",
+                  "version": "2.156.0"
+                }
+              },
+              "Instance2": {
+                "id": "Instance2",
+                "path": "GtCdtSweStack/GtCdtSweDatabase/Instance2",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::RDS::DBInstance",
+                  "aws:cdk:cloudformation:props": {
+                    "dbClusterIdentifier": {
+                      "Ref": "GtCdtSweDatabase78F59F6C"
+                    },
+                    "dbInstanceClass": "db.t3.medium",
+                    "dbSubnetGroupName": {
+                      "Ref": "GtCdtSweDatabaseSubnets5968CC8C"
+                    },
+                    "engine": "aurora-postgresql",
+                    "publiclyAccessible": false
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_rds.CfnDBInstance",
+                  "version": "2.156.0"
+                }
               }
             },
             "constructInfo": {
-              "fqn": "aws-cdk-lib.aws_rds.ServerlessCluster",
+              "fqn": "aws-cdk-lib.aws_rds.DatabaseCluster",
+              "version": "2.156.0"
+            }
+          },
+          "GtCdtSweDatabaseUrlSecret": {
+            "id": "GtCdtSweDatabaseUrlSecret",
+            "path": "GtCdtSweStack/GtCdtSweDatabaseUrlSecret",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "GtCdtSweStack/GtCdtSweDatabaseUrlSecret/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
+                  "aws:cdk:cloudformation:props": {
+                    "description": "DATABASE_URL constructed from Aurora PostgreSQL cluster credentials",
+                    "secretString": {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "postgresql+psycopg2://{{resolve:secretsmanager:",
+                          {
+                            "Ref": "GtCdtSweDatabaseSecretAttachmentAF048064"
+                          },
+                          ":SecretString:username::}}:{{resolve:secretsmanager:",
+                          {
+                            "Ref": "GtCdtSweDatabaseSecretAttachmentAF048064"
+                          },
+                          ":SecretString:password::}}@",
+                          {
+                            "Fn::GetAtt": [
+                              "GtCdtSweDatabase78F59F6C",
+                              "Endpoint.Address"
+                            ]
+                          },
+                          ":",
+                          {
+                            "Fn::GetAtt": [
+                              "GtCdtSweDatabase78F59F6C",
+                              "Endpoint.Port"
+                            ]
+                          },
+                          "/fund_sage_db"
+                        ]
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecret",
+                  "version": "2.156.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_secretsmanager.Secret",
               "version": "2.156.0"
             }
           },
@@ -860,6 +1080,64 @@
                       "fqn": "aws-cdk-lib.aws_iam.CfnRole",
                       "version": "2.156.0"
                     }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "GtCdtSweStack/GtCdtSweAppTaskDef/TaskRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "GtCdtSweStack/GtCdtSweAppTaskDef/TaskRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "ssmmessages:CreateControlChannel",
+                                    "ssmmessages:CreateDataChannel",
+                                    "ssmmessages:OpenControlChannel",
+                                    "ssmmessages:OpenDataChannel"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": "*"
+                                },
+                                {
+                                  "Action": "logs:DescribeLogGroups",
+                                  "Effect": "Allow",
+                                  "Resource": "*"
+                                },
+                                {
+                                  "Action": [
+                                    "logs:CreateLogStream",
+                                    "logs:DescribeLogStreams",
+                                    "logs:PutLogEvents"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": "*"
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "GtCdtSweAppTaskDefTaskRoleDefaultPolicyDA1A6410",
+                            "roles": [
+                              {
+                                "Ref": "GtCdtSweAppTaskDefTaskRole3D1A54C4"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.156.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.156.0"
+                    }
                   }
                 },
                 "constructInfo": {
@@ -876,37 +1154,9 @@
                     "containerDefinitions": [
                       {
                         "command": [
-                          "poetry",
-                          "run",
-                          "python",
-                          "bin/__init_sys_database.py",
-                          "&&",
-                          "poetry",
-                          "run",
-                          "python",
-                          "bin/__data_prep_administrators.py",
-                          "&&",
-                          "poetry",
-                          "run",
-                          "python",
-                          "bin/__data_prep_supported_schemes.py",
-                          "&&",
-                          "poetry",
-                          "run",
-                          "python",
-                          "bin/__data_prep_random_applicants.py",
-                          "&&",
-                          "poetry",
-                          "run",
-                          "python",
-                          "bin/__data_prep_applications.py",
-                          "&&",
-                          "poetry",
-                          "run",
-                          "flask",
-                          "run",
-                          "--host=0.0.0.0",
-                          "--port=5000"
+                          "/bin/bash",
+                          "-c",
+                          "./wait-for-it.sh ${DBHOST_PORT} --timeout=30 --strict -- echo 'Database is up' && poetry run python bin/__init_sys_database.py && poetry run python bin/__data_prep_administrators.py && poetry run python bin/__data_prep_supported_schemes.py && poetry run python bin/__data_prep_random_applicants.py && poetry run python bin/__data_prep_applications.py && if [ \"${FLASK_DEBUG}\" = \"1\" ]; then poetry run python -m debugpy --listen ${DEBUGYPY_HOST}:${DEBUGYPY_PORT} --wait-for-client -m flask run --no-reload --host=${FLASK_RUN_HOST} --port=${FLASK_RUN_PORT}; else poetry run flask run --host=${FLASK_RUN_HOST} --port=${FLASK_RUN_PORT}; fi"
                         ],
                         "essential": true,
                         "image": {
@@ -968,10 +1218,6 @@
                             "value": "3600"
                           },
                           {
-                            "name": "SERVER_NAME",
-                            "value": "your-server-name"
-                          },
-                          {
                             "name": "APPLICATION_ROOT",
                             "value": "/"
                           },
@@ -992,27 +1238,50 @@
                             "value": "false"
                           },
                           {
+                            "name": "DEBUGYPY_HOST",
+                            "value": "0.0.0.0"
+                          },
+                          {
+                            "name": "DEBUGYPY_PORT",
+                            "value": "5678"
+                          },
+                          {
                             "name": "PROVISION_DUMMY_APPLICATIONS",
                             "value": "true"
                           },
                           {
                             "name": "PROVISION_DUMMY_APPLICANTS",
                             "value": "true"
+                          },
+                          {
+                            "name": "DBHOST_PORT",
+                            "value": {
+                              "Fn::Join": [
+                                "",
+                                [
+                                  {
+                                    "Fn::GetAtt": [
+                                      "GtCdtSweDatabase78F59F6C",
+                                      "Endpoint.Address"
+                                    ]
+                                  },
+                                  ":",
+                                  {
+                                    "Fn::GetAtt": [
+                                      "GtCdtSweDatabase78F59F6C",
+                                      "Endpoint.Port"
+                                    ]
+                                  }
+                                ]
+                              ]
+                            }
                           }
                         ],
                         "secrets": [
                           {
                             "name": "DATABASE_URL",
                             "valueFrom": {
-                              "Fn::Join": [
-                                "",
-                                [
-                                  {
-                                    "Ref": "GtCdtSweDatabaseSecretAttachmentAF048064"
-                                  },
-                                  ":connectionString::"
-                                ]
-                              ]
+                              "Ref": "GtCdtSweDatabaseUrlSecret0CD68323"
                             }
                           }
                         ]
@@ -1170,7 +1439,7 @@
                                   ],
                                   "Effect": "Allow",
                                   "Resource": {
-                                    "Ref": "GtCdtSweDatabaseSecretAttachmentAF048064"
+                                    "Ref": "GtCdtSweDatabaseUrlSecret0CD68323"
                                   }
                                 }
                               ],
@@ -1224,6 +1493,14 @@
                       }
                     ],
                     "scheme": "internal",
+                    "securityGroups": [
+                      {
+                        "Fn::GetAtt": [
+                          "NlbSecurityGroup08F7DC4B",
+                          "GroupId"
+                        ]
+                      }
+                    ],
                     "subnets": [
                       {
                         "Ref": "GtCdtSweVpcPrivateSubnet1SubnetB12C4110"
@@ -1281,7 +1558,8 @@
                           "aws:cdk:cloudformation:type": "AWS::ElasticLoadBalancingV2::TargetGroup",
                           "aws:cdk:cloudformation:props": {
                             "healthCheckIntervalSeconds": 30,
-                            "healthCheckProtocol": "TCP",
+                            "healthCheckPath": "/swagger/",
+                            "healthCheckProtocol": "HTTP",
                             "healthyThresholdCount": 3,
                             "port": 5000,
                             "protocol": "TCP",
@@ -1339,6 +1617,7 @@
                     },
                     "desiredCount": 1,
                     "enableEcsManagedTags": false,
+                    "enableExecuteCommand": true,
                     "healthCheckGracePeriodSeconds": 60,
                     "launchType": "FARGATE",
                     "loadBalancers": [
@@ -1364,7 +1643,7 @@
                         "securityGroups": [
                           {
                             "Fn::GetAtt": [
-                              "GtCdtSweAppServiceSecurityGroup5D231F11",
+                              "EcsSecurityGroup44008BF1",
                               "GroupId"
                             ]
                           }
@@ -1378,40 +1657,6 @@
                 },
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.aws_ecs.CfnService",
-                  "version": "2.156.0"
-                }
-              },
-              "SecurityGroup": {
-                "id": "SecurityGroup",
-                "path": "GtCdtSweStack/GtCdtSweAppService/SecurityGroup",
-                "children": {
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "GtCdtSweStack/GtCdtSweAppService/SecurityGroup/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
-                      "aws:cdk:cloudformation:props": {
-                        "groupDescription": "GtCdtSweStack/GtCdtSweAppService/SecurityGroup",
-                        "securityGroupEgress": [
-                          {
-                            "cidrIp": "0.0.0.0/0",
-                            "description": "Allow all outbound traffic by default",
-                            "ipProtocol": "-1"
-                          }
-                        ],
-                        "vpcId": {
-                          "Ref": "GtCdtSweVpcBA6BF201"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
-                      "version": "2.156.0"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
                   "version": "2.156.0"
                 }
               },
@@ -1694,7 +1939,7 @@
                       "aws:cdk:cloudformation:type": "AWS::ApiGateway::Stage",
                       "aws:cdk:cloudformation:props": {
                         "deploymentId": {
-                          "Ref": "GtCdtSweApiDeployment7699DA79d1b34f8ec7a663dea018fb99f3dcf8a4"
+                          "Ref": "GtCdtSweApiDeployment7699DA79ca310d9f45e016379dc8da5a7c1e1453"
                         },
                         "methodSettings": [
                           {
@@ -1771,32 +2016,28 @@
                             "attributes": {
                               "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
                               "aws:cdk:cloudformation:props": {
-                                "apiKeyRequired": true,
                                 "authorizationType": "NONE",
                                 "httpMethod": "GET",
                                 "integration": {
-                                  "type": "HTTP_PROXY",
-                                  "uri": {
-                                    "Fn::Join": [
-                                      "",
-                                      [
-                                        "http://",
-                                        {
-                                          "Fn::GetAtt": [
-                                            "GtCdtSweNLBA0E95C6B",
-                                            "DNSName"
-                                          ]
-                                        },
-                                        "/swagger"
-                                      ]
-                                    ]
+                                  "type": "MOCK",
+                                  "requestTemplates": {
+                                    "application/json": "{ \"statusCode\": 200 }"
                                   },
-                                  "integrationHttpMethod": "GET",
-                                  "connectionType": "VPC_LINK",
-                                  "connectionId": {
-                                    "Ref": "GtCdtSweVpcLinkFD1C9668"
-                                  }
+                                  "passthroughBehavior": "NEVER",
+                                  "integrationResponses": [
+                                    {
+                                      "statusCode": "200",
+                                      "responseTemplates": {
+                                        "application/json": "{ \"message\": \"Documentation endpoint\" }"
+                                      }
+                                    }
+                                  ]
                                 },
+                                "methodResponses": [
+                                  {
+                                    "statusCode": "200"
+                                  }
+                                ],
                                 "resourceId": {
                                   "Ref": "GtCdtSweApiswagger1FC53ACC"
                                 },
@@ -1822,13 +2063,13 @@
                       "version": "2.156.0"
                     }
                   },
-                  "applicants": {
-                    "id": "applicants",
-                    "path": "GtCdtSweStack/GtCdtSweApi/Default/applicants",
+                  "openapi.yaml": {
+                    "id": "openapi.yaml",
+                    "path": "GtCdtSweStack/GtCdtSweApi/Default/openapi.yaml",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "GtCdtSweStack/GtCdtSweApi/Default/applicants/Resource",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/openapi.yaml/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
                           "aws:cdk:cloudformation:props": {
@@ -1838,7 +2079,7 @@
                                 "RootResourceId"
                               ]
                             },
-                            "pathPart": "applicants",
+                            "pathPart": "openapi.yaml",
                             "restApiId": {
                               "Ref": "GtCdtSweApiB6C504D1"
                             }
@@ -1851,97 +2092,38 @@
                       },
                       "GET": {
                         "id": "GET",
-                        "path": "GtCdtSweStack/GtCdtSweApi/Default/applicants/GET",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/openapi.yaml/GET",
                         "children": {
                           "Resource": {
                             "id": "Resource",
-                            "path": "GtCdtSweStack/GtCdtSweApi/Default/applicants/GET/Resource",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/openapi.yaml/GET/Resource",
                             "attributes": {
                               "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
                               "aws:cdk:cloudformation:props": {
-                                "apiKeyRequired": true,
                                 "authorizationType": "NONE",
                                 "httpMethod": "GET",
                                 "integration": {
-                                  "type": "HTTP_PROXY",
-                                  "uri": {
-                                    "Fn::Join": [
-                                      "",
-                                      [
-                                        "http://",
-                                        {
-                                          "Fn::GetAtt": [
-                                            "GtCdtSweNLBA0E95C6B",
-                                            "DNSName"
-                                          ]
-                                        },
-                                        "/applicants"
-                                      ]
-                                    ]
+                                  "type": "MOCK",
+                                  "requestTemplates": {
+                                    "application/json": "{ \"statusCode\": 200 }"
                                   },
-                                  "integrationHttpMethod": "GET",
-                                  "connectionType": "VPC_LINK",
-                                  "connectionId": {
-                                    "Ref": "GtCdtSweVpcLinkFD1C9668"
+                                  "passthroughBehavior": "NEVER",
+                                  "integrationResponses": [
+                                    {
+                                      "statusCode": "200",
+                                      "responseTemplates": {
+                                        "application/json": "{ \"message\": \"Documentation endpoint\" }"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "methodResponses": [
+                                  {
+                                    "statusCode": "200"
                                   }
-                                },
+                                ],
                                 "resourceId": {
-                                  "Ref": "GtCdtSweApiapplicantsD7856425"
-                                },
-                                "restApiId": {
-                                  "Ref": "GtCdtSweApiB6C504D1"
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
-                              "version": "2.156.0"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
-                          "version": "2.156.0"
-                        }
-                      },
-                      "POST": {
-                        "id": "POST",
-                        "path": "GtCdtSweStack/GtCdtSweApi/Default/applicants/POST",
-                        "children": {
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "GtCdtSweStack/GtCdtSweApi/Default/applicants/POST/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
-                              "aws:cdk:cloudformation:props": {
-                                "apiKeyRequired": true,
-                                "authorizationType": "NONE",
-                                "httpMethod": "POST",
-                                "integration": {
-                                  "type": "HTTP_PROXY",
-                                  "uri": {
-                                    "Fn::Join": [
-                                      "",
-                                      [
-                                        "http://",
-                                        {
-                                          "Fn::GetAtt": [
-                                            "GtCdtSweNLBA0E95C6B",
-                                            "DNSName"
-                                          ]
-                                        },
-                                        "/applicants"
-                                      ]
-                                    ]
-                                  },
-                                  "integrationHttpMethod": "GET",
-                                  "connectionType": "VPC_LINK",
-                                  "connectionId": {
-                                    "Ref": "GtCdtSweVpcLinkFD1C9668"
-                                  }
-                                },
-                                "resourceId": {
-                                  "Ref": "GtCdtSweApiapplicantsD7856425"
+                                  "Ref": "GtCdtSweApiopenapiyaml0D50A589"
                                 },
                                 "restApiId": {
                                   "Ref": "GtCdtSweApiB6C504D1"
@@ -1965,13 +2147,13 @@
                       "version": "2.156.0"
                     }
                   },
-                  "schemes": {
-                    "id": "schemes",
-                    "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes",
+                  "api": {
+                    "id": "api",
+                    "path": "GtCdtSweStack/GtCdtSweApi/Default/api",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/Resource",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/api/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
                           "aws:cdk:cloudformation:props": {
@@ -1981,7 +2163,7 @@
                                 "RootResourceId"
                               ]
                             },
-                            "pathPart": "schemes",
+                            "pathPart": "api",
                             "restApiId": {
                               "Ref": "GtCdtSweApiB6C504D1"
                             }
@@ -1992,75 +2174,135 @@
                           "version": "2.156.0"
                         }
                       },
-                      "GET": {
-                        "id": "GET",
-                        "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/GET",
+                      "auth": {
+                        "id": "auth",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/api/auth",
                         "children": {
                           "Resource": {
                             "id": "Resource",
-                            "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/GET/Resource",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/api/auth/Resource",
                             "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
                               "aws:cdk:cloudformation:props": {
-                                "apiKeyRequired": true,
-                                "authorizationType": "NONE",
-                                "httpMethod": "GET",
-                                "integration": {
-                                  "type": "HTTP_PROXY",
-                                  "uri": {
-                                    "Fn::Join": [
-                                      "",
-                                      [
-                                        "http://",
-                                        {
-                                          "Fn::GetAtt": [
-                                            "GtCdtSweNLBA0E95C6B",
-                                            "DNSName"
-                                          ]
-                                        },
-                                        "/schemes"
-                                      ]
-                                    ]
-                                  },
-                                  "integrationHttpMethod": "GET",
-                                  "connectionType": "VPC_LINK",
-                                  "connectionId": {
-                                    "Ref": "GtCdtSweVpcLinkFD1C9668"
-                                  }
+                                "parentId": {
+                                  "Ref": "GtCdtSweApiapi37E301A9"
                                 },
-                                "resourceId": {
-                                  "Ref": "GtCdtSweApischemesAD7CA4A7"
-                                },
+                                "pathPart": "auth",
                                 "restApiId": {
                                   "Ref": "GtCdtSweApiB6C504D1"
                                 }
                               }
                             },
                             "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                              "version": "2.156.0"
+                            }
+                          },
+                          "login": {
+                            "id": "login",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/api/auth/login",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "GtCdtSweStack/GtCdtSweApi/Default/api/auth/login/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                                  "aws:cdk:cloudformation:props": {
+                                    "parentId": {
+                                      "Ref": "GtCdtSweApiapiauth183DCB3B"
+                                    },
+                                    "pathPart": "login",
+                                    "restApiId": {
+                                      "Ref": "GtCdtSweApiB6C504D1"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                                  "version": "2.156.0"
+                                }
+                              },
+                              "POST": {
+                                "id": "POST",
+                                "path": "GtCdtSweStack/GtCdtSweApi/Default/api/auth/login/POST",
+                                "children": {
+                                  "Resource": {
+                                    "id": "Resource",
+                                    "path": "GtCdtSweStack/GtCdtSweApi/Default/api/auth/login/POST/Resource",
+                                    "attributes": {
+                                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                      "aws:cdk:cloudformation:props": {
+                                        "apiKeyRequired": true,
+                                        "authorizationType": "NONE",
+                                        "httpMethod": "POST",
+                                        "integration": {
+                                          "type": "HTTP_PROXY",
+                                          "uri": {
+                                            "Fn::Join": [
+                                              "",
+                                              [
+                                                "http://",
+                                                {
+                                                  "Fn::GetAtt": [
+                                                    "GtCdtSweNLBA0E95C6B",
+                                                    "DNSName"
+                                                  ]
+                                                },
+                                                "/api/auth/login"
+                                              ]
+                                            ]
+                                          },
+                                          "integrationHttpMethod": "GET",
+                                          "connectionType": "VPC_LINK",
+                                          "connectionId": {
+                                            "Ref": "GtCdtSweVpcLinkFD1C9668"
+                                          }
+                                        },
+                                        "resourceId": {
+                                          "Ref": "GtCdtSweApiapiauthloginFE30C571"
+                                        },
+                                        "restApiId": {
+                                          "Ref": "GtCdtSweApiB6C504D1"
+                                        }
+                                      }
+                                    },
+                                    "constructInfo": {
+                                      "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                      "version": "2.156.0"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                                  "version": "2.156.0"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.Resource",
                               "version": "2.156.0"
                             }
                           }
                         },
                         "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "fqn": "aws-cdk-lib.aws_apigateway.Resource",
                           "version": "2.156.0"
                         }
                       },
-                      "eligible": {
-                        "id": "eligible",
-                        "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/eligible",
+                      "schemes": {
+                        "id": "schemes",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/api/schemes",
                         "children": {
                           "Resource": {
                             "id": "Resource",
-                            "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/eligible/Resource",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/api/schemes/Resource",
                             "attributes": {
                               "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
                               "aws:cdk:cloudformation:props": {
                                 "parentId": {
-                                  "Ref": "GtCdtSweApischemesAD7CA4A7"
+                                  "Ref": "GtCdtSweApiapi37E301A9"
                                 },
-                                "pathPart": "eligible",
+                                "pathPart": "schemes",
                                 "restApiId": {
                                   "Ref": "GtCdtSweApiB6C504D1"
                                 }
@@ -2073,11 +2315,11 @@
                           },
                           "GET": {
                             "id": "GET",
-                            "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/eligible/GET",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/api/schemes/GET",
                             "children": {
                               "Resource": {
                                 "id": "Resource",
-                                "path": "GtCdtSweStack/GtCdtSweApi/Default/schemes/eligible/GET/Resource",
+                                "path": "GtCdtSweStack/GtCdtSweApi/Default/api/schemes/GET/Resource",
                                 "attributes": {
                                   "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
                                   "aws:cdk:cloudformation:props": {
@@ -2097,7 +2339,7 @@
                                                 "DNSName"
                                               ]
                                             },
-                                            "/eligible"
+                                            "/api/schemes"
                                           ]
                                         ]
                                       },
@@ -2108,7 +2350,232 @@
                                       }
                                     },
                                     "resourceId": {
-                                      "Ref": "GtCdtSweApischemeseligibleBC40F5BD"
+                                      "Ref": "GtCdtSweApiapischemesC90B653D"
+                                    },
+                                    "restApiId": {
+                                      "Ref": "GtCdtSweApiB6C504D1"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                  "version": "2.156.0"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                              "version": "2.156.0"
+                            }
+                          },
+                          "eligible": {
+                            "id": "eligible",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/api/schemes/eligible",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "GtCdtSweStack/GtCdtSweApi/Default/api/schemes/eligible/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                                  "aws:cdk:cloudformation:props": {
+                                    "parentId": {
+                                      "Ref": "GtCdtSweApiapischemesC90B653D"
+                                    },
+                                    "pathPart": "eligible",
+                                    "restApiId": {
+                                      "Ref": "GtCdtSweApiB6C504D1"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                                  "version": "2.156.0"
+                                }
+                              },
+                              "GET": {
+                                "id": "GET",
+                                "path": "GtCdtSweStack/GtCdtSweApi/Default/api/schemes/eligible/GET",
+                                "children": {
+                                  "Resource": {
+                                    "id": "Resource",
+                                    "path": "GtCdtSweStack/GtCdtSweApi/Default/api/schemes/eligible/GET/Resource",
+                                    "attributes": {
+                                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                      "aws:cdk:cloudformation:props": {
+                                        "apiKeyRequired": true,
+                                        "authorizationType": "NONE",
+                                        "httpMethod": "GET",
+                                        "integration": {
+                                          "type": "HTTP_PROXY",
+                                          "uri": {
+                                            "Fn::Join": [
+                                              "",
+                                              [
+                                                "http://",
+                                                {
+                                                  "Fn::GetAtt": [
+                                                    "GtCdtSweNLBA0E95C6B",
+                                                    "DNSName"
+                                                  ]
+                                                },
+                                                "/api/schemes/eligible"
+                                              ]
+                                            ]
+                                          },
+                                          "integrationHttpMethod": "GET",
+                                          "connectionType": "VPC_LINK",
+                                          "connectionId": {
+                                            "Ref": "GtCdtSweVpcLinkFD1C9668"
+                                          }
+                                        },
+                                        "resourceId": {
+                                          "Ref": "GtCdtSweApiapischemeseligibleF6B8C7F4"
+                                        },
+                                        "restApiId": {
+                                          "Ref": "GtCdtSweApiB6C504D1"
+                                        }
+                                      }
+                                    },
+                                    "constructInfo": {
+                                      "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                      "version": "2.156.0"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                                  "version": "2.156.0"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                              "version": "2.156.0"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                          "version": "2.156.0"
+                        }
+                      },
+                      "applicants": {
+                        "id": "applicants",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/api/applicants",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/api/applicants/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                              "aws:cdk:cloudformation:props": {
+                                "parentId": {
+                                  "Ref": "GtCdtSweApiapi37E301A9"
+                                },
+                                "pathPart": "applicants",
+                                "restApiId": {
+                                  "Ref": "GtCdtSweApiB6C504D1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                              "version": "2.156.0"
+                            }
+                          },
+                          "GET": {
+                            "id": "GET",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/api/applicants/GET",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "GtCdtSweStack/GtCdtSweApi/Default/api/applicants/GET/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                  "aws:cdk:cloudformation:props": {
+                                    "apiKeyRequired": true,
+                                    "authorizationType": "NONE",
+                                    "httpMethod": "GET",
+                                    "integration": {
+                                      "type": "HTTP_PROXY",
+                                      "uri": {
+                                        "Fn::Join": [
+                                          "",
+                                          [
+                                            "http://",
+                                            {
+                                              "Fn::GetAtt": [
+                                                "GtCdtSweNLBA0E95C6B",
+                                                "DNSName"
+                                              ]
+                                            },
+                                            "/api/applicants"
+                                          ]
+                                        ]
+                                      },
+                                      "integrationHttpMethod": "GET",
+                                      "connectionType": "VPC_LINK",
+                                      "connectionId": {
+                                        "Ref": "GtCdtSweVpcLinkFD1C9668"
+                                      }
+                                    },
+                                    "resourceId": {
+                                      "Ref": "GtCdtSweApiapiapplicants77E75A9B"
+                                    },
+                                    "restApiId": {
+                                      "Ref": "GtCdtSweApiB6C504D1"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                  "version": "2.156.0"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                              "version": "2.156.0"
+                            }
+                          },
+                          "POST": {
+                            "id": "POST",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/api/applicants/POST",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "GtCdtSweStack/GtCdtSweApi/Default/api/applicants/POST/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                  "aws:cdk:cloudformation:props": {
+                                    "apiKeyRequired": true,
+                                    "authorizationType": "NONE",
+                                    "httpMethod": "POST",
+                                    "integration": {
+                                      "type": "HTTP_PROXY",
+                                      "uri": {
+                                        "Fn::Join": [
+                                          "",
+                                          [
+                                            "http://",
+                                            {
+                                              "Fn::GetAtt": [
+                                                "GtCdtSweNLBA0E95C6B",
+                                                "DNSName"
+                                              ]
+                                            },
+                                            "/api/applicants"
+                                          ]
+                                        ]
+                                      },
+                                      "integrationHttpMethod": "GET",
+                                      "connectionType": "VPC_LINK",
+                                      "connectionId": {
+                                        "Ref": "GtCdtSweVpcLinkFD1C9668"
+                                      }
+                                    },
+                                    "resourceId": {
+                                      "Ref": "GtCdtSweApiapiapplicants77E75A9B"
                                     },
                                     "restApiId": {
                                       "Ref": "GtCdtSweApiB6C504D1"
@@ -2131,147 +2598,144 @@
                           "fqn": "aws-cdk-lib.aws_apigateway.Resource",
                           "version": "2.156.0"
                         }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_apigateway.Resource",
-                      "version": "2.156.0"
-                    }
-                  },
-                  "applications": {
-                    "id": "applications",
-                    "path": "GtCdtSweStack/GtCdtSweApi/Default/applications",
-                    "children": {
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "GtCdtSweStack/GtCdtSweApi/Default/applications/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
-                          "aws:cdk:cloudformation:props": {
-                            "parentId": {
-                              "Fn::GetAtt": [
-                                "GtCdtSweApiB6C504D1",
-                                "RootResourceId"
-                              ]
-                            },
-                            "pathPart": "applications",
-                            "restApiId": {
-                              "Ref": "GtCdtSweApiB6C504D1"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
-                          "version": "2.156.0"
-                        }
                       },
-                      "GET": {
-                        "id": "GET",
-                        "path": "GtCdtSweStack/GtCdtSweApi/Default/applications/GET",
+                      "applications": {
+                        "id": "applications",
+                        "path": "GtCdtSweStack/GtCdtSweApi/Default/api/applications",
                         "children": {
                           "Resource": {
                             "id": "Resource",
-                            "path": "GtCdtSweStack/GtCdtSweApi/Default/applications/GET/Resource",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/api/applications/Resource",
                             "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
                               "aws:cdk:cloudformation:props": {
-                                "apiKeyRequired": true,
-                                "authorizationType": "NONE",
-                                "httpMethod": "GET",
-                                "integration": {
-                                  "type": "HTTP_PROXY",
-                                  "uri": {
-                                    "Fn::Join": [
-                                      "",
-                                      [
-                                        "http://",
-                                        {
-                                          "Fn::GetAtt": [
-                                            "GtCdtSweNLBA0E95C6B",
-                                            "DNSName"
-                                          ]
-                                        },
-                                        "/applications"
-                                      ]
-                                    ]
-                                  },
-                                  "integrationHttpMethod": "GET",
-                                  "connectionType": "VPC_LINK",
-                                  "connectionId": {
-                                    "Ref": "GtCdtSweVpcLinkFD1C9668"
-                                  }
+                                "parentId": {
+                                  "Ref": "GtCdtSweApiapi37E301A9"
                                 },
-                                "resourceId": {
-                                  "Ref": "GtCdtSweApiapplications8BB08A1A"
-                                },
+                                "pathPart": "applications",
                                 "restApiId": {
                                   "Ref": "GtCdtSweApiB6C504D1"
                                 }
                               }
                             },
                             "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
                               "version": "2.156.0"
                             }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
-                          "version": "2.156.0"
-                        }
-                      },
-                      "POST": {
-                        "id": "POST",
-                        "path": "GtCdtSweStack/GtCdtSweApi/Default/applications/POST",
-                        "children": {
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "GtCdtSweStack/GtCdtSweApi/Default/applications/POST/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
-                              "aws:cdk:cloudformation:props": {
-                                "apiKeyRequired": true,
-                                "authorizationType": "NONE",
-                                "httpMethod": "POST",
-                                "integration": {
-                                  "type": "HTTP_PROXY",
-                                  "uri": {
-                                    "Fn::Join": [
-                                      "",
-                                      [
-                                        "http://",
-                                        {
-                                          "Fn::GetAtt": [
-                                            "GtCdtSweNLBA0E95C6B",
-                                            "DNSName"
+                          },
+                          "GET": {
+                            "id": "GET",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/api/applications/GET",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "GtCdtSweStack/GtCdtSweApi/Default/api/applications/GET/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                  "aws:cdk:cloudformation:props": {
+                                    "apiKeyRequired": true,
+                                    "authorizationType": "NONE",
+                                    "httpMethod": "GET",
+                                    "integration": {
+                                      "type": "HTTP_PROXY",
+                                      "uri": {
+                                        "Fn::Join": [
+                                          "",
+                                          [
+                                            "http://",
+                                            {
+                                              "Fn::GetAtt": [
+                                                "GtCdtSweNLBA0E95C6B",
+                                                "DNSName"
+                                              ]
+                                            },
+                                            "/api/applications"
                                           ]
-                                        },
-                                        "/applications"
-                                      ]
-                                    ]
-                                  },
-                                  "integrationHttpMethod": "GET",
-                                  "connectionType": "VPC_LINK",
-                                  "connectionId": {
-                                    "Ref": "GtCdtSweVpcLinkFD1C9668"
+                                        ]
+                                      },
+                                      "integrationHttpMethod": "GET",
+                                      "connectionType": "VPC_LINK",
+                                      "connectionId": {
+                                        "Ref": "GtCdtSweVpcLinkFD1C9668"
+                                      }
+                                    },
+                                    "resourceId": {
+                                      "Ref": "GtCdtSweApiapiapplications2482D9E8"
+                                    },
+                                    "restApiId": {
+                                      "Ref": "GtCdtSweApiB6C504D1"
+                                    }
                                   }
                                 },
-                                "resourceId": {
-                                  "Ref": "GtCdtSweApiapplications8BB08A1A"
-                                },
-                                "restApiId": {
-                                  "Ref": "GtCdtSweApiB6C504D1"
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                  "version": "2.156.0"
                                 }
                               }
                             },
                             "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                              "version": "2.156.0"
+                            }
+                          },
+                          "POST": {
+                            "id": "POST",
+                            "path": "GtCdtSweStack/GtCdtSweApi/Default/api/applications/POST",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "GtCdtSweStack/GtCdtSweApi/Default/api/applications/POST/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                  "aws:cdk:cloudformation:props": {
+                                    "apiKeyRequired": true,
+                                    "authorizationType": "NONE",
+                                    "httpMethod": "POST",
+                                    "integration": {
+                                      "type": "HTTP_PROXY",
+                                      "uri": {
+                                        "Fn::Join": [
+                                          "",
+                                          [
+                                            "http://",
+                                            {
+                                              "Fn::GetAtt": [
+                                                "GtCdtSweNLBA0E95C6B",
+                                                "DNSName"
+                                              ]
+                                            },
+                                            "/api/applications"
+                                          ]
+                                        ]
+                                      },
+                                      "integrationHttpMethod": "GET",
+                                      "connectionType": "VPC_LINK",
+                                      "connectionId": {
+                                        "Ref": "GtCdtSweVpcLinkFD1C9668"
+                                      }
+                                    },
+                                    "resourceId": {
+                                      "Ref": "GtCdtSweApiapiapplications2482D9E8"
+                                    },
+                                    "restApiId": {
+                                      "Ref": "GtCdtSweApiB6C504D1"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                  "version": "2.156.0"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
                               "version": "2.156.0"
                             }
                           }
                         },
                         "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "fqn": "aws-cdk-lib.aws_apigateway.Resource",
                           "version": "2.156.0"
                         }
                       }

@@ -52,11 +52,11 @@ This project requires Node.js version 18. Follow these steps to set up the corre
 
 3. **Configure User Details**:
 - Enter a **User name** (e.g., `cdk-deploy-user`).
-- Under **Select AWS access type**, check **Programmatic access**. This will generate an access key ID and secret access key for API access.
+- Uncheck **Provide user access to the AWS Management Console - optional**
 - Click **Next: Permissions**.
 
 4. **Set Permissions**:
-- On the "Set permissions" page, choose **Attach existing policies directly**.
+- On the "Set permissions" page, choose **Attach policies directly**.
 - Select the **AdministratorAccess** managed policy. This will grant the user full access to manage AWS resources required for CDK.
 
 5. **Add Tags (Optional)**:
@@ -67,11 +67,13 @@ This project requires Node.js version 18. Follow these steps to set up the corre
 - Click **Create User**.
 
 7. **Download the Credentials**:
+- Navigate to the newly created user account. 
+- Click **Create access key**
+- Select **Command Line Interface (CLI)**
+- Copy the **Access Key** and **Secret access key**
 - Once the user is created, you'll be shown the **Access Key ID** and **Secret Access Key**. **Download** or **copy** these credentials, as this is the only time you can see them.
 
 Create a .env file in the IaC/cdk directory using the .env copy file as a reference:
-
-
 
 ```.env
 # Fill in the credentials of the Programmatic User
@@ -132,12 +134,12 @@ Adjust these values as needed before deployment.
 
 4. Deploy the CDK stack:
    ```
-   ./cdk deploy
+   ./cdk.sh deploy
    ```
 
    Note: You may run the following script to destroy all the resources provisioned by the CDK (WARNING - proceed with caution as you will lose the data in the AuroraDB)
    ```
-   ./cdk destroy
+   ./cdk.sh destroy
    ```
 
 5. After the deployment is complete, the CDK will output the API Gateway URL and other important information. Make note of these outputs for future use.
