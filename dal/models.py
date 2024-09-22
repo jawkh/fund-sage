@@ -164,8 +164,8 @@ class Application(Base):
     __tablename__ = 'Applications'
 
     id: int = Column(Integer, primary_key=True, index=True)
-    applicant_id: int = Column(Integer, ForeignKey('Applicants.id', ondelete='CASCADE'))
-    scheme_id: int = Column(Integer, ForeignKey('Schemes.id', ondelete='CASCADE'))
+    applicant_id: int = Column(Integer, ForeignKey('Applicants.id'))
+    scheme_id: int = Column(Integer, ForeignKey('Schemes.id'))
     status: str = Column(String(50), nullable=False)
     eligibility_verdict: str = Column(String, nullable=True)
     awarded_benefits: dict = Column(JSON, nullable=True)  
