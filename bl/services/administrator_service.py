@@ -128,7 +128,7 @@ class AdministratorService:
         if username:
             username = username.strip().lower() # Remove leading and trailing whitespaces. Sets username to lowercase
         if password:
-            password = password.strip() # reomve leading and trailing whitespaces
+            password = password.strip() # Remove leading and trailing whitespaces
         
         try:
             admin = self.__get_admin_by_username(username) # Check if the admin exists. Raises an exception if not found.

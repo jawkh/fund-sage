@@ -100,7 +100,7 @@ def middleaged_reskilling_assistance_scheme(scheme_service):
                     "disbursment_amount": 2000,
                     "disbursment_frequency": "Monthly",
                     "disbursment_duration_months": 6,
-                    "description": "Monthly study allowance of $5000 for up to 6 months."
+                    "description": "Monthly study allowance of $2000 for up to 6 months."
                 }
             },
             "validity_start_date": datetime(2024, 1, 1),
