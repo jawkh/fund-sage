@@ -199,4 +199,9 @@ class SystemConfiguration(Base):
     last_updated: DateTime = Column(DateTime(timezone=True), server_default=func.now())
 
 
+# In SQLAlchemy, calling configure_mappers can help catch any configuration errors early, such as missing relationships or incorrect column definitions. 
+# It forces the ORM to validate the mappings and can provide immediate feedback if something is misconfigured. 
+# This is particularly useful in larger applications where models are defined across multiple files and modules, 
+# as it ensures that all parts of the application are correctly integrated before any database transactions occur.
 configure_mappers() # Configure mappers to ensure all relationships are properly set up
+
