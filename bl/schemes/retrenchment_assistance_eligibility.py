@@ -80,11 +80,12 @@ retrenchment_assistance_scheme_data = {
 """
 
 # retrenchment_assistance_eligibility.py
-
+from datetime import datetime, timedelta
 from dal.models import Applicant, Scheme
 from bl.schemes.base_eligibility import BaseEligibility
 from utils.date_utils import is_within_last_months, calculate_age
 from typing import Dict, List, Any
+from utils.date_utils import is_within_last_months, calculate_age
 
 class RetrenchmentAssistanceEligibility(BaseEligibility):
     """
@@ -105,13 +106,31 @@ class RetrenchmentAssistanceEligibility(BaseEligibility):
         eligibility_criteria = self.scheme.eligibility_criteria
         required_employment_status = eligibility_criteria.get("employment_status")
         retrenchment_period_months = eligibility_criteria.get("retrechment_period_months")
+        required_marital_status = eligibility_criteria.get("marital_status")
+        marriage_duration_months = eligibility_criteria.get("marriage_duration_months")
 
+        # Check employment status and retrenchment period
         if applicant.employment_status == required_employment_status:
             if applicant.employment_status_change_date:
-                if is_within_last_months(applicant.employment_status_change_date, retrenchment_period_months):
-                    return True, "Eligible for Retrenchment Assistance."
+                if not is_within_last_months(applicant.employment_status_change_date, retrenchment_period_months):
+                    return False, "Not eligible: Retrenchment period exceeds the required duration."
+            else:
+                return False, "Not eligible: Missing employment status change date."
+        else:
+            return False, "Not eligible: Applicant is not unemployed."
 
-        return False, "Not eligible for Retrenchment Assistance."
+        # Check marital status and marriage duration
+        if applicant.marital_status != required_marital_status:
+            return False, "Not eligible: Applicant is not married."
+        
+        # Assuming there's a 'marriage_date' field in the Applicant model
+        if not hasattr(applicant, 'marriage_date') or applicant.marriage_date is None:
+            return False, "Not eligible: Missing marriage date information."
+        
+        if not is_within_last_months(applicant.marriage_date, marriage_duration_months):
+            return False, f"Not eligible: Marriage duration exceeds {marriage_duration_months} months."
+
+        return True, "Eligible for Retrenchment Assistance."
 
     def calculate_benefits(self, applicant: Applicant) -> List[Dict[str, Any]]:
         if not self.check_eligibility(applicant)[0]:

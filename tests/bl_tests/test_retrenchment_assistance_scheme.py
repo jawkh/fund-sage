@@ -10,6 +10,7 @@ from dateutil.relativedelta import relativedelta
 from bl.factories.scheme_eligibility_checker_factory import SchemeEligibilityCheckerFactory
 from bl.schemes.schemes_manager import SchemesManager
 from exceptions import InvalidApplicantDataException
+from datetime import datetime, timedelta
 
 # Retrenchment Assistance Scheme Tests
 def test_retrenchment_assistance_eligibility(application_service, applicant_service, crud_operations, test_administrator, retrenchment_assistance_scheme):
@@ -116,6 +117,7 @@ def test_multiple_eligible_household_members_retrenchment_assistance(application
         "sex": "M",
         "date_of_birth": datetime(1970, 5, 15),
         "marital_status": "married",
+        "marriage_date": datetime(2024, 8, 1),
         "employment_status_change_date": datetime.today() - relativedelta(months=4),  # 4 months ago
         "created_by_admin_id": test_administrator.id
     }
@@ -212,7 +214,8 @@ def test_recent_employment_status_change_retrenchment_assistance(application_ser
         "employment_status": "unemployed",  # Eligible for Retrenchment Assistance Scheme
         "sex": "M",
         "date_of_birth": datetime(1988, 11, 20),
-        "marital_status": "single",
+        "marital_status": "married",
+        "marriage_date": datetime(2024, 8, 1),
         "employment_status_change_date": datetime.today() - relativedelta(months=6),  # Exactly 6 months ago (Fringe test case: Right on the threshold)
         "created_by_admin_id": test_administrator.id
     }
@@ -298,6 +301,7 @@ def test_employed_applicant_retrenchment_assistance(application_service, applica
         "sex": "M",
         "date_of_birth": datetime(1980, 1, 1),
         "marital_status": "married",
+        "marriage_date": datetime(2024, 8, 1),
         "employment_status_change_date": None,
         "created_by_admin_id": test_administrator.id
     }
@@ -385,7 +389,8 @@ def test_retrenchment_assistance_eligibility(applicant_service, crud_operations,
         "employment_status": employment_status,
         "sex": "M",
         "date_of_birth": datetime(1990, 1, 1),
-        "marital_status": "single",
+        "marital_status": "married",
+        "marriage_date": datetime.today() - relativedelta(days=10), 
         "employment_status_change_date": datetime.today() - relativedelta(months=months_since_unemployment),
         "created_by_admin_id": test_administrator.id
     }
@@ -408,6 +413,7 @@ def test__neg_retrenchment_assistance_eligibility_missing_employment_change_date
         "sex": "F",
         "date_of_birth": datetime(1990, 4, 15),
         "marital_status": "married",
+        "marriage_date": datetime(1990, 4, 15),
         "employment_status_change_date": None,  # No change date provided (missing data) - should not be eligible
         "created_by_admin_id": test_administrator.id
     }
@@ -432,7 +438,8 @@ def test_retrenchment_assistance_eligibility_children_outside_age_range(applicat
         "employment_status": "unemployed",
         "sex": "M",
         "date_of_birth": datetime(1980, 1, 1),
-        "marital_status": "single",
+        "marital_status": "married",
+        "marriage_date": datetime.today() - relativedelta(months=4),  # Within the last 6 months
         "employment_status_change_date": datetime.today() - relativedelta(months=4),  # Within the last 6 months
         "created_by_admin_id": test_administrator.id
     }
@@ -479,7 +486,8 @@ def test_retrenchment_assistance_eligibility_elderly_parents_below_age_threshold
         "employment_status": "unemployed",
         "sex": "F",
         "date_of_birth": datetime(1975, 4, 20),
-        "marital_status": "widowed",
+        "marital_status": "married",
+        "marriage_date": datetime.today() - relativedelta(months=4),  # Within the last 6 months
         "employment_status_change_date": datetime.today() - relativedelta(months=3),  # Within the last 6 months
         "created_by_admin_id": test_administrator.id
     }
@@ -525,7 +533,8 @@ def test_retrenchment_assistance_eligibility_no_children_no_parents(application_
         "employment_status": "unemployed",
         "sex": "F",
         "date_of_birth": datetime(1985, 2, 14),
-        "marital_status": "divorced",
+        "marital_status": "married",
+        "marriage_date": datetime.today() - relativedelta(months=4),  # Within the last 6 months
         "employment_status_change_date": datetime.today() - relativedelta(months=5),  # Within the last 6 months
         "created_by_admin_id": test_administrator.id
     }
@@ -567,7 +576,8 @@ def test_retrenchment_assistance_eligibility_children_at_age_threshold(applicati
         "employment_status": "unemployed",
         "sex": "M",
         "date_of_birth": datetime(1982, 8, 8),
-        "marital_status": "single",
+        "marital_status": "married",
+        "marriage_date": datetime.today() - relativedelta(months=4),  # Within the last 6 months
         "employment_status_change_date": datetime.today() - relativedelta(months=2),  # Within the last 6 months
         "created_by_admin_id": test_administrator.id
     }
@@ -600,3 +610,91 @@ def test_retrenchment_assistance_eligibility_children_at_age_threshold(applicati
     assert eligibility_results.report["eligibility_message"] == "Eligible for Retrenchment Assistance."
     assert any(benefit["benefit_name"] == "cash_assistance" for benefit in eligibility_results.report["eligible_benefits"])
     assert any(benefit["benefit_name"] == "school_meal_vouchers" for benefit in eligibility_results.report["eligible_benefits"])  # Eligible for school meal vouchers
+
+
+
+
+def test_eligible_applicant(crud_operations, retrenchment_assistance_scheme):
+    applicant = Applicant(
+        employment_status="unemployed",
+        employment_status_change_date=datetime.now() - timedelta(days=30),
+        marital_status="married",
+        marriage_date=datetime.now() - timedelta(days=60)
+    )
+    schemeEligibilityCheckerFactory = SchemeEligibilityCheckerFactory(crud_operations.db_session)
+    # Verify eligibility and benefits
+    scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
+    eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
+    
+    assert eligibility_results.report["is_eligible"]
+    assert eligibility_results.report["eligibility_message"] == "Eligible for Retrenchment Assistance."
+
+def test_ineligible_employed_applicant(crud_operations, retrenchment_assistance_scheme):
+    applicant = Applicant(
+        employment_status="employed",
+        marital_status="married",
+        marriage_date=datetime.now() - timedelta(days=60)
+    )
+    schemeEligibilityCheckerFactory = SchemeEligibilityCheckerFactory(crud_operations.db_session)
+    # Verify eligibility and benefits
+    scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
+    eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
+    
+    assert not eligibility_results.report["is_eligible"]
+    assert "Not eligible: Applicant is not unemployed." == eligibility_results.report["eligibility_message"] 
+
+def test_ineligible_long_term_unemployed(crud_operations, retrenchment_assistance_scheme):
+    applicant = Applicant(
+        employment_status="unemployed",
+        employment_status_change_date=datetime.now() - timedelta(days=200),
+        marital_status="married",
+        marriage_date=datetime.now() - timedelta(days=60)
+    )
+    schemeEligibilityCheckerFactory = SchemeEligibilityCheckerFactory(crud_operations.db_session)
+    # Verify eligibility and benefits
+    scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
+    eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
+    
+    assert not eligibility_results.report["is_eligible"]
+    assert "Not eligible: Retrenchment period exceeds the required duration." in eligibility_results.report["eligibility_message"] 
+
+def test_ineligible_not_married(crud_operations, retrenchment_assistance_scheme):
+    applicant = Applicant(
+        employment_status="unemployed",
+        employment_status_change_date=datetime.now() - timedelta(days=30),
+        marital_status="single"
+    )
+    schemeEligibilityCheckerFactory = SchemeEligibilityCheckerFactory(crud_operations.db_session)
+    # Verify eligibility and benefits
+    scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
+    eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
+    assert not eligibility_results.report["is_eligible"]
+    assert "Not eligible: Applicant is not married." in eligibility_results.report["eligibility_message"] 
+
+def test_ineligible_married_too_long(crud_operations, retrenchment_assistance_scheme):
+    applicant = Applicant(
+        employment_status="unemployed",
+        employment_status_change_date=datetime.now() - timedelta(days=30),
+        marital_status="married",
+        marriage_date=datetime.now() - timedelta(days=400)
+    )
+    schemeEligibilityCheckerFactory = SchemeEligibilityCheckerFactory(crud_operations.db_session)
+    # Verify eligibility and benefits
+    scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
+    eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
+    
+    assert not eligibility_results.report["is_eligible"]
+    assert "Not eligible: Marriage duration exceeds 12 months." in eligibility_results.report["eligibility_message"]
+
+def test_missing_marriage_date(crud_operations, retrenchment_assistance_scheme):
+    applicant = Applicant(
+        employment_status="unemployed",
+        employment_status_change_date=datetime.now() - timedelta(days=30),
+        marital_status="married"
+    )
+    schemeEligibilityCheckerFactory = SchemeEligibilityCheckerFactory(crud_operations.db_session)
+    # Verify eligibility and benefits
+    scheme_manager = SchemesManager(crud_operations, schemeEligibilityCheckerFactory)
+    eligibility_results = scheme_manager.check_scheme_eligibility_for_applicant(retrenchment_assistance_scheme, applicant)
+    assert not eligibility_results.report["is_eligible"]
+    assert "Not eligible: Missing marriage date information." in eligibility_results.report["eligibility_message"]

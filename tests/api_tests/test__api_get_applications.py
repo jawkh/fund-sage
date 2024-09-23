@@ -17,9 +17,9 @@ def test_get_applications_success(api_test_client, api_test_admin):
                             )
     data = response.get_json()
 
-    # Use the helper to print the response
-    print("Test: test_get_applications_success")
-    helper.print_response(response)
+    # # Use the helper to print the response
+    # print("Test: test_get_applications_success")
+    # helper.print_response(response)
 
     assert response.status_code == 200
     assert 'data' in data
@@ -41,9 +41,9 @@ def test_get_applications_invalid_page_size(api_test_client, api_test_admin):
     response = api_test_client.get('/api/applications?page=1&page_size=-1', headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Use the helper to print the response
-    print("Test: test_get_applications_invalid_page_size")
-    helper.print_response(response)
+    # # Use the helper to print the response
+    # print("Test: test_get_applications_invalid_page_size")
+    # helper.print_response(response)
 
     assert response.status_code == 400
     assert 'error' in data
@@ -62,9 +62,9 @@ def test_get_applications_sqlalchemy_error(api_test_client, api_test_admin, mock
     response = api_test_client.get('/api/applications' ,headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Use the helper to print the response
-    print("Test: test_get_applications_sqlalchemy_error")
-    helper.print_response(response)
+    # # Use the helper to print the response
+    # print("Test: test_get_applications_sqlalchemy_error")
+    # helper.print_response(response)
 
     assert response.status_code == 500
     assert 'error' in data
@@ -85,9 +85,9 @@ def test_get_applications_success(api_test_client, api_test_admin):
     response = api_test_client.get('/api/applications?page=1&page_size=5&sort_by=created_at&sort_order=asc', headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_get_applications_success")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_get_applications_success")
+    # helper.print_response(response)
 
     assert response.status_code == 200
     assert 'data' in data
@@ -109,9 +109,9 @@ def test_get_applications_invalid_pagination(api_test_client, api_test_admin):
     response = api_test_client.get('/api/applications?page=0&page_size=10', headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_get_applications_invalid_pagination")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_get_applications_invalid_pagination")
+    # helper.print_response(response)
 
     assert response.status_code == 400
     assert 'error' in data

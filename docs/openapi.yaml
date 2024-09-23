@@ -251,10 +251,12 @@ paths:
                             }
                           },
                           "created_at": "2024-09-05T06:02:03.002941+00:00",
-                          "description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs.",
+                          "description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs are newly married.",
                           "eligibility_criteria": {
                             "employment_status": "unemployed",
-                            "retrechment_period_months": 6
+                            "retrechment_period_months": 6,
+                            "marital_status": "married",
+                            "marriage_duration_months": 12
                           },
                           "id": 1,
                           "name": "Retrenchment Assistance Scheme",
@@ -370,7 +372,7 @@ paths:
                               "description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs.",
                               "eligibility_criteria": {
                                 "employment_status": "unemployed",
-                                "retrechment_period_months": 6
+                                "retrenchment_period_months": 6
                               },
                               "id": 1,
                               "name": "Retrenchment Assistance Scheme",
@@ -397,7 +399,9 @@ paths:
                               "description": "A scheme to provide financial support and benefits to individuals aged 40 and above who are unemployed, encouraging reskilling and upskilling.",
                               "eligibility_criteria": {
                                 "age_threshold": 40,
-                                "employment_status": "unemployed"
+                                "employment_status": "unemployed",
+                                "marital_status": "married",
+                                "marriage_duration_months": 12,
                               },
                               "id": 2,
                               "name": "Middle-aged Reskilling Assistance Scheme",
@@ -649,6 +653,7 @@ paths:
                           ],
                           "id": 63,
                           "marital_status": "married",
+                          "marriage_date": "2023-02-01T00:00:00",
                           "name": "John Doe",
                           "sex": "M",
                           "updated_at": null
@@ -709,6 +714,7 @@ paths:
                 "sex": "M",
                 "date_of_birth": "1975-01-01T00:00:00Z",
                 "marital_status": "married",
+                "marriage_date": "2023-02-01T00:00:00",
                 "employment_status_change_date": "2024-08-01T00:00:00Z",
                 "household_members": [
                   {
@@ -806,6 +812,7 @@ paths:
                   ],
                   "id": 64,
                   "marital_status": "married",
+                  "marriage_date": "2023-02-01T00:00:00",
                   "name": "John Doe",
                   "sex": "M",
                   "updated_at": null
@@ -889,6 +896,7 @@ paths:
                             "household_members": null,
                             "id": 15,
                             "marital_status": "married",
+                            "marriage_date": "2023-02-01T00:00:00",
                             "name": "Applicant 1063087c-c155-4c11-8e0b-6f7b92b6b684",
                             "sex": "M",
                             "updated_at": null
@@ -932,10 +940,12 @@ paths:
                               }
                             },
                             "created_at": "2024-09-05T06:02:03.002941+00:00",
-                            "description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs.",
+                            "description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs and are newly married.",
                             "eligibility_criteria": {
                               "employment_status": "unemployed",
-                              "retrechment_period_months": 6
+                              "retrechment_period_months": 6,
+                              "marital_status": "married",
+                              "marriage_duration_months": 12
                             },
                             "id": 1,
                             "name": "Retrenchment Assistance Scheme",
@@ -1027,6 +1037,7 @@ paths:
                     "household_members": null,
                     "id": 64,
                     "marital_status": "married",
+                    "marriage_date": "2024-02-01T00:00:00",
                     "name": "John Doe",
                     "sex": "M",
                     "updated_at": null
@@ -1206,10 +1217,12 @@ components:
             }
           },
           "created_at": "2024-09-05T06:02:03.002941+00:00",
-          "description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs.",
+          "description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs and are newly married.",
           "eligibility_criteria": {
             "employment_status": "unemployed",
-            "retrechment_period_months": 6
+            "retrechment_period_months": 6,
+            "marital_status": "married",
+            "marriage_duration_months": 12,
           },
           "id": 1,
           "name": "Retrenchment Assistance Scheme",
@@ -1315,6 +1328,10 @@ components:
             - married
             - divorced
             - widowed
+        marriage_date:
+          type: string
+          format: date-time
+          description: The date of marriage for the applicant (if applicable).
         employment_status_change_date:
           type: string
           format: date-time
@@ -1397,6 +1414,7 @@ components:
           ],
           "id": 63,
           "marital_status": "married",
+          "marriage_date": "2024-07-01T00:00:00",
           "name": "John Doe",
           "sex": "M",
           "updated_at": null

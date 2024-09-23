@@ -12,6 +12,8 @@
 import sys
 import os
 
+from sqlalchemy import Null
+
 # Add the project root directory to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -58,15 +60,20 @@ def setup_applicants(applicant_service: ApplicantService, creator, totalcount) -
     
     # Create diverse applicants
     for i in range(totalcount):
+        marrital_status = "married" if i % 2 == 0 else "single"  # Half married, half single
+        
         applicant_data = {
             "name": f"Applicant {uuid4()}",
             "employment_status": "employed" if i % 2 == 0 else "unemployed", # Half employed, half unemployed
             "employment_status_change_date": datetime.now() - timedelta(days=30 * randint(3, 7)),  # Employed/Unemployed for 3 to 7 months
             "sex": "M" if i % 2 == 0 else "F", # Half Male, Half Female
             "date_of_birth": datetime.now() - timedelta(days=365 * randint(35, 80)),  # Ages between 35 to 80 yo
-            "marital_status": "married" if i % 2 == 0 else "single", # Half married, half single
+            "marital_status": marrital_status,
             "created_by_admin_id": creator.id,
         }
+        
+        if (marrital_status == "married"):
+            applicant_data["marriage_date"] =  datetime.now() - timedelta(days=30 * randint(3, 20)) # married for 3 to 20 months
 
         # Create household members for each applicant
         household_members_data = []

@@ -81,6 +81,7 @@ class Applicant(Base):
     sex: str = Column(String(1), nullable=False)
     date_of_birth: DateTime = Column(DateTime, nullable=False)
     marital_status: str = Column(String(50), nullable=False)
+    marriage_date: DateTime = Column(DateTime, nullable=True) 
     employment_status_change_date: DateTime = Column(DateTime, nullable=True)
     created_by_admin_id: int = Column(Integer, ForeignKey('Administrators.id'))
     created_at: DateTime = Column(DateTime(timezone=True), server_default=func.now())

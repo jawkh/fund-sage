@@ -15,9 +15,9 @@ def test__api_get_applicants_success(api_test_client, api_test_admin):
     response = api_test_client.get('/api/applicants?page=1&page_size=5&sort_by=created_at&sort_order=asc' ,headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_get_applicants_success")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_get_applicants_success")
+    # helper.print_response(response)
 
     assert response.status_code == 200
     assert 'data' in data
@@ -38,9 +38,9 @@ def test__api_get_applicants_filter_by_employment_status(api_test_client, api_te
     response = api_test_client.get('/api/applicants?employment_status=employed' ,headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_get_applicants_filter_by_employment_status")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_get_applicants_filter_by_employment_status")
+    # helper.print_response(response)
     
     assert response.status_code == 200
     assert 'data' in data
@@ -57,9 +57,9 @@ def test__api_get_applicants_invalid_page_size(api_test_client, api_test_admin):
     response = api_test_client.get('/api/applicants?page=1&page_size=-1' ,headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
     
-    # Print the response for manual inspection
-    print("Test: test_get_applicants_filter_by_employment_status")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_get_applicants_filter_by_employment_status")
+    # helper.print_response(response)
 
     assert response.status_code == 400
     assert 'error' in data
@@ -75,9 +75,9 @@ def test__api_get_applicants_invalid_sort_by(api_test_client, api_test_admin):
     response = api_test_client.get('/api/applicants?sort_by=invalid_field' ,headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_get_applicants_invalid_sort_by")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_get_applicants_invalid_sort_by")
+    # helper.print_response(response)
     
     assert response.status_code == 400
     assert 'error' in data
@@ -94,9 +94,9 @@ def test__api_get_applicants_invalid_pagination_parameter(api_test_client, api_t
     response = api_test_client.get('/api/applicants?page=0&page_size=10' ,headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_get_applicants_invalid_pagination_parameter")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_get_applicants_invalid_pagination_parameter")
+    # helper.print_response(response)
     
     assert response.status_code == 400
     assert 'error' in data
@@ -112,9 +112,9 @@ def test__api_get_applicants_filter_by_multiple_criteria(api_test_client, api_te
     response = api_test_client.get('/api/applicants?employment_status=employed&sex=male&marital_status=single' ,headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_get_applicants_filter_by_multiple_criteria")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_get_applicants_filter_by_multiple_criteria")
+    # helper.print_response(response)
     
     assert response.status_code == 200
     assert 'data' in data
