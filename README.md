@@ -47,7 +47,7 @@ Project_Root
 ├── bin/
 │       ├── __init_sys_database.py # database initialization scripts
 │       ├── ...
-│       ├── tests_all.sh # automated test scripts
+│       ├── tests_all.sh     # automated test scripts
 │       └── ...
 ├── init-db
 │       └── create_db_ephemeral.sql # script for provisioning the ephemeral test database for automated test scripts. 
@@ -66,10 +66,10 @@ Project_Root
 │   └── ..
 ├── logs/                    # logs from executing the python database provisioning scripts ,pytests scripts or Flasks app
 ├── tests/                   # Home of all the Test files
-│   ├── api_tests/            # automated api tests  
+│   ├── api_tests/           # automated api tests  
 │   ├── bl_tests /           # automated business layer tests
-│   ├── dal tests/            # automated data access layer tests
-│   ├── util tests/           # automated utilities tests
+│   ├── dal tests/           # automated data access layer tests
+│   ├── util tests/          # automated utilities tests
 │   └── conftest.py          # text fixtures
 ├── utils/
 │   ├── ...                  # Utility functions and helpers
@@ -77,9 +77,9 @@ Project_Root
 ├── config.py                # Flask's configurations
 ├── poetry.lock              # Fuill Manifests of the Project's python dependencies
 ├── pyproject.toml           # Explicitly declared project's python dependencies
-├── Dockerfile     # Dockerfile for FundSage Container image
-├── docker-compose.yml # for packaging and deploying multi-containers solution
-├── wait-for-it.ini # util for deployment dependencies
+├── Dockerfile               # Dockerfile for FundSage Container image
+├── docker-compose.yml       # for packaging and deploying multi-containers solution
+├── wait-for-it.ini          # util for deployment dependencies
 ├── README.md                # This page itself 
 └── ...
 ```
