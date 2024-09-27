@@ -18,9 +18,9 @@ def test_api_get_schemes_success(api_test_client, api_test_admin):
     response = api_test_client.get('/api/schemes?page=1&per_page=5&fetch_valid_schemes=true', headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_api_get_schemes_success")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_api_get_schemes_success")
+    # helper.print_response(response)
 
     assert response.status_code == 200
     assert 'data' in data
@@ -41,9 +41,9 @@ def test_api_get_schemes_invalid_page_parameter(api_test_client, api_test_admin)
     response = api_test_client.get('/api/schemes?page=-1&per_page=10', headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_api_get_schemes_invalid_page_parameter")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_api_get_schemes_invalid_page_parameter")
+    # helper.print_response(response)
 
     assert response.status_code == 400
     assert 'error' in data
@@ -65,9 +65,9 @@ def test_api_get_eligible_schemes_success(api_test_client, api_test_admin):
     response = api_test_client.get(f'/api/schemes/eligible?applicant={applicant_id}', headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_api_get_eligible_schemes_success")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_api_get_eligible_schemes_success")
+    # helper.print_response(response)
 
     assert response.status_code == 200
     assert 'data' in data
@@ -86,9 +86,9 @@ def test_api_get_eligible_schemes_missing_applicant_id(api_test_client, api_test
     response = api_test_client.get('/api/schemes/eligible', headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_api_get_eligible_schemes_missing_applicant_id")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_api_get_eligible_schemes_missing_applicant_id")
+    # helper.print_response(response)
 
     assert response.status_code == 400
     assert 'error' in data
@@ -104,9 +104,9 @@ def test_api_get_eligible_schemes_invalid_applicant_id_format(api_test_client, a
     response = api_test_client.get('/api/schemes/eligible?applicant=invalid_id', headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_api_get_eligible_schemes_invalid_applicant_id_format")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_api_get_eligible_schemes_invalid_applicant_id_format")
+    # helper.print_response(response)
 
     assert response.status_code == 400
     assert 'error' in data
@@ -122,9 +122,9 @@ def test_api_get_eligible_schemes_applicant_not_found(api_test_client, api_test_
     response = api_test_client.get('/api/schemes/eligible?applicant=9999', headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_api_get_eligible_schemes_applicant_not_found")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_api_get_eligible_schemes_applicant_not_found")
+    # helper.print_response(response)
 
     assert response.status_code == 404
     assert 'error' in data

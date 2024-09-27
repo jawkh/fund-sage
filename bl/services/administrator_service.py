@@ -34,6 +34,8 @@ The AdministratorService class provides a comprehensive implementation of the bu
 
 import hashlib
 import os
+import string
+import random
 from typing import Optional, List
 from dal.crud_operations import CRUDOperations
 from dal.models import Administrator
@@ -43,6 +45,7 @@ from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 load_dotenv()
 from utils.data_validation import validate_administrator_data
+
 class AdministratorService:
     # Load environment variables
 
@@ -125,7 +128,7 @@ class AdministratorService:
         if username:
             username = username.strip().lower() # Remove leading and trailing whitespaces. Sets username to lowercase
         if password:
-            password = password.strip() # reomve leading and trailing whitespaces
+            password = password.strip() # Remove leading and trailing whitespaces
         
         try:
             admin = self.__get_admin_by_username(username) # Check if the admin exists. Raises an exception if not found.
@@ -252,3 +255,39 @@ class AdministratorService:
         if not admin:
             raise AdministratorNotFoundException(f"Administrator with Username {username} not found.")
         return admin
+
+    def reset_admin_password(self, admin_id: int, target_username: str) -> str:
+        """
+        Reset the password for another administrator.
+        """
+        # Verify the requesting admin exists (authorization check would go here in a real-world scenario)
+        self.__get_admin_by_id(admin_id)
+
+        # Get the target administrator
+        target_admin = self.__get_admin_by_username(target_username)
+
+        # Generate a new secure password
+        new_password = self.__generate_secure_password()
+
+        # Hash the new password
+        salt = target_admin.salt
+        password_hash = self.__hash_password(new_password, salt)
+
+        # Update the target administrator's password
+        update_data = {
+            "password_hash": password_hash,
+            "account_locked": False,  # Unlock the account if it was locked
+            "consecutive_failed_logins": 0,  # Reset failed login attempts
+            "failed_login_starttime": None
+        }
+        self.crud_operations.update_administrator(target_admin.id, update_data)
+
+        return new_password
+
+    def __generate_secure_password(self, length: int = 16) -> str:
+        """
+        Generate a secure random password.
+        """
+        alphabet = string.ascii_letters + string.digits + string.punctuation
+        password = ''.join(random.choice(alphabet) for i in range(length))
+        return password

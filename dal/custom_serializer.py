@@ -5,7 +5,7 @@ from collections.abc import Iterable
 from sqlalchemy import inspect
 
 
-def serialize(obj, depth=2, visited=None):
+def serialize(obj, depth=3, visited=None):
     """
     Serialize an SQLAlchemy ORM object into a JSON-serializable dictionary.
 

@@ -96,6 +96,7 @@ class ApplicantSchema(Schema):
     sex = fields.Str(required=True, validate=validate.OneOf(["M", "F"]))
     date_of_birth = fields.DateTime(required=True)
     marital_status = fields.Str(required=True, validate=validate.OneOf(["single", "married", "divorced", "widowed"]))
+    marriage_date = fields.DateTime(allow_none=True)
     employment_status_change_date = fields.DateTime(allow_none=True)
     created_by_admin_id = fields.Int()
     created_at = fields.DateTime(dump_only=True)

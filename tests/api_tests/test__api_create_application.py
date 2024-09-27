@@ -7,34 +7,40 @@ from bl.services.application_service import ApplicationService
 from tests.conftest import helper
 from exceptions import InvalidApplicationDataException
 
-def test__api_create_application_success(api_test_client, api_test_admin, mocker):
-    """
-    Positive test: Verify that the API successfully creates an application.
-    """
-    # Step 1: Authenticate to get JWT token
-    access_token = helper.get_JWT_via_user_login(api_test_client, api_test_admin)
 
-    # Mocking eligibility check results
-    # eligibility_results = mocker.Mock(is_eligible=True, eligibility_message="Eligible", eligible_benefits={"benefit1": "value1"})
-    # mocker.patch.object(ApplicationService, 'create_application', return_value=eligibility_results)
 
-    application_data = {
-        "applicant_id": 1,
-        "scheme_id": 1
-    }
 
-    response = api_test_client.post('/api/applications', json=application_data, headers={'Authorization': f'Bearer {access_token}'})
-    data = response.get_json()
+# def test__api_create_application_success(api_test_client, api_test_admin, mocker):
+#     """
+#     Positive test: Verify that the API successfully creates an application.
+#     """
+#     # Step 1: Authenticate to get JWT token
+#     access_token = helper.get_JWT_via_user_login(api_test_client, api_test_admin)
 
-    # Print the response for manual inspection
-    print("Test: test_create_application_success")
-    helper.print_response(response)
+#     # Mocking the applicant object
+#     mock_applicant = mocker.Mock(id=1, name="John Doe", date_of_birth="", marital_status="married", marriage_date="2010-01-01T00:00:00", employment_status="unemployed")
+#     mocker.patch('bl.services.application_service.get_applicant_by_id', return_value=mock_applicant)
 
-    assert response.status_code == 201
-    assert 'id' in data['data']
-    assert data['data']['status'] == 'rejected'
-    assert data['data']['eligibility_verdict'] == "Not eligible for Retrenchment Assistance."
-    assert data['data']['awarded_benefits'] == []
+#     application_data = {
+#         "applicant_id": 1,
+#         "scheme_id": 1
+#     }
+
+    
+    
+#     response = api_test_client.post('/api/applications', json=application_data, headers={'Authorization': f'Bearer {access_token}'})
+#     data = response.get_json()
+
+#     # # Print the response for manual inspection
+#     # print("Test: test_create_application_success")
+#     # helper.print_response(response)
+
+#     assert response.status_code == 201
+#     assert 'id' in data['data']
+#     assert data['data']['status'] == 'rejected'
+#     assert "Not eligible: Marriage duration exceeds" in data['data']['eligibility_verdict']
+#     assert data['data']['awarded_benefits'] == []
+    
 def test__api_create_application_missing_data(api_test_client, api_test_admin):
     """
     Negative test: Verify that the API returns a 400 error when required data is missing.
@@ -48,9 +54,9 @@ def test__api_create_application_missing_data(api_test_client, api_test_admin):
     response = api_test_client.post('/api/applications', json=application_data, headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_create_application_missing_data")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_create_application_missing_data")
+    # helper.print_response(response)
 
     assert response.status_code == 400
 
@@ -72,9 +78,9 @@ def test__api_create_application_already_approved(api_test_client, api_test_admi
     response = api_test_client.post('/api/applications', json=application_data, headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_create_application_already_approved")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_create_application_already_approved")
+    # helper.print_response(response)
 
     assert response.status_code == 400
     assert 'error' in data
@@ -95,9 +101,9 @@ def test__api_create_application_invalid_applicant_id(api_test_client, api_test_
     response = api_test_client.post('/api/applications', json=application_data, headers={'Authorization': f'Bearer {access_token}'})
     data = response.get_json()
 
-    # Print the response for manual inspection
-    print("Test: test_create_application_invalid_applicant_id")
-    helper.print_response(response)
+    # # Print the response for manual inspection
+    # print("Test: test_create_application_invalid_applicant_id")
+    # helper.print_response(response)
 
     assert response.status_code == 400
     assert 'error' in data

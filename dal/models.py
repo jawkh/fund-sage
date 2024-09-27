@@ -81,6 +81,7 @@ class Applicant(Base):
     sex: str = Column(String(1), nullable=False)
     date_of_birth: DateTime = Column(DateTime, nullable=False)
     marital_status: str = Column(String(50), nullable=False)
+    marriage_date: DateTime = Column(DateTime, nullable=True) 
     employment_status_change_date: DateTime = Column(DateTime, nullable=True)
     created_by_admin_id: int = Column(Integer, ForeignKey('Administrators.id'))
     created_at: DateTime = Column(DateTime(timezone=True), server_default=func.now())
@@ -164,8 +165,8 @@ class Application(Base):
     __tablename__ = 'Applications'
 
     id: int = Column(Integer, primary_key=True, index=True)
-    applicant_id: int = Column(Integer, ForeignKey('Applicants.id', ondelete='CASCADE'))
-    scheme_id: int = Column(Integer, ForeignKey('Schemes.id', ondelete='CASCADE'))
+    applicant_id: int = Column(Integer, ForeignKey('Applicants.id'))
+    scheme_id: int = Column(Integer, ForeignKey('Schemes.id'))
     status: str = Column(String(50), nullable=False)
     eligibility_verdict: str = Column(String, nullable=True)
     awarded_benefits: dict = Column(JSON, nullable=True)  
@@ -199,4 +200,9 @@ class SystemConfiguration(Base):
     last_updated: DateTime = Column(DateTime(timezone=True), server_default=func.now())
 
 
+# In SQLAlchemy, calling configure_mappers can help catch any configuration errors early, such as missing relationships or incorrect column definitions. 
+# It forces the ORM to validate the mappings and can provide immediate feedback if something is misconfigured. 
+# This is particularly useful in larger applications where models are defined across multiple files and modules, 
+# as it ensures that all parts of the application are correctly integrated before any database transactions occur.
 configure_mappers() # Configure mappers to ensure all relationships are properly set up
+

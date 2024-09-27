@@ -110,6 +110,13 @@ def validate_applicant_data(applicant_data: dict, for_create_mode: bool) -> Tupl
             return False, "Invalid value for employment_status_change_date: must be a datetime object"
         elif 'employment_status_change_date' in applicant_data and is_future_date(applicant_data['employment_status_change_date']):
             return False, "Invalid value for employment_status_change_date: must be a past date"
+        
+    if 'marriage_date' in applicant_data and applicant_data['marriage_date'] is not None:
+        applicant_data['marriage_date'] = convert_to_datetime(applicant_data['marriage_date'])
+        if not isinstance(applicant_data['marriage_date'], datetime):
+            return False, "Invalid value for marriage_date: must be a datetime object"
+        elif is_future_date(applicant_data['marriage_date']):
+            return False, "Invalid value for marriage_date: must be a past date"
 
     if 'created_by_admin_id' in applicant_data and applicant_data['created_by_admin_id'] is not None:
         if not isinstance(applicant_data['created_by_admin_id'], int):

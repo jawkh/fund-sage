@@ -14,6 +14,7 @@ from api.routes.applications import applications_bp
 from api.routes.auth import auth_bp  
 from config import Config
 from dal.database import Base  # Import your Base model
+
 import logging
 
 # Import the Swagger setup function
@@ -93,9 +94,8 @@ def create_app(config_class=Config):
     return app
 
 
-
-# Ensure our database tables are created (Idempotent operation):
-Base.metadata.create_all(bind=api_engine)
+# from dal.models import Applicant,HouseholdMember, Scheme, Application, Administrator  # Import our ORM models
+# Base.metadata.create_all(bind=api_engine) # Ensure our database tables are created based on the definition of our ORM Models (Idempotent operation)
 
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)  # Set to DEBUG to capture more details

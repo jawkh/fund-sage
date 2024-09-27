@@ -33,10 +33,12 @@ def retrenchment_assistance_scheme(scheme_service):
         # Retrenchment Assistance Scheme
         scheme_data = {
             "name": "Retrenchment Assistance Scheme",
-            "description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs.",
+            "description": "A scheme to provide financial support and benefits to individuals who have recently been retrenched from their jobs and are newly married.",
             "eligibility_criteria": {
                 "employment_status": "unemployed",
                 "retrechment_period_months": 6,
+                "marital_status": "married",
+                "marriage_duration_months": 12
             },
             "benefits": {
                 "cash_assistance": {
@@ -100,7 +102,7 @@ def middleaged_reskilling_assistance_scheme(scheme_service):
                     "disbursment_amount": 2000,
                     "disbursment_frequency": "Monthly",
                     "disbursment_duration_months": 6,
-                    "description": "Monthly study allowance of $5000 for up to 6 months."
+                    "description": "Monthly study allowance of $2000 for up to 6 months."
                 }
             },
             "validity_start_date": datetime(2024, 1, 1),

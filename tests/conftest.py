@@ -69,7 +69,10 @@ def setup_emphemeral_database():
     Set up the database Tables once for the entire test session.
     This fixture will create all the tables at the start of the session and drop them at the end.
     """
-    # Create all tables
+    # Drop all tables first
+    Base.metadata.drop_all(bind=test_engine)
+    
+    # Then create all tables
     Base.metadata.create_all(bind=test_engine)
     yield
     # # Drop all tables after the test session is complete
@@ -222,6 +225,8 @@ def retrenchment_assistance_scheme(scheme_service):
         "eligibility_criteria": {
             "employment_status": "unemployed",
             "retrechment_period_months": 6,
+            "marital_status": "married",
+            "marriage_duration_months": 12
         },
         "benefits": {
             "cash_assistance": {
@@ -339,6 +344,7 @@ def test_applicant(crud_operations):
         "sex": "M",
         "date_of_birth": datetime(1990, 1, 1),
         "marital_status": "single",
+        "marriage_date": datetime(2024, 3, 20),
         "created_by_admin_id": ad.id
     }
     new_applicant = crud_operations.create_applicant(applicant_data)
@@ -410,11 +416,11 @@ def test_application(crud_operations):
 def multiple_applicants(crud_operations, test_administrator):
     """Fixture to create multiple applicants for pagination testing."""
     applicants_data = [
-        {"name": "Bob Johnson", "employment_status": "unemployed", "sex": "M", "date_of_birth": datetime(1970, 8, 20), "marital_status": "married", "created_by_admin_id": test_administrator.id},
+        {"name": "Bob Johnson", "employment_status": "unemployed", "sex": "M", "date_of_birth": datetime(1970, 8, 20), "marital_status": "married", "marriage_date": datetime(2024, 3, 20), "created_by_admin_id": test_administrator.id},
         {"name": "Alice Smith", "employment_status": "employed", "sex": "F", "date_of_birth": datetime(1985, 5, 1), "marital_status": "single", "created_by_admin_id": test_administrator.id},
         {"name": "Carol White", "employment_status": "employed", "sex": "F", "date_of_birth": datetime(1992, 11, 15), "marital_status": "single", "created_by_admin_id": test_administrator.id},
         {"name": "David Black", "employment_status": "unemployed", "sex": "M", "date_of_birth": datetime(1988, 2, 10), "marital_status": "single", "created_by_admin_id": test_administrator.id},
-        {"name": "Eve Green", "employment_status": "employed", "sex": "F", "date_of_birth": datetime(1995, 4, 25), "marital_status": "married", "created_by_admin_id": test_administrator.id},
+        {"name": "Eve Green", "employment_status": "employed", "sex": "F", "date_of_birth": datetime(1995, 4, 25), "marital_status": "married", "marriage_date": datetime(2024, 4, 10), "created_by_admin_id": test_administrator.id},
     ]
     
     for data in applicants_data:
@@ -531,6 +537,7 @@ def api_test_admin(api_test_db__NonTransactional):
     # except  SQLAlchemyError as e:
     #     print(e)
         
+
 class helper:
     def print_response(response):
         """
