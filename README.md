@@ -8,6 +8,9 @@
 
 **FundSage** is a fictitious system designed to manage various financial assistance schemes, including their eligibility criteria, application processes, and benefit distribution. This project showcases clean, maintainable, and scalable software engineering practices, making it an invaluable learning resource for both novice and experienced developers. 🚀
 
+![image](https://github.com/user-attachments/assets/c2a9e859-393e-4ff8-b4a5-c5deb65ef53e)
+
+
 ## 🔑 Key Features
 
 - **🔧 Adherence to Software Engineering Principles**: The codebase strictly follows best practices like SOLID principles, well-architectured enterprise solution design, proper implementation of RESTful principles and good coding and extensive testing practices to ensure clean and effective code that has good quality, readabilty, maintainability and extensibility.
